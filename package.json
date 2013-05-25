@@ -1,0 +1,9 @@
+{
+  "name": "db-yaml",
+  "version": "0.0.1",
+  "repository": "https://github.com/kawanet/db-yaml.git",
+  "dependencies": {
+    "express": "*",
+    "js-yaml": "*"
+  }
+}
