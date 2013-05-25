@@ -6,5 +6,10 @@
     "express": "*",
     "js-yaml": "*",
     "async": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "grunt": "*",
+    "grunt-mocha-test": "*"
   }
 }
