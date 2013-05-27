@@ -1,7 +1,7 @@
 /*! cursor.test.js */
 
 var assert = require('chai').assert;
-var Collection = require('../index').collection;
+var dbyaml = require('../index');
 var async = require('async');
 
 describe('memory', function() {
@@ -11,7 +11,7 @@ describe('memory', function() {
     };
 
     describe('#cursor', function() {
-        collection = new Collection(opts);
+        collection = new dbyaml(opts);
 
         var data = {
             foo: {
@@ -51,15 +51,23 @@ describe('memory', function() {
             }
         });
 
-        it('count', function(done) {
-            collection.count(function(err, count) {
+        it('find().count()', function(done) {
+            collection.find().count(function(err, count) {
                 assert(!err, 'no error');
                 assert.equal(count, keys.length, 'count number')
                 done();
             });
         });
 
-        it('count', function(done) {
+        it('count()', function(done) {
+            collection.count(null, function(err, count) {
+                assert(!err, 'no error');
+                assert.equal(count, keys.length, 'count number')
+                done();
+            });
+        });
+
+        it('find().toArray()', function(done) {
             collection.find().toArray(function(err, list) {
                 assert(!err, 'no error');
                 assert.equal(list.length, keys.length, 'find length')
@@ -67,7 +75,7 @@ describe('memory', function() {
             });
         });
 
-        it('limit 2', function(done) {
+        it('find().limit(2)', function(done) {
             collection.find().limit(2).toArray(function(err, list) {
                 assert(!err, 'no error');
                 assert.equal(list.length, 2, 'limit 2 length')
@@ -75,7 +83,7 @@ describe('memory', function() {
             });
         });
 
-        it('limit 1000', function(done) {
+        it('find().limit(1000)', function(done) {
             collection.find().limit(1000).toArray(function(err, list) {
                 assert(!err, 'no error');
                 assert.equal(list.length, keys.length, 'limit 1000 length')

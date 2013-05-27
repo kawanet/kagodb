@@ -1,7 +1,7 @@
 /*! memory.test.js */
 
 var assert = require('chai').assert;
-var Collection = require('../index').collection;
+var dbyaml = require('../index');
 
 describe('memory', function() {
     var collection;
@@ -18,7 +18,7 @@ describe('memory', function() {
     };
 
     describe('#collection', function() {
-        collection = new Collection(opts);
+        collection = new dbyaml(opts);
 
         it('write success', function(done) {
             collection.write(id1, item, function(err) {

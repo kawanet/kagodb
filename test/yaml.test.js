@@ -1,7 +1,7 @@
 /*! yaml.test.js */
 
 var assert = require('chai').assert;
-var Collection = require('../index').collection;
+var dbyaml = require('../index');
 
 describe('yaml', function() {
     var collection;
@@ -18,7 +18,7 @@ describe('yaml', function() {
     };
 
     beforeEach(function() {
-        collection = new Collection(opts);
+        collection = new dbyaml(opts);
     });
 
     describe('#collection', function() {

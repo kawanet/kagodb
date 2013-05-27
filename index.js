@@ -1,11 +1,11 @@
 /*! index.js */
 
-var Express = require('./lib/dbyaml.express');
-var Collection = require('./lib/dbyaml.collection');
-var Cursor = require('./lib/dbyaml.cursor');
+var collection = require('./lib/collection');
+var cursor = require('./lib/cursor');
+var webapi = require('./lib/webapi');
 
-Collection.prototype.find = Cursor.find;
-Collection.prototype.count = Cursor.count;
-Collection.prototype.express = Express.express;
+collection.prototype.find = cursor.find;
+collection.prototype.count = cursor.count;
+collection.prototype.webapi = webapi.webapi;
 
-module.exports = Collection;
+module.exports = collection;
