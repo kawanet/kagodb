@@ -6,6 +6,6 @@ var Cursor = require('./lib/dbyaml.cursor');
 
 Collection.prototype.find = Cursor.find;
 Collection.prototype.count = Cursor.count;
+Collection.prototype.express = Express.express;
 
-exports.collection = Collection;
-exports.express = Express;
+module.exports = Collection;

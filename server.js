@@ -9,6 +9,6 @@ var opts = {
   path: 'data'
 };
 
-app.all('/data/*', dbyaml.express(opts));
+app.all('/data/*', dbyaml(opts).express());
 
 app.listen(3000);
