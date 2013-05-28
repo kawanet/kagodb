@@ -1,11 +1,13 @@
 /*! index.js */
 
-var collection = require('./lib/collection');
-var cursor = require('./lib/cursor');
-var webapi = require('./lib/webapi');
+var Base = require('./lib/base');
+var Collection = require('./lib/collection');
+var Cursor = require('./lib/cursor');
+var Webapi = require('./lib/webapi');
 
-collection.prototype.find = cursor.find;
-collection.prototype.count = cursor.count;
-collection.prototype.webapi = webapi.webapi;
+var index = Base.inherit();
+index.use(Collection);
+index.use(Cursor);
+index.use(Webapi);
 
-module.exports = collection;
+module.exports = index;
