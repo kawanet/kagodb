@@ -10,6 +10,6 @@ var index = Base.inherit();
 index.use(Storage);
 index.use(Cursor);
 index.use(Webapi);
-// index.set('storage', Memory);
+// index.use(Memory);
 
 module.exports = index;

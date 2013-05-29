@@ -1,7 +1,7 @@
 /*! core/base.js */
 
 function inherit(parent) {
-  /** constructor
+  /** Base class for the inheritance
    * @class Base
    * @param {Object} options - option parameters
    */
@@ -20,8 +20,8 @@ function inherit(parent) {
   Base.prototype = wrap(parent.prototype);
   Base.options = copy(parent.options);
 
-  /** load a mixin
-   * @static
+  /** load a mixin class which will export instance methods
+   * @method Base.use
    * @param {Function} mixin - mixin class which has exporter() class method
    * @returns this class itself for method chaining
    */
@@ -30,8 +30,8 @@ function inherit(parent) {
     return Base;
   };
 
-  /** build an instance as same as new Base()
-   * @static
+  /** builds an instance as same as new Base()
+   * @method Base.build
    * @param {Object} options - option parameters
    * @returns {Base} an instance
    */
@@ -39,7 +39,8 @@ function inherit(parent) {
     return new Base(options);
   };
 
-  /** generate a sub class which inherits this class
+  /** generates a sub class which inherits this class
+   * @method Base.inherit
    * @static
    * @returns a sub class
    */
@@ -47,19 +48,19 @@ function inherit(parent) {
     return inherit(Base);
   };
 
-  /** get this class's default parameter value
-   * @static
-   * @param {String} - key parameter name
+  /** gets a default parameter value for the class
+   * @method Base.get
+   * @param {String} key - parameter name
    * @returns parameter value
    */
   Base.get = function(key) {
     return Base.options[key];
   };
 
-  /** set this class's default parameter value
-   * @static
-   * @param {String} - key parameter name
-   * @param val new value
+  /** sets a default parameter value for the class
+   * @method Base.set
+   * @param {String} key - parameter name
+   * @param val - new value
    * @returns this class itself for method chaining
    */
   Base.set = function(key, val) {
@@ -84,10 +85,6 @@ function wrap(parent) {
   return new anonymous();
 }
 
-/** root class of the World
- * @class
- */
-
 function Root() {
   if (!(this instanceof Root)) return new Root(options);
   this.options = {};
@@ -95,7 +92,8 @@ function Root() {
 
 Root.options = {};
 
-/** get a parameter value
+/** gets a parameter value for the instance parameters
+ * @method Base.prototype.get
  * @param {String} key - parameter name
  * @returns parameter value
  */
@@ -103,7 +101,8 @@ Root.prototype.get = function(key) {
   return this.options[key];
 };
 
-/** set a parameter value
+/** sets a parameter value for the instance parameters
+ * @method Base.prototype.set
  * @param {String} key - parameter name
  * @param val - new parameter value
  * @returns this instance itself for method chaining

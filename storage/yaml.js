@@ -25,7 +25,7 @@ function path(id) {
 }
 
 function folder(path) {
-  return this._path = path || 'data';
+  return this._folder = path || this._folder || 'data';
 }
 
 function read(id, callback) {

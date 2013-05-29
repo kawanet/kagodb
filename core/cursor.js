@@ -14,7 +14,7 @@ Cursor.exporter = function() {
   this.count = count;
 };
 
-/** create a cursor with condition applied
+/** creates a cursor with condition applied
  * @method CursorMixin.prototype.find
  * @param condition - query parameter
  * @param {Function} callback - function(err, cursor) {}
@@ -34,11 +34,11 @@ function find(condition, callback) {
   return cursor;
 }
 
-/** count number of items matched with condition
+/** counts number of items matched with condition
  * @method CursorMixin.prototype.count
  * @param condition - query parameter
  * @param {Function} callback - function(err, cursor) {}
- * @returns instance itself for method chaining
+ * @returns collection instance itself for method chaining
  * @example
  * collection.find().count(function(err, count) {
  *   console.log(count);
@@ -64,7 +64,7 @@ function Cursor(collection, condition) {
   this.filters = {};
 }
 
-/** invokes a cllback function with a list of keys for all items
+/** invokes a callback function with a list of keys for all items
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
@@ -82,7 +82,7 @@ Cursor.prototype.keys = function(callback) {
   return this;
 };
 
-/** invokes a cllback function with a list of items found
+/** invokes a callback function with a list of items found
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -132,7 +132,7 @@ Cursor.prototype.toArray = function(callback) {
   return this;
 }
 
-/** invokes a cllback function with the number of items found
+/** invokes a callback function with the number of items found
  * @param {Function} callback - function(err, count) {}
  * @returns {Cursor} instance itself for method chaining
  * @example

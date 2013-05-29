@@ -11,7 +11,7 @@ exports.exporter = function() {
   this.webapi = webapi
 };
 
-/** generate a Web API function for express.js
+/** generates a Web API function for express.js
  * @method WebapiMixin.prototype.webapi
  * @returns {Function} a Web API function
  */

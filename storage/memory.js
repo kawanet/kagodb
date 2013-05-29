@@ -2,10 +2,11 @@
 
 module.exports = StorageMemory;
 
+var SharedStore = {};
+
 function StorageMemory(options) {
   if (!(this instanceof StorageMemory)) return new StorageMemory(options);
   options = options || {};
-  this.store = {};
 };
 
 StorageMemory.prototype.read = read;
@@ -16,8 +17,8 @@ StorageMemory.prototype.keys = keys;
 
 function read(id, callback) {
   callback = callback || NOP;
-  if (this.store.hasOwnProperty(id)) {
-    var item = this.store[id];
+  if (SharedStore.hasOwnProperty(id)) {
+    var item = SharedStore[id];
     callback(null, item);
   } else {
     var err = new Error('Item not found');
@@ -27,14 +28,14 @@ function read(id, callback) {
 
 function write(id, item, callback) {
   callback = callback || NOP;
-  this.store[id] = item;
+  SharedStore[id] = item;
   callback();
 }
 
 function remove(id, callback) {
   callback = callback || NOP;
-  if (this.store.hasOwnProperty(id)) {
-    delete this.store[id];
+  if (SharedStore.hasOwnProperty(id)) {
+    delete SharedStore[id];
     callback();
   } else {
     var err = new Error('Item not found');
@@ -44,13 +45,13 @@ function remove(id, callback) {
 
 function exists(id, callback) {
   callback = callback || NOP;
-  var exist = this.store.hasOwnProperty(id);
+  var exist = SharedStore.hasOwnProperty(id);
   callback(null, exist);
 }
 
 function keys(callback) {
   callback = callback || NOP;
-  var keys = Object.keys(this.store);
+  var keys = Object.keys(SharedStore);
   callback(null, keys);
 }
 
