@@ -2,7 +2,7 @@
 
 function inherit(parent) {
   /** Base class for the inheritance
-   * @class Base
+   * @class KagoDB
    * @param {Object} options - option parameters
    */
 
@@ -21,7 +21,7 @@ function inherit(parent) {
   Base.options = copy(parent.options);
 
   /** load a mixin class which will export instance methods
-   * @method Base.use
+   * @method KagoDB.use
    * @param {Function} mixin - mixin class which has exporter() class method
    * @returns this class itself for method chaining
    */
@@ -31,16 +31,16 @@ function inherit(parent) {
   };
 
   /** builds an instance as same as new Base()
-   * @method Base.build
+   * @method KagoDB.build
    * @param {Object} options - option parameters
-   * @returns {Base} an instance
+   * @returns {KagoDB} an instance
    */
   Base.build = function(options) {
     return new Base(options);
   };
 
   /** generates a sub class which inherits this class
-   * @method Base.inherit
+   * @method KagoDB.inherit
    * @static
    * @returns a sub class
    */
@@ -49,7 +49,7 @@ function inherit(parent) {
   };
 
   /** gets a default parameter value for the class
-   * @method Base.get
+   * @method KagoDB.get
    * @param {String} key - parameter name
    * @returns parameter value
    */
@@ -58,7 +58,7 @@ function inherit(parent) {
   };
 
   /** sets a default parameter value for the class
-   * @method Base.set
+   * @method KagoDB.set
    * @param {String} key - parameter name
    * @param val - new value
    * @returns this class itself for method chaining
@@ -93,7 +93,7 @@ function Root() {
 Root.options = {};
 
 /** gets a parameter value for the instance parameters
- * @method Base.prototype.get
+ * @method KagoDB.prototype.get
  * @param {String} key - parameter name
  * @returns parameter value
  */
@@ -102,7 +102,7 @@ Root.prototype.get = function(key) {
 };
 
 /** sets a parameter value for the instance parameters
- * @method Base.prototype.set
+ * @method KagoDB.prototype.set
  * @param {String} key - parameter name
  * @param val - new parameter value
  * @returns this instance itself for method chaining
