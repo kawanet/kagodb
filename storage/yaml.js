@@ -9,7 +9,7 @@ function StorageYAML(options) {
   if (!(this instanceof StorageYAML)) return new StorageYAML(options);
   options = options || {};
   this.folder(options.path);
-};
+}
 
 StorageYAML.prototype.path = path;
 StorageYAML.prototype.folder = folder;
@@ -49,7 +49,7 @@ function write(id, item, callback) {
 
 function remove(id, callback) {
   var path = this.path(id);
-  fs.unlink(path, callback)
+  fs.unlink(path, callback);
 }
 
 function exists(id, callback) {

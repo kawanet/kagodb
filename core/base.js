@@ -7,13 +7,14 @@ function inherit(parent) {
    */
 
   function Base(options) {
+    var key;
     if (!(this instanceof Base)) return new Base(options);
     parent.call(this);
-    for (var key in Base.options) {
-      this.set(key, Base.options[key])
+    for (key in Base.options) {
+      this.set(key, Base.options[key]);
     }
-    for (var key in options) {
-      this.set(key, options[key])
+    for (key in options) {
+      this.set(key, options[key]);
     }
   }
 

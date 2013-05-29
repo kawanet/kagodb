@@ -84,38 +84,38 @@ function keys(callback) {
 
 /** gets or sets a storage engine
  * @method StorageMixin.prototype.storage
- * @param {String|Function} [storage] - storage class or storage name
+ * @param {Function|String} [store] - storage class or storage name
  * @returns storage instance
  */
 
-function storage(storage) {
-  // remove storage instance cache
-  if (storage) {
-    this._storage = null;
+function storage(store) {
+  // remove store instance cache
+  if (store) {
+    this._store = null;
   }
-  if (!this._storage) {
-    storage = storage || this.get('storage');
-    if (!storage) {
+  if (!this._store) {
+    store = store || this.get('storage');
+    if (!store) {
       throw new Error('storage not specified');
     }
-    if ('function' != typeof storage) {
-      storage += '';
-      if (storage.search(/^[\w\-\.]+$/) < 0) {
-        throw new Error('invalid storage name: ' + storage);
+    if ('function' != typeof store) {
+      store += '';
+      if (store.search(/^[\w\-\.]+$/) < 0) {
+        throw new Error('invalid store name: ' + store);
       } else {
-        var path = StorageBase + '/' + storage;
+        var path = StorageBase + '/' + store;
         try {
-          storage = require(path);
+          store = require(path);
         } catch (e) {
-          throw new Error('storage class invalid: ' + storage);
+          throw new Error('storage class invalid: ' + store);
         }
-        if (!storage) {
-          throw new Error('storage class invalid: ' + storage);
+        if (!store) {
+          throw new Error('storage class invalid: ' + store);
         }
       }
     }
-    // cache the last storage instance
-    this._storage = new storage(this.options);
+    // cache the last store instance
+    this._store = new store(this.options);
   }
-  return this._storage;
+  return this._store;
 }

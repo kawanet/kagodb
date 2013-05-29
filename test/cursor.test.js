@@ -54,7 +54,7 @@ describe('memory', function() {
     it('find().count()', function(done) {
       collection.find().count(function(err, count) {
         assert(!err, 'no error');
-        assert.equal(count, keys.length, 'count number')
+        assert.equal(count, keys.length, 'count number');
         done();
       });
     });
@@ -62,7 +62,7 @@ describe('memory', function() {
     it('count()', function(done) {
       collection.count(null, function(err, count) {
         assert(!err, 'no error');
-        assert.equal(count, keys.length, 'count number')
+        assert.equal(count, keys.length, 'count number');
         done();
       });
     });
@@ -70,7 +70,7 @@ describe('memory', function() {
     it('find().toArray()', function(done) {
       collection.find().toArray(function(err, list) {
         assert(!err, 'no error');
-        assert.equal(list.length, keys.length, 'find length')
+        assert.equal(list.length, keys.length, 'find length');
         done();
       });
     });
@@ -78,7 +78,7 @@ describe('memory', function() {
     it('find().limit(2)', function(done) {
       collection.find().limit(2).toArray(function(err, list) {
         assert(!err, 'no error');
-        assert.equal(list.length, 2, 'limit 2 length')
+        assert.equal(list.length, 2, 'limit 2 length');
         done();
       });
     });
@@ -86,7 +86,7 @@ describe('memory', function() {
     it('find().limit(1000)', function(done) {
       collection.find().limit(1000).toArray(function(err, list) {
         assert(!err, 'no error');
-        assert.equal(list.length, keys.length, 'limit 1000 length')
+        assert.equal(list.length, keys.length, 'limit 1000 length');
         done();
       });
     });

@@ -30,9 +30,9 @@ describe('memory', function() {
     it('read success', function(done) {
       collection.read(id1, function(err, res) {
         // assert(!err, 'read OK');
-        assert.isString(res.string, 'read string type')
-        assert.isNumber(res.decimal, 'read decimal type')
-        assert.isNumber(res.numeric, 'read numeric type')
+        assert.isString(res.string, 'read string type');
+        assert.isNumber(res.decimal, 'read decimal type');
+        assert.isNumber(res.numeric, 'read numeric type');
         assert.equal(res.string, item.string, 'read string content');
         assert.equal(res.decimal, item.decimal, 'read decimal content');
         assert.equal(res.numeric, item.numeric, 'read numeric content');

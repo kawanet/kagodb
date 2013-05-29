@@ -50,7 +50,7 @@ function count(condition, callback) {
   var cursor = this.find(condition);
   cursor.count(callback);
   return this;
-};
+}
 
 /**
  * @class Cursor
@@ -130,7 +130,7 @@ Cursor.prototype.toArray = function(callback) {
     });
   }
   return this;
-}
+};
 
 /** invokes a callback function with the number of items found
  * @param {Function} callback - function(err, count) {}
@@ -177,7 +177,7 @@ Cursor.prototype.sort = function(param) {
     return list.sort(func);
   };
   return this;
-}
+};
 
 /** specifies a offset parameters
  * @param {Number} offset - offset parameter
@@ -191,7 +191,7 @@ Cursor.prototype.offset = function(offset) {
     return list.splice(offset);
   };
   return this;
-}
+};
 
 /** specifies a limit parameters
  * @param {Number} limit - limit parameter
@@ -205,6 +205,6 @@ Cursor.prototype.limit = function(limit) {
     return list.splice(0, limit);
   };
   return this;
-}
+};
 
 function NOP() {}

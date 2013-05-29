@@ -8,7 +8,7 @@ var express = require('express');
  */
 
 exports.exporter = function() {
-  this.webapi = webapi
+  this.webapi = webapi;
 };
 
 /** generates a Web API function for express.js
@@ -37,7 +37,7 @@ function webapi() {
   f.methods = new WebapiMethods();
 
   return f;
-};
+}
 
 function WebapiMethods() {}
 

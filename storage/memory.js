@@ -7,7 +7,7 @@ var SharedStore = {};
 function StorageMemory(options) {
   if (!(this instanceof StorageMemory)) return new StorageMemory(options);
   options = options || {};
-};
+}
 
 StorageMemory.prototype.read = read;
 StorageMemory.prototype.write = write;
@@ -51,8 +51,8 @@ function exists(id, callback) {
 
 function keys(callback) {
   callback = callback || NOP;
-  var keys = Object.keys(SharedStore);
-  callback(null, keys);
+  var list = Object.keys(SharedStore);
+  callback(null, list);
 }
 
 function NOP() {}
