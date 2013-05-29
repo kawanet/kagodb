@@ -10,7 +10,7 @@ var Storages = {
  * @mixin
  */
 
-module.exports = function() {
+exports.exporter = function() {
   this.read = read;
   this.write = write;
   this.remove = remove;

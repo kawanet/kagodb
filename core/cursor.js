@@ -2,12 +2,14 @@
 
 var async = require('async');
 
+module.exports = Cursor;
+
 /**
  * @class CursorMixin
  * @mixin
  */
 
-module.exports = function() {
+Cursor.exporter = function() {
   this.find = find;
   this.count = count;
 };

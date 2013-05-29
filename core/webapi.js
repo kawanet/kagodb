@@ -7,7 +7,7 @@ var express = require('express');
  * @mixin
  */
 
-module.exports = function() {
+exports.exporter = function() {
   this.webapi = webapi
 };
 

@@ -22,11 +22,11 @@ function inherit(parent) {
 
   /** load a mixin
    * @static
-   * @param {Function} mixin - mixin function
+   * @param {Function} mixin - mixin class which has exporter() class method
    * @returns this class itself for method chaining
    */
   Base.use = function(mixin) {
-    mixin.call(Base.prototype);
+    mixin.exporter.call(Base.prototype);
     return Base;
   };
 
