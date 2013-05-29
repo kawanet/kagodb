@@ -1,8 +1,8 @@
-/*! dbyaml.collection.js */
+/*! core/storage.js */
 
 var storages = {
-	yaml: require('./storage/yaml'),
-	memory: require('./storage/memory')
+	yaml: require('../storage/yaml'),
+	memory: require('../storage/memory')
 }
 
 module.exports = function() {

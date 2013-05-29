@@ -1,12 +1,12 @@
-/*! webapi.js */
+/*! core/webapi.js */
 
 var express = require('express');
 
 module.exports = function() {
-  this.prototype.webapi = webapi;
+  this.prototype.webapi = mixin_webapi;
 };
 
-function webapi() {
+function mixin_webapi() {
   var collection = this;
   var f;
 

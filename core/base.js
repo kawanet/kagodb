@@ -1,4 +1,4 @@
-/*! parent.js */
+/*! core/base.js */
 
 function inherit(parent) {
 	/** constructor

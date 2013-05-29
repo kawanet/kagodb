@@ -1,20 +1,20 @@
-/*! dbyaml.cursor.js */
+/*! core/cursor.js */
 
 var async = require('async');
 
 module.exports = function() {
-	this.prototype.find = _find;
-	this.prototype.count = _count;
+	this.prototype.find = mixin_find;
+	this.prototype.count = mixin_count;
 };
 
-function _find(condition, callback) {
+function mixin_find(condition, callback) {
 	callback = callback || NOP;
 	var cursor = new Cursor(this, condition);
 	callback(null, cursor);
 	return cursor;
 };
 
-function _count(condition, callback) {
+function mixin_count(condition, callback) {
 	callback = callback || NOP;
 	var cursor = this.find(condition);
 	cursor.count(callback);

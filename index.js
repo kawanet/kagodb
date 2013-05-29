@@ -1,12 +1,12 @@
 /*! index.js */
 
-var Base = require('./lib/base');
-var Collection = require('./lib/collection');
-var Cursor = require('./lib/cursor');
-var Webapi = require('./lib/webapi');
+var Base = require('./core/base');
+var Storage = require('./core/storage');
+var Cursor = require('./core/cursor');
+var Webapi = require('./core/webapi');
 
 var index = Base.inherit();
-index.use(Collection);
+index.use(Storage);
 index.use(Cursor);
 index.use(Webapi);
 
