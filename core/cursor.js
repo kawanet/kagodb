@@ -2,24 +2,59 @@
 
 var async = require('async');
 
+/**
+ * @class CursorMixin
+ * @mixin
+ */
+
 module.exports = function() {
-  this.prototype.find = mixin_find;
-  this.prototype.count = mixin_count;
+  this.find = find;
+  this.count = count;
 };
 
-function mixin_find(condition, callback) {
+/** create a cursor with condition applied
+ * @method CursorMixin.prototype.find
+ * @param condition - query parameter
+ * @param {Function} callback - function(err, cursor) {}
+ * @returns {Cursor} cursor
+ * @example
+ * collection.find().toArray(function(err, list) {
+ *   list.forEach(function(item) {
+ *     console.log(item);
+ *   });
+ * });
+ */
+
+function find(condition, callback) {
   callback = callback || NOP;
   var cursor = new Cursor(this, condition);
   callback(null, cursor);
   return cursor;
-};
+}
 
-function mixin_count(condition, callback) {
+/** count number of items matched with condition
+ * @method CursorMixin.prototype.count
+ * @param condition - query parameter
+ * @param {Function} callback - function(err, cursor) {}
+ * @returns instance itself for method chaining
+ * @example
+ * collection.find().count(function(err, count) {
+ *   console.log(count);
+ * });
+ */
+
+function count(condition, callback) {
   callback = callback || NOP;
   var cursor = this.find(condition);
   cursor.count(callback);
   return this;
 };
+
+/**
+ * @class Cursor
+ * @param collection
+ * @param condition
+ */
 
 function Cursor(collection, condition) {
   this.collection = collection;
@@ -27,14 +62,12 @@ function Cursor(collection, condition) {
   this.filters = {};
 }
 
-Cursor.prototype.keys = keys;
-Cursor.prototype.toArray = toArray;
-Cursor.prototype.count = count;
-Cursor.prototype.sort = sort;
-Cursor.prototype.offset = offset;
-Cursor.prototype.limit = limit;
+/** invokes a cllback function with a list of keys for all items
+ * @param {Function} callback - function(err, list) {}
+ * @returns {Cursor} instance itself for method chaining
+ */
 
-function keys(callback) {
+Cursor.prototype.keys = function(callback) {
   var self = this;
   callback = callback || NOP;
   if (self._keys) {
@@ -45,9 +78,20 @@ function keys(callback) {
     });
   }
   return this;
-}
+};
 
-function toArray(callback) {
+/** invokes a cllback function with a list of items found
+ * @param {Function} callback - function(err, list) {}
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * collection.find().toArray(function(err, list) {
+ *   list.forEach(function(item) {
+ *     console.log(item);
+ *   });
+ * });
+ */
+
+Cursor.prototype.toArray = function(callback) {
   var self = this;
   callback = callback || NOP;
   if (self._values) {
@@ -86,7 +130,16 @@ function toArray(callback) {
   return this;
 }
 
-function count(callback) {
+/** invokes a cllback function with the number of items found
+ * @param {Function} callback - function(err, count) {}
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * collection.find().count(function(err, count) {
+ *   console.log(count);
+ * });
+ */
+
+Cursor.prototype.count = function(callback) {
   callback = callback || NOP;
   this.keys(function(err, list) {
     if (err) {
@@ -98,7 +151,14 @@ function count(callback) {
   return this;
 };
 
-function sort(param) {
+/** specifies a sort parameters
+ * @param {Object} param - sort parameters
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * collection.find().sort({foo: 1, bar: -1}).toArray();
+ */
+
+Cursor.prototype.sort = function(param) {
   var keys = Object.keys(param);
   var keylen = keys.length;
   var func = function(a, b) {
@@ -117,14 +177,28 @@ function sort(param) {
   return this;
 }
 
-function offset(offset) {
+/** specifies a offset parameters
+ * @param {Number} offset - offset parameter
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * collection.find().offset(100).toArray();
+ */
+
+Cursor.prototype.offset = function(offset) {
   this.filters.offset = function(list) {
     return list.splice(offset);
   };
   return this;
 }
 
-function limit(limit) {
+/** specifies a limit parameters
+ * @param {Number} limit - limit parameter
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * collection.find().limit(100).toArray();
+ */
+
+Cursor.prototype.limit = function(limit) {
   this.filters.limit = function(list) {
     return list.splice(0, limit);
   };

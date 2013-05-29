@@ -2,8 +2,8 @@
 
 function inherit(parent) {
   /** constructor
-   * @class
-   * @param {Object} opts option parameters
+   * @class Base
+   * @param {Object} opts - option parameters
    */
 
   function Base(opts) {
@@ -22,17 +22,17 @@ function inherit(parent) {
 
   /** load a mixin
    * @static
-   * @param {Function} mixin mixin function
-   * @returns this class for method chaining
+   * @param {Function} mixin - mixin function
+   * @returns this class itself for method chaining
    */
   Base.use = function(mixin) {
-    mixin.call(Base);
+    mixin.call(Base.prototype);
     return Base;
   };
 
   /** build an instance as same as new Base()
    * @static
-   * @param {Object} opts option parameters
+   * @param {Object} opts - option parameters
    * @returns {Base} an instance
    */
   Base.build = function(opts) {
@@ -49,7 +49,7 @@ function inherit(parent) {
 
   /** get this class's default parameter value
    * @static
-   * @param {String} key parameter name
+   * @param {String} - key parameter name
    * @returns parameter value
    */
   Base.get = function(key) {
@@ -58,9 +58,9 @@ function inherit(parent) {
 
   /** set this class's default parameter value
    * @static
-   * @param {String} key parameter name
+   * @param {String} - key parameter name
    * @param val new value
-   * @returns this class for method chaining
+   * @returns this class itself for method chaining
    */
   Base.set = function(key, val) {
     Base.opts[key] = val;
@@ -96,7 +96,7 @@ function Root() {
 Root.opts = {};
 
 /** get a parameter value
- * @param {String} key parameter name
+ * @param {String} key - parameter name
  * @returns parameter value
  */
 Root.prototype.get = function(key) {
@@ -104,9 +104,9 @@ Root.prototype.get = function(key) {
 };
 
 /** set a parameter value
- * @param {String} key parameter name
- * @param val new parameter value
- * @returns this instance for method chaining
+ * @param {String} key - parameter name
+ * @param val - new parameter value
+ * @returns this instance itself for method chaining
  */
 Root.prototype.set = function(key, val) {
   this.opts[key] = val;

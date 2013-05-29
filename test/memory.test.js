@@ -41,7 +41,7 @@ describe('memory', function() {
     });
 
     it('read error', function(done) {
-      collection.read('bar', function(err, res) {
+      collection.read(id2, function(err, res) {
         assert.ok(err, 'read error detected');
         done();
       });
@@ -56,7 +56,7 @@ describe('memory', function() {
     });
 
     it('not-exist success', function(done) {
-      collection.exists('bar', function(err, res) {
+      collection.exists(id2, function(err, res) {
         assert(!err, 'not-exist OK');
         assert.ok(!res, 'not-exist bar');
         done();
@@ -81,7 +81,7 @@ describe('memory', function() {
     });
 
     it('remove error', function(done) {
-      collection.remove('bar', function(err) {
+      collection.remove(id2, function(err) {
         assert.ok(err, 'remove error detected');
         done();
       });

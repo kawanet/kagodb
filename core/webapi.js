@@ -2,11 +2,21 @@
 
 var express = require('express');
 
+/**
+ * @class WebapiMixin
+ * @mixin
+ */
+
 module.exports = function() {
-  this.prototype.webapi = mixin_webapi;
+  this.webapi = webapi
 };
 
-function mixin_webapi() {
+/** generate a Web API function for express.js
+ * @method WebapiMixin.prototype.webapi
+ * @returns {Function} a Web API function
+ */
+
+function webapi() {
   var collection = this;
   var f;
 

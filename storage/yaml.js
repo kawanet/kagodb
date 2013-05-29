@@ -7,10 +7,12 @@ module.exports = YAMLStore;
 
 function YAMLStore(opts) {
   if (!(this instanceof YAMLStore)) return new YAMLStore(opts);
-  this.opts = opts || {};
+  opts = opts || {};
+  this.folder(opts.path);
 };
 
 YAMLStore.prototype.path = path;
+YAMLStore.prototype.folder = folder;
 YAMLStore.prototype.read = read;
 YAMLStore.prototype.write = write;
 YAMLStore.prototype.remove = remove;
@@ -18,8 +20,12 @@ YAMLStore.prototype.exists = exists;
 YAMLStore.prototype.keys = keys;
 
 function path(id) {
-  var base = this.opts.path || 'data';
-  return base + '/' + id + '.yaml';
+  var folder = this.folder();
+  return folder + '/' + id + '.yaml';
+}
+
+function folder(path) {
+  return this._path = path || 'data';
 }
 
 function read(id, callback) {
@@ -55,7 +61,8 @@ function exists(id, callback) {
 
 function keys(callback) {
   callback = callback || NOP;
-  fs.readdir(this.opts.path, function(err, list) {
+  var folder = this.folder();
+  fs.readdir(folder, function(err, list) {
     if (err) {
       callback(err);
     } else {

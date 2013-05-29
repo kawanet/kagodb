@@ -4,7 +4,7 @@ module.exports = MemoryStore;
 
 function MemoryStore(opts) {
   if (!(this instanceof MemoryStore)) return new MemoryStore(opts);
-  this.opts = opts || {};
+  opts = opts || {};
   this.store = {};
 };
 

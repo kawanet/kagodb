@@ -6,6 +6,7 @@ var dbyaml = require('../index');
 describe('yaml', function() {
   var collection;
   var opts = {
+    storage: 'yaml',
     path: './data'
   };
   var rand = Math.floor(Math.random() * 900000) + 100000;
@@ -43,7 +44,7 @@ describe('yaml', function() {
     });
 
     it('read error', function(done) {
-      collection.read('bar', function(err, res) {
+      collection.read(id2, function(err, res) {
         assert.ok(err, 'read error detected');
         done();
       });
@@ -58,7 +59,7 @@ describe('yaml', function() {
     });
 
     it('not-exist success', function(done) {
-      collection.exists('bar', function(err, res) {
+      collection.exists(id2, function(err, res) {
         assert(!err, 'not-exist OK');
         assert.ok(!res, 'not-exist bar');
         done();
@@ -83,7 +84,7 @@ describe('yaml', function() {
     });
 
     it('remove error', function(done) {
-      collection.remove('bar', function(err) {
+      collection.remove(id2, function(err) {
         assert.ok(err, 'remove error detected');
         done();
       });
