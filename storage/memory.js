@@ -1,18 +1,18 @@
 /*! storage/memory.js */
 
-module.exports = MemoryStore;
+module.exports = StorageMemory;
 
-function MemoryStore(opts) {
-  if (!(this instanceof MemoryStore)) return new MemoryStore(opts);
-  opts = opts || {};
+function StorageMemory(options) {
+  if (!(this instanceof StorageMemory)) return new StorageMemory(options);
+  options = options || {};
   this.store = {};
 };
 
-MemoryStore.prototype.read = read;
-MemoryStore.prototype.write = write;
-MemoryStore.prototype.remove = remove;
-MemoryStore.prototype.exists = exists;
-MemoryStore.prototype.keys = keys;
+StorageMemory.prototype.read = read;
+StorageMemory.prototype.write = write;
+StorageMemory.prototype.remove = remove;
+StorageMemory.prototype.exists = exists;
+StorageMemory.prototype.keys = keys;
 
 function read(id, callback) {
   callback = callback || NOP;

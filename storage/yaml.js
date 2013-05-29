@@ -3,21 +3,21 @@
 var fs = require('fs');
 var jsyaml = require('js-yaml');
 
-module.exports = YAMLStore;
+module.exports = StorageYAML;
 
-function YAMLStore(opts) {
-  if (!(this instanceof YAMLStore)) return new YAMLStore(opts);
-  opts = opts || {};
-  this.folder(opts.path);
+function StorageYAML(options) {
+  if (!(this instanceof StorageYAML)) return new StorageYAML(options);
+  options = options || {};
+  this.folder(options.path);
 };
 
-YAMLStore.prototype.path = path;
-YAMLStore.prototype.folder = folder;
-YAMLStore.prototype.read = read;
-YAMLStore.prototype.write = write;
-YAMLStore.prototype.remove = remove;
-YAMLStore.prototype.exists = exists;
-YAMLStore.prototype.keys = keys;
+StorageYAML.prototype.path = path;
+StorageYAML.prototype.folder = folder;
+StorageYAML.prototype.read = read;
+StorageYAML.prototype.write = write;
+StorageYAML.prototype.remove = remove;
+StorageYAML.prototype.exists = exists;
+StorageYAML.prototype.keys = keys;
 
 function path(id) {
   var folder = this.folder();

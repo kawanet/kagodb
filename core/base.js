@@ -3,22 +3,22 @@
 function inherit(parent) {
   /** constructor
    * @class Base
-   * @param {Object} opts - option parameters
+   * @param {Object} options - option parameters
    */
 
-  function Base(opts) {
-    if (!(this instanceof Base)) return new Base(opts);
+  function Base(options) {
+    if (!(this instanceof Base)) return new Base(options);
     parent.call(this);
-    for (var key in Base.opts) {
-      this.set(key, Base.opts[key])
+    for (var key in Base.options) {
+      this.set(key, Base.options[key])
     }
-    for (var key in opts) {
-      this.set(key, opts[key])
+    for (var key in options) {
+      this.set(key, options[key])
     }
   }
 
   Base.prototype = wrap(parent.prototype);
-  Base.opts = copy(parent.opts);
+  Base.options = copy(parent.options);
 
   /** load a mixin
    * @static
@@ -32,11 +32,11 @@ function inherit(parent) {
 
   /** build an instance as same as new Base()
    * @static
-   * @param {Object} opts - option parameters
+   * @param {Object} options - option parameters
    * @returns {Base} an instance
    */
-  Base.build = function(opts) {
-    return new Base(opts);
+  Base.build = function(options) {
+    return new Base(options);
   };
 
   /** generate a sub class which inherits this class
@@ -53,7 +53,7 @@ function inherit(parent) {
    * @returns parameter value
    */
   Base.get = function(key) {
-    return Base.opts[key];
+    return Base.options[key];
   };
 
   /** set this class's default parameter value
@@ -63,7 +63,7 @@ function inherit(parent) {
    * @returns this class itself for method chaining
    */
   Base.set = function(key, val) {
-    Base.opts[key] = val;
+    Base.options[key] = val;
     return Base;
   };
 
@@ -89,18 +89,18 @@ function wrap(parent) {
  */
 
 function Root() {
-  if (!(this instanceof Root)) return new Root(opts);
-  this.opts = {};
+  if (!(this instanceof Root)) return new Root(options);
+  this.options = {};
 }
 
-Root.opts = {};
+Root.options = {};
 
 /** get a parameter value
  * @param {String} key - parameter name
  * @returns parameter value
  */
 Root.prototype.get = function(key) {
-  return this.opts[key];
+  return this.options[key];
 };
 
 /** set a parameter value
@@ -109,7 +109,7 @@ Root.prototype.get = function(key) {
  * @returns this instance itself for method chaining
  */
 Root.prototype.set = function(key, val) {
-  this.opts[key] = val;
+  this.options[key] = val;
   return this;
 };
 
