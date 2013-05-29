@@ -1,7 +1,7 @@
 {
-  "name": "db-yaml",
-  "version": "0.0.1",
-  "repository": "https://github.com/kawanet/db-yaml.git",
+  "name": "kagodb",
+  "version": "0.2.0",
+  "repository": "https://github.com/kawanet/kagodb.git",
   "dependencies": {
     "express": "*",
     "js-yaml": "*",

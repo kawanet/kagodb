@@ -1,16 +1,25 @@
-# db-yaml
+# KagoDB
 
-YAML file storage database engine library and RESTful API Web application
+Kago Database Engine
 
-## Author
+## Features
 
-@kawanet
+- NoSQL
+- Lightweight and extendable
+- Standalone and embeddable
+- YAML/JSON file based storage engines
+- Memory based volatile storage engine
+- RESTful API Web application ready for Express
+- More features!
 
-@mitsumitsu123
+## Authors
 
-## Licence
+- @kawanet
+- @mitsumitsu123
 
-Copyright 2013 @kawanet and @mitsumitsu123
+## MIT Licence
+
+Copyright 2013 @kawanet
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
