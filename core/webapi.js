@@ -29,8 +29,7 @@ function mixin_webapi() {
   return f;
 };
 
-function WebapiMethods() {
-}
+function WebapiMethods() {}
 
 WebapiMethods.prototype.read = function(req, res, collection, params) {
   collection.read(params.id, errorCheck(function(err, item) {
@@ -40,13 +39,17 @@ WebapiMethods.prototype.read = function(req, res, collection, params) {
 
 WebapiMethods.prototype.write = function(req, res, collection, params) {
   collection.write(params.id, params.content, errorCheck(function(err) {
-    res.json({success: true});
+    res.json({
+      success: true
+    });
   }));
 };
 
 WebapiMethods.prototype.remove = function(req, res, collection, params) {
   collection.remove(params.id, errorCheck(function(err) {
-    res.json({success: true});
+    res.json({
+      success: true
+    });
   }));
 };
 
@@ -55,7 +58,9 @@ WebapiMethods.prototype.exists = function(req, res, collection, params) {
     if (req.method.toLowerCase() === 'head') {
       res.send(exist ? 200 : 404);
     } else {
-      res.json({exist: exist});
+      res.json({
+        exist: exist
+      });
     }
   }));
 };
@@ -66,13 +71,17 @@ WebapiMethods.prototype.find = function(req, res, collection, params) {
   if (params.offset) cursor.offset(params.offset);
   if (params.sort) cursor.sort(params.sort);
   cursor.toArray(errorCheck(function(err, list) {
-    res.json({data: list});
+    res.json({
+      data: list
+    });
   }));
 };
 
 WebapiMethods.prototype.count = function(req, res, collection, params) {
   collection.count(params.condition, errorCheck(function(err, count) {
-    res.json({count: count});
+    res.json({
+      count: count
+    });
   }));
 };
 
@@ -83,26 +92,26 @@ function getParams(req) {
     var http_method = req.method.toLowerCase();
     params.id = req.params[0];
     switch (http_method) {
-    case 'get':
-      if (params.id) {
-        params.method = 'read';
-      } else {
-        params.method = 'find';
-      }
-      break;
+      case 'get':
+        if (params.id) {
+          params.method = 'read';
+        } else {
+          params.method = 'find';
+        }
+        break;
 
-    case 'put':
-      params.method = 'write';
-      params.content = req.body;
-      break;
+      case 'put':
+        params.method = 'write';
+        params.content = req.body;
+        break;
 
-    case 'delete':
-      params.method = 'remove';
-      break;
+      case 'delete':
+        params.method = 'remove';
+        break;
 
-    case 'head':
-      params.method = 'exists';
-      break;
+      case 'head':
+        params.method = 'exists';
+        break;
     }
   }
 
