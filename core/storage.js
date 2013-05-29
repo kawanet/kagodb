@@ -98,7 +98,8 @@ function storage(storage) {
     if (!storage) {
       throw new Error('storage not specified');
     }
-    if ('Function' != typeof storage) {
+    if ('function' != typeof storage) {
+      storage += '';
       if (storage.search(/^[\w\-\.]+$/) < 0) {
         throw new Error('invalid storage name: ' + storage);
       } else {
