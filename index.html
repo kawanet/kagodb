@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Kagodb by kawanet</title>
+    <title>KagoDB by kawanet</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -16,8 +16,8 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1 class="header">Kagodb</h1>
-        <p class="header"></p>
+        <h1 class="header">KagoDB</h1>
+        <p class="header">Kago Database Engine</p>
 
         <ul>
           <li class="download"><a class="buttons" href="https://github.com/kawanet/kagodb/zipball/master">Download ZIP</a></li>
@@ -40,12 +40,61 @@
 
 <ul>
 <li>NoSQL</li>
-<li>Lightweight and extendable</li>
+<li>Node.js client and server</li>
+<li>Minimal and extendable</li>
 <li>Standalone and embeddable</li>
 <li>YAML/JSON file based storage engines</li>
 <li>Memory based volatile storage engine</li>
-<li>RESTful API Web application ready for Express</li>
+<li>RESTful API Web application ready for Express.js</li>
 <li>More features!</li>
+</ul><h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a name="javascript-api" class="anchor" href="#javascript-api"><span class="octicon octicon-link"></span></a>JavaScript API</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">KagoDB</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kagodb'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">storage</span><span class="o">:</span> <span class="s1">'yaml'</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">'./data/'</span> <span class="p">};</span>
+<span class="kd">var</span> <span class="nx">collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">KagoDB</span><span class="p">(</span><span class="nx">opts</span><span class="p">);</span>
+<span class="nx">collection</span><span class="p">.</span><span class="nx">read</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">item</span><span class="p">.</span><span class="nx">updated_at</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">;</span>
+  <span class="nx">collection</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">collection</span><span class="p">.</span><span class="nx">find</span><span class="p">().</span><span class="nx">toArray</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">list</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">item</span><span class="p">));</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="web-api-server" class="anchor" href="#web-api-server"><span class="octicon octicon-link"></span></a>Web API Server</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'express'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">KagoDB</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kagodb'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">storage</span><span class="o">:</span> <span class="s1">'yaml'</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">'./data/'</span> <span class="p">};</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="s1">'/data/*'</span><span class="p">,</span> <span class="nx">KagoDB</span><span class="p">(</span><span class="nx">opts</span><span class="p">).</span><span class="nx">webapi</span><span class="p">());</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</pre></div>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight"><pre>npm install git://github.com/kawanet/kagodb.git
+</pre></div>
+
+<h2>
+<a name="links" class="anchor" href="#links"><span class="octicon octicon-link"></span></a>Links</h2>
+
+<ul>
+<li>Sources on GitHub - <a href="https://github.com/kawanet/kagodb">https://github.com/kawanet/kagodb</a>
+</li>
+<li>JavaScript API Documentation - <a href="http://kawanet.github.io/kagodb/docs/">http://kawanet.github.io/kagodb/docs/</a>
+</li>
 </ul><h2>
 <a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h2>
 
