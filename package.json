@@ -11,6 +11,7 @@
     "chai": "*",
     "grunt": "*",
     "grunt-mocha-test": "*",
-    "grunt-contrib-jshint": "*"
+    "grunt-contrib-jshint": "*",
+    "grunt-jsdoc": "*"
   }
 }
