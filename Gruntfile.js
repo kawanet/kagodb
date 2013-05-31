@@ -30,7 +30,7 @@ module.exports = function(grunt) {
     // https://github.com/krampstudio/grunt-jsdoc-plugin
     jsdoc: {
       dist: {
-        src: ['core/*.js', 'storage/*.js'],
+        src: ['core/*.js', 'storage/*.js', 'mixin/*.js'],
         options: {
           destination: 'gh-pages/docs'
         }
