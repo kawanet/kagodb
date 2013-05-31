@@ -57,6 +57,11 @@ Cursor.prototype.toArray = function(callback) {
     return;
   }
 
+  var sort = self.filters.sort;
+  var offset = self.filters.offset || 0;
+  var limit = self.filters.limit || 0;
+  var last = (offset >=0 && limit >= 1) ? offset + limit : 0;
+
   if (self._values) {
     done(self._values); // cache
   } else {
@@ -69,34 +74,47 @@ Cursor.prototype.toArray = function(callback) {
       each();
 
       function each(err, item) {
+        // error on read
         if (err) {
           callback(err);
           return;
         }
+
+        // test last item
         if (item) {
           if (!condition || condition(item)) {
             buf.push(item);
           }
         }
-        if (list.length) {
-          var id = list.shift();
-          self.collection.read(id, each);
-        } else {
+
+        // findOne() or find().limit()
+        if (last && buf.length >= last) {
           done(buf);
+          return;
         }
+
+        // no more items
+        if (!list.length) {
+          done(buf);
+          return;
+        }
+
+        // read next item
+        var id = list.shift();
+        self.collection.read(id, each);
       }
     });
   }
 
   function done(buf) {
-    if (self.filters.sort) {
-      buf = self.filters.sort(buf);
+    if (sort) {
+      buf = buf.sort(sort);
     }
-    if (self.filters.offset) {
-      buf = self.filters.offset(buf);
+    if (offset) {
+      buf = buf.splice(offset);
     }
-    if (self.filters.limit) {
-      buf = self.filters.limit(buf);
+    if (limit) {
+      buf = buf.splice(0, limit);
     }
     self._values = buf; // cache
     callback(null, buf);
@@ -146,9 +164,7 @@ Cursor.prototype.sort = function(param) {
       }
     }
   };
-  this.filters.sort = function(list) {
-    return list.sort(func);
-  };
+  this.filters.sort = func;
   return this;
 };
 
@@ -160,9 +176,7 @@ Cursor.prototype.sort = function(param) {
  */
 
 Cursor.prototype.offset = function(offset) {
-  this.filters.offset = function(list) {
-    return list.splice(offset);
-  };
+  this.filters.offset = offset;
   return this;
 };
 
@@ -174,9 +188,7 @@ Cursor.prototype.offset = function(offset) {
  */
 
 Cursor.prototype.limit = function(limit) {
-  this.filters.limit = function(list) {
-    return list.splice(0, limit);
-  };
+  this.filters.limit = limit;
   return this;
 };
 
