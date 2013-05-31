@@ -4,7 +4,7 @@ var utils = require('./utils');
 
 module.exports = Cursor;
 
-/** Create a Cursor instance via find() method instead of calling the constructor directly.
+/** Please create a Cursor instance via find() method instead of calling the constructor directly.
  * @class Cursor
  * @param {KagoDB} collection - source collection
  * @param {Function} [condition] - test function
@@ -16,7 +16,7 @@ function Cursor(collection, condition) {
   this.filters = {};
 }
 
-/** invokes a callback function with a list of keys for all items
+/** This invokes a callback function with a list of keys for all items
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
@@ -34,7 +34,7 @@ Cursor.prototype.keys = function(callback) {
   return this;
 };
 
-/** invokes a callback function with a list of items found
+/** This invokes a callback function with a list of items found
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -104,7 +104,7 @@ Cursor.prototype.toArray = function(callback) {
   return this;
 };
 
-/** invokes a callback function with the number of items found
+/** This invokes a callback function with the number of items found
  * @param {Function} callback - function(err, count) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -125,7 +125,7 @@ Cursor.prototype.count = function(callback) {
   return this;
 };
 
-/** specifies a sort parameters
+/** This specifies a sort parameters
  * @param {Object} param - sort parameters
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -151,7 +151,7 @@ Cursor.prototype.sort = function(param) {
   return this;
 };
 
-/** specifies a offset parameters
+/** This specifies a offset parameters
  * @param {Number} offset - offset parameter
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -165,7 +165,7 @@ Cursor.prototype.offset = function(offset) {
   return this;
 };
 
-/** specifies a limit parameters
+/** This specifies a limit parameters
  * @param {Number} limit - limit parameter
  * @returns {Cursor} instance itself for method chaining
  * @example

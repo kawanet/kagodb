@@ -1,4 +1,4 @@
-/*! storage/yaml.js */
+/*! yaml.js */
 
 var jsyaml = require('js-yaml');
 var utils = require('../core/utils')

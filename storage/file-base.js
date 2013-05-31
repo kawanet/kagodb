@@ -1,4 +1,4 @@
-/*! storage/file-base.js */
+/*! file-base.js */
 
 var fs = require('fs');
 

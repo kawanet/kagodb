@@ -1,4 +1,4 @@
-/*! storage/json.js */
+/*! json.js */
 
 var utils = require('../core/utils')
 var StorageFile = require('./file-base')

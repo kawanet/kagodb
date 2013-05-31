@@ -2,12 +2,12 @@
 
 var Cursor = require('../core/cursor');
 
-/**
+/** This mixin provides find() and count() methods.
  * @class FindMixin
  * @mixin
  */
 
-exports.exporter = function() {
+module.exports = function() {
   this.find = find;
   this.count = count;
 };

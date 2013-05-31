@@ -1,4 +1,4 @@
-/*! storage/memory.js */
+/*! memory.js */
 
 module.exports = StorageMemory;
 

@@ -1,13 +1,13 @@
-/*! core/webapi.js */
+/*! webapi.js */
 
 var express = require('express');
 
-/**
+/** This mixin provides webapi() method which gives a RESTful Web API feature for Express.js.
  * @class WebapiMixin
  * @mixin
  */
 
-exports.exporter = function() {
+module.exports = function() {
   this.webapi = webapi;
 };
 

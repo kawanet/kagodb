@@ -1,8 +1,11 @@
 /* condition.js */
 
-// overriding find() method
+/** This mixin overrides find() method to provide a function which tests conditions applied as an object.
+ * @class ConditionMixin
+ * @mixin
+ */
 
-exports.exporter = function() {
+module.exports = function() {
   var _find = this.find;
   if (!_find) {
     throw new Error('find() method not available');

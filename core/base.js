@@ -4,7 +4,7 @@ var utils = require('./utils');
 
 function inherit(parent) {
 
-  /** constructor
+  /** KagoDB class.
    * @class KagoDB
    * @param {Object} options - option parameters
    * @returns {KagoDB} an instance
@@ -25,21 +25,23 @@ function inherit(parent) {
 
   child.options = copy(parent.options);
 
-  /** load a mixin class which will export instance methods
-   * @method KagoDB.use
+  /** This loads a mixin class which will export instance methods.
+   * @method KagoDB.mixin
    * @param {Function} mixin - mixin class which has exporter() class method
    * @returns this class itself for method chaining
    * @example
+   * var MyMixin = require('mymixin');
+   * var KagoDB = require('kagodb');
    * var MyKago = KagoDB.inherit();
-   * MyKago.use(SomeMixin);
+   * MyKago.use(MyMixin);
    * var kago = new MyKago();
    */
-  child.use = function(mixin) {
-    mixin.exporter.call(child.prototype);
+  child.mixin = function(mixin) {
+    mixin.call(child.prototype);
     return child;
   };
 
-  /** builds an instance as same as new child(). It would be good for method chaining.
+  /** This builds an instance as same as new child(). It would be good for method chaining.
    * @method KagoDB.build
    * @param {Object} options - option parameters
    * @returns {KagoDB} an instance
@@ -50,17 +52,18 @@ function inherit(parent) {
     return new child(options);
   };
 
-  /** generates a sub class which inherits KagoDB class or its descendant
+  /** This generates a sub class which inherits KagoDB class or its descendant.
    * @method KagoDB.inherit
    * @returns a sub class
    * @example
-   * var MyClass = KagoDB.inherit();
+   * var MyKago = KagoDB.inherit();
+   * var kago = new MyKago();
    */
   child.inherit = function() {
     return inherit(child);
   };
 
-  /** gets a default parameter value for the class
+  /** This gets a default parameter value for the class.
    * @method KagoDB.get
    * @param {String} key - parameter name
    * @returns parameter value
@@ -72,7 +75,7 @@ function inherit(parent) {
     return opts[key];
   };
 
-  /** sets a default parameter value for the class
+  /** This sets a default parameter value for the class.
    * @method KagoDB.set
    * @param {String|Object} key - parameter name or a parameters object
    * @param {any} [val] - new value
@@ -100,7 +103,7 @@ function copy(parent) {
 
 function KagoDB() {}
 
-/** gets a parameter value for the instance parameters
+/** This gets a parameter value for the instance parameters.
  * @method KagoDB.prototype.get
  * @param {String} key - parameter name
  * @returns parameter value
@@ -113,7 +116,7 @@ KagoDB.prototype.get = function(key) {
   return opts[key];
 };
 
-/** sets a parameter value for the instance parameters
+/** This sets a parameter value for the instance parameters.
  * @method KagoDB.prototype.set
  * @param {String|Object} keys - parameter name or a parameters object
  * @param {any} [val] - new parameter value

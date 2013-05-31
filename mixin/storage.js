@@ -1,13 +1,13 @@
-/*! core/storage.js */
+/*! storage.js */
 
 var StorageBase = '../storage';
 
-/**
+/** This mixin provides storage() method as well as CRUD methods: write(), read(), remove(), exists(), keys().
  * @class StorageMixin
  * @mixin
  */
 
-exports.exporter = function() {
+module.exports = function() {
   this.read = read;
   this.write = write;
   this.remove = remove;
@@ -16,7 +16,7 @@ exports.exporter = function() {
   this.storage = storage;
 };
 
-/** reads an item
+/** This reads an item.
  * @method StorageMixin.prototype.read
  * @param {String} id - item ID
  * @param {Function} callback - function(err, item) {}
@@ -28,7 +28,7 @@ function read(id, callback) {
   return this;
 }
 
-/** writes an item
+/** This writes an item.
  * @method StorageMixin.prototype.write
  * @param {String} id - item ID
  * @param {Object} item - item content
@@ -41,7 +41,7 @@ function write(id, item, callback) {
   return this;
 }
 
-/** removes an item
+/** This removes an item.
  * @method StorageMixin.prototype.remove
  * @param {String} id - item ID
  * @param {Function} callback - function(err) {}
@@ -53,7 +53,7 @@ function remove(id, callback) {
   return this;
 }
 
-/** tests an item existance
+/** This tests an item existance.
  * @method StorageMixin.prototype.exists
  * @param {String} id - item ID
  * @param {Function} callback - function(err, exist) {}
@@ -65,7 +65,7 @@ function exists(id, callback) {
   return this;
 }
 
-/** lists a list of all item IDs
+/** This lists all item IDs in array.
  * @method StorageMixin.prototype.remove
  * @param {String} id - item ID
  * @param {Function} callback - function(err, list) {}
@@ -77,7 +77,7 @@ function keys(callback) {
   return this;
 }
 
-/** gets or sets a storage engine
+/** This gets or sets a storage engine.
  * @method StorageMixin.prototype.storage
  * @param {Function|String} [store] - storage class or storage name
  * @returns storage instance
