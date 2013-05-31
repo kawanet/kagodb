@@ -21,7 +21,7 @@ function inherit(parent) {
     this.set(options);
   }
 
-  utils.extend(parent, child);
+  utils.inherits(child, parent);
 
   child.options = copy(parent.options);
 

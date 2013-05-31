@@ -12,10 +12,10 @@ StorageFile.prototype.folder = function(path) {
 StorageFile.prototype.suffix = function(ext) {
   throw new Error('suffix() not implemented');
 };
-StorageFile.prototype.decode = function(source) {
+StorageFile.prototype.decode = function(source, callback) {
   throw new Error('decode() not implemented');
 };
-StorageFile.prototype.encode = function(item) {
+StorageFile.prototype.encode = function(item, callback) {
   throw new Error('encode() not implemented');
 };
 
@@ -39,16 +39,20 @@ StorageFile.prototype.read = function(id, callback) {
     if (err) {
       callback(err);
     } else {
-      var item = self.decode(content);
-      callback(null, item);
+      self.decode(content, callback);
     }
   });
 };
 
 StorageFile.prototype.write = function(id, item, callback) {
   var path = this.path(id);
-  var encoded = this.encode(item);
-  fs.writeFile(path, encoded, 'utf8', callback);
+  this.encode(item, function(err, encoded) {
+    if (err) {
+      callback(err);
+    } else {
+      fs.writeFile(path, encoded, 'utf8', callback);
+    }
+  });
 };
 
 StorageFile.prototype.remove = function(id, callback) {

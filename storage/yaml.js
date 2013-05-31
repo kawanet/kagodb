@@ -4,9 +4,10 @@ var jsyaml = require('js-yaml');
 var utils = require('../core/utils')
 var StorageFile = require('./file-base')
 
-module.exports = utils.extend(StorageFile, StorageYAML);
+module.exports = utils.inherits(StorageYAML, StorageFile);
 
 function StorageYAML(options) {
+  if ('function' == typeof this.__super__) this.__super__();
   options = options || {};
   if (options.path) {
     this.folder(options.path);
