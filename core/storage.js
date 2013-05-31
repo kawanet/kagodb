@@ -2,11 +2,6 @@
 
 var StorageBase = '../storage';
 
-var Storages = {
-  yaml: require('../storage/yaml'),
-  memory: require('../storage/memory')
-};
-
 /**
  * @class StorageMixin
  * @mixin

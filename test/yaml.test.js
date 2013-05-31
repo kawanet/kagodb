@@ -3,7 +3,7 @@
 var assert = require('chai').assert;
 var dbyaml = require('../index');
 
-describe('yaml', function() {
+describe('YAML Storage', function() {
   var collection;
   var opts = {
     storage: 'yaml',
@@ -22,15 +22,27 @@ describe('yaml', function() {
     collection = new dbyaml(opts);
   });
 
-  describe('#collection', function() {
-    it('write success', function(done) {
+  describe('CRUD', function() {
+    it('write', function(done) {
       collection.write(id1, item, function(err) {
         assert(!err, 'write OK');
         done();
       });
     });
 
-    it('read success', function(done) {
+    it('exist', function(done) {
+      collection.exists(id1, function(err, res) {
+        assert(!err, 'exist OK');
+        assert.ok(res, 'exist foo');
+        collection.exists(id2, function(err, res) {
+          assert(!err, 'not-exist OK');
+          assert.ok(!res, 'not-exist bar');
+          done();
+        });
+      });
+    });
+
+    it('read', function(done) {
       collection.read(id1, function(err, res) {
         // assert(!err, 'read OK');
         assert.isString(res.string, 'read string type');
@@ -39,34 +51,14 @@ describe('yaml', function() {
         assert.equal(res.string, item.string, 'read string content');
         assert.equal(res.decimal, item.decimal, 'read decimal content');
         assert.equal(res.numeric, item.numeric, 'read numeric content');
-        done();
+        collection.read(id2, function(err, res) {
+          assert.ok(err, 'read error detected');
+          done();
+        });
       });
     });
 
-    it('read error', function(done) {
-      collection.read(id2, function(err, res) {
-        assert.ok(err, 'read error detected');
-        done();
-      });
-    });
-
-    it('exist success', function(done) {
-      collection.exists(id1, function(err, res) {
-        assert(!err, 'exist OK');
-        assert.ok(res, 'exist foo');
-        done();
-      });
-    });
-
-    it('not-exist success', function(done) {
-      collection.exists(id2, function(err, res) {
-        assert(!err, 'not-exist OK');
-        assert.ok(!res, 'not-exist bar');
-        done();
-      });
-    });
-
-    it('find success', function(done) {
+    it('find', function(done) {
       collection.find({}).toArray(function(err, res) {
         assert(!err, 'find OK');
         assert.ok(res, 'find foo');
@@ -76,17 +68,17 @@ describe('yaml', function() {
       });
     });
 
-    it('remove success', function(done) {
+    it('remove', function(done) {
       collection.remove(id1, function(err) {
         assert(!err, 'remove OK');
-        done();
-      });
-    });
-
-    it('remove error', function(done) {
-      collection.remove(id2, function(err) {
-        assert.ok(err, 'remove error detected');
-        done();
+        collection.exists(id1, function(err, res) {
+          assert(!err, 'exist OK');
+          assert.ok(!res, 'not-exist foo');
+          collection.remove(id2, function(err) {
+            assert.ok(err, 'remove error detected');
+            done();
+          });
+        });
       });
     });
   });

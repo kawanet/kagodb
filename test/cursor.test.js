@@ -4,13 +4,13 @@ var assert = require('chai').assert;
 var dbyaml = require('../index');
 var async = require('async');
 
-describe('memory', function() {
+describe('Cursor', function() {
   var collection;
   var opts = {
     storage: 'memory'
   };
 
-  describe('#cursor', function() {
+  describe('Methods', function() {
     collection = new dbyaml(opts);
 
     var data = {
@@ -38,7 +38,7 @@ describe('memory', function() {
 
     var keys = Object.keys(data);
 
-    it('insert records', function(done) {
+    it('write()', function(done) {
       async.eachSeries(keys, each, end);
 
       function each(id, next) {
@@ -75,6 +75,22 @@ describe('memory', function() {
       });
     });
 
+    it('find().offset(2)', function(done) {
+      collection.find().offset(2).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, keys.length - 2, 'offset 2 length');
+        done();
+      });
+    });
+
+    it('find().offset(1000)', function(done) {
+      collection.find().offset(1000).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 0, 'offset 1000 length');
+        done();
+      });
+    });
+
     it('find().limit(2)', function(done) {
       collection.find().limit(2).toArray(function(err, list) {
         assert(!err, 'no error');
@@ -91,7 +107,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort string desc', function(done) {
+    it('find().sort() string asc', function(done) {
       var sort = {
         string: 1
       };
@@ -104,7 +120,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort string desc', function(done) {
+    it('find().sort() string desc', function(done) {
       var sort = {
         string: -1
       };
@@ -117,7 +133,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort decimal asc', function(done) {
+    it('find().sort() decimal asc', function(done) {
       var sort = {
         decimal: 1
       };
@@ -130,7 +146,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort decimal desc', function(done) {
+    it('find().sort() decimal desc', function(done) {
       var sort = {
         decimal: -1
       };
@@ -143,7 +159,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort numeric asc', function(done) {
+    it('find().sort() numeric asc', function(done) {
       var sort = {
         numeric: 1
       };
@@ -155,7 +171,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort multiple asc', function(done) {
+    it('find().sort() multiple asc', function(done) {
       var sort = {
         numeric: 1,
         decimal: 1,
@@ -172,7 +188,7 @@ describe('memory', function() {
       });
     });
 
-    it('sort multiple asc', function(done) {
+    it('find().sort() multiple asc', function(done) {
       var sort = {
         numeric: -1,
         decimal: -1,
