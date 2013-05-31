@@ -19,27 +19,30 @@ function parseConditoin(condition) {
   }
 
   var queries = Object.keys(condition);
+
+  // no condition: every item OK
   if (!queries.length) {
-    // no condition: every item OK
-    return function(item, next) {
-      next(true);
-    };
-  } else if (queries.length == 1) {
-    // one condition: faster
+    return null;
+  }
+
+  // one condition: faster
+  if (queries.length == 1) {
     var key = queries[0];
     var val = condition[key];
-    return function(item, next) {
-      next(item[key] == val);
-    };
-  } else {
-    // more conditions:
-    return function(item, next) {
-      for (var key in condition) {
-        if (item[key] != condition[key]) return next(false);
-      }
-      next(true);
-    };
+    if ('object' != typeof val) {
+      return function(item) {
+        return (item[key] == val);
+      };
+    }
   }
+
+  // more conditions:
+  return function(item) {
+    for (var key in condition) {
+      if (item[key] != condition[key]) return false;
+    }
+    return true;
+  };
 }
 
 /**
@@ -135,47 +138,52 @@ Cursor.prototype.keys = function(callback) {
 Cursor.prototype.toArray = function(callback) {
   var self = this;
   callback = callback || NOP;
+
   if (self._values) {
-    callback(null, self._values);
+    done(self._values); // cache
   } else {
     self.keys(function(err, list) {
       var buf = [];
       if (err) {
         callback(err);
-      } else {
-        utils.eachSeries(list, each, end);
+        return;
       }
+      each();
 
-      function each(id, next) {
-        self.collection.read(id, function(err, item) {
-          if (err) {
-            next(err);
-          } else {
-            self.condition(item, function(hit) {
-              if (hit) {
-                buf.push(item);
-              }
-              next();
-            });
+      function each(err, item) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        if (item) {
+          if (!self.condition || self.condition(item)) {
+            buf.push(item);
           }
-        });
-      }
-
-      function end(err) {
-        if (self.filters.sort) {
-          buf = self.filters.sort(buf);
         }
-        if (self.filters.offset) {
-          buf = self.filters.offset(buf);
+        if (list.length) {
+          var id = list.shift();
+          self.collection.read(id, each);
+        } else {
+          done(buf);
         }
-        if (self.filters.limit) {
-          buf = self.filters.limit(buf);
-        }
-
-        callback(err, self._values = buf);
       }
     });
   }
+
+  function done(buf) {
+    if (self.filters.sort) {
+      buf = self.filters.sort(buf);
+    }
+    if (self.filters.offset) {
+      buf = self.filters.offset(buf);
+    }
+    if (self.filters.limit) {
+      buf = self.filters.limit(buf);
+    }
+    self._values = buf; // cache
+    callback(null, buf);
+  }
+
   return this;
 };
 

@@ -285,8 +285,8 @@ describe('Cursor', function() {
     });
 
     it('find(Function)', function(done) {
-      var cond = function(item, next) {
-        next(item.string == 'FOO');
+      var cond = function(item) {
+        return (item.string == 'FOO');
       };
       collection.find(cond).toArray(function(err, list) {
         assert(!err, 'no error');
