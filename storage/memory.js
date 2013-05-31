@@ -18,26 +18,29 @@ StorageMemory.prototype.keys = keys;
 
 function read(id, callback) {
   callback = callback || NOP;
-  var store = Stores[this.options.namespace] || (Stores[this.options.namespace] = {});
+  var ns = this.options.namespace;
+  var store = Stores[ns] || (Stores[ns] = {});
   if (store.hasOwnProperty(id)) {
     var item = store[id];
     callback(null, item);
   } else {
     var err = new Error('Item not found');
-    callback(err);
+    callback(err, null);
   }
 }
 
 function write(id, item, callback) {
   callback = callback || NOP;
-  var store = Stores[this.options.namespace] || (Stores[this.options.namespace] = {});
+  var ns = this.options.namespace;
+  var store = Stores[ns] || (Stores[ns] = {});
   store[id] = item;
   callback();
 }
 
 function remove(id, callback) {
   callback = callback || NOP;
-  var store = Stores[this.options.namespace] || (Stores[this.options.namespace] = {});
+  var ns = this.options.namespace;
+  var store = Stores[ns] || (Stores[ns] = {});
   if (store.hasOwnProperty(id)) {
     delete store[id];
     callback();
@@ -49,14 +52,16 @@ function remove(id, callback) {
 
 function exists(id, callback) {
   callback = callback || NOP;
-  var store = Stores[this.options.namespace] || (Stores[this.options.namespace] = {});
+  var ns = this.options.namespace;
+  var store = Stores[ns] || (Stores[ns] = {});
   var exist = store.hasOwnProperty(id);
   callback(null, exist);
 }
 
 function keys(callback) {
   callback = callback || NOP;
-  var store = Stores[this.options.namespace] || (Stores[this.options.namespace] = {});
+  var ns = this.options.namespace;
+  var store = Stores[ns] || (Stores[ns] = {});
   var list = Object.keys(store);
   callback(null, list);
 }

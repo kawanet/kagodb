@@ -1,7 +1,7 @@
 /*! cursor.test.js */
 
 var assert = require('chai').assert;
-var dbyaml = require('../index');
+var KagoDB = require('../index');
 var async = require('async');
 
 describe('Cursor', function() {
@@ -11,7 +11,7 @@ describe('Cursor', function() {
   };
 
   describe('Methods', function() {
-    collection = new dbyaml(opts);
+    collection = new KagoDB(opts);
 
     var data = {
       foo: {

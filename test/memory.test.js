@@ -1,7 +1,7 @@
 /*! memory.test.js */
 
 var assert = require('chai').assert;
-var dbyaml = require('../index');
+var KagoDB = require('../index');
 
 describe('Memory Storage', function() {
   var collection;
@@ -18,7 +18,7 @@ describe('Memory Storage', function() {
   };
 
   beforeEach(function() {
-    collection = new dbyaml(opts);
+    collection = new KagoDB(opts);
   });
 
   describe('CRUD', function() {
@@ -91,8 +91,8 @@ describe('Memory Storage', function() {
       storage: 'memory',
       namespace: 'bar'
     };
-    var col1 = new dbyaml(opts1);
-    var col2 = new dbyaml(opts2);
+    var col1 = new KagoDB(opts1);
+    var col2 = new KagoDB(opts2);
 
     it('write A and read B', function(done) {
       col1.write(id1, item, function(err) {

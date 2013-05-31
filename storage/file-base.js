@@ -46,7 +46,9 @@ StorageFile.prototype.read = function(id, callback) {
     if (err) {
       callback(err);
     } else {
-      self.decode(content, callback);
+      self.decode(content, function(err, item) {
+        callback(err, item);
+      });
     }
   });
 };
@@ -57,19 +59,23 @@ StorageFile.prototype.write = function(id, item, callback) {
     if (err) {
       callback(err);
     } else {
-      fs.writeFile(path, encoded, 'utf8', callback);
+      fs.writeFile(path, encoded, 'utf8', function(err) {
+        callback(err);
+      });
     }
   });
 };
 
 StorageFile.prototype.remove = function(id, callback) {
   var path = this.path(id);
-  fs.unlink(path, callback);
+  fs.unlink(path, function(err) {
+    callback(err);
+  });
 };
 
 StorageFile.prototype.exists = function(id, callback) {
-  var file = this.path(id);
-  fs.stat(file, function(err, stat) {
+  var path = this.path(id);
+  fs.stat(path, function(err, stat) {
     callback(null, !! stat);
   });
 };
@@ -94,6 +100,5 @@ StorageFile.prototype.keys = function(callback) {
     }
   });
 };
-
 
 function NOP() {}

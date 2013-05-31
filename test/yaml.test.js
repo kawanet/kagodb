@@ -1,7 +1,8 @@
 /*! yaml.test.js */
 
 var assert = require('chai').assert;
-var dbyaml = require('../index');
+var fs = require('fs');
+var KagoDB = require('../index');
 
 describe('YAML Storage', function() {
   var collection;
@@ -18,8 +19,11 @@ describe('YAML Storage', function() {
     numeric: 45.67
   };
 
+  var path1 = opts.path + '/' + id1 + '.' + opts.storage;
+  var path2 = opts.path + '/' + id2 + '.' + opts.storage;
+
   beforeEach(function() {
-    collection = new dbyaml(opts);
+    collection = new KagoDB(opts);
   });
 
   describe('CRUD', function() {
@@ -37,7 +41,14 @@ describe('YAML Storage', function() {
         collection.exists(id2, function(err, res) {
           assert(!err, 'not-exist OK');
           assert.ok(!res, 'not-exist bar');
-          done();
+
+          fs.stat(path1, function(err, stat) {
+            assert(!err, 'file 1 exists');
+            fs.stat(path2, function(err, stat) {
+              assert(err, 'file 2 not exists');
+              done();
+            });
+          });
         });
       });
     });
@@ -76,7 +87,14 @@ describe('YAML Storage', function() {
           assert.ok(!res, 'not-exist foo');
           collection.remove(id2, function(err) {
             assert.ok(err, 'remove error detected');
-            done();
+
+            fs.stat(path1, function(err, stat) {
+              assert(err, 'file 1 exists');
+              fs.stat(path2, function(err, stat) {
+                assert(err, 'file 2 not exists');
+                done();
+              });
+            });
           });
         });
       });
