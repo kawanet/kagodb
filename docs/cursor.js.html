@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: cursor.js</title>
+    <title>JSDoc: Source: core/cursor.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: cursor.js</h1>
+    <h1 class="page-title">Source: core/cursor.js</h1>
     
     
 
@@ -25,64 +25,16 @@
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>/*! core/cursor.js */
+            <pre class="prettyprint source"><code>/*! cursor.js */
 
-var async = require('async');
+var utils = require('./utils');
 
 module.exports = Cursor;
 
-/**
- * @class CursorMixin
- * @mixin
- */
-
-Cursor.exporter = function() {
-  this.find = find;
-  this.count = count;
-};
-
-/** creates a cursor with condition applied
- * @method CursorMixin.prototype.find
- * @param condition - query parameter
- * @param {Function} callback - function(err, cursor) {}
- * @returns {Cursor} cursor
- * @example
- * collection.find().toArray(function(err, list) {
- *   list.forEach(function(item) {
- *     console.log(item);
- *   });
- * });
- */
-
-function find(condition, callback) {
-  callback = callback || NOP;
-  var cursor = new Cursor(this, condition);
-  callback(null, cursor);
-  return cursor;
-}
-
-/** counts number of items matched with condition
- * @method CursorMixin.prototype.count
- * @param condition - query parameter
- * @param {Function} callback - function(err, cursor) {}
- * @returns collection instance itself for method chaining
- * @example
- * collection.find().count(function(err, count) {
- *   console.log(count);
- * });
- */
-
-function count(condition, callback) {
-  callback = callback || NOP;
-  var cursor = this.find(condition);
-  cursor.count(callback);
-  return this;
-}
-
-/**
+/** Please create a Cursor instance via find() method instead of calling the constructor directly.
  * @class Cursor
- * @param collection
- * @param condition
+ * @param {KagoDB} collection - source collection
+ * @param {Function} [condition] - test function
  */
 
 function Cursor(collection, condition) {
@@ -91,7 +43,7 @@ function Cursor(collection, condition) {
   this.filters = {};
 }
 
-/** invokes a callback function with a list of keys for all items
+/** This invokes a callback function with a list of keys for all items
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
@@ -109,7 +61,7 @@ Cursor.prototype.keys = function(callback) {
   return this;
 };
 
-/** invokes a callback function with a list of items found
+/** This invokes a callback function with a list of items found
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -123,43 +75,63 @@ Cursor.prototype.keys = function(callback) {
 Cursor.prototype.toArray = function(callback) {
   var self = this;
   callback = callback || NOP;
+
+  var condition = this.condition;
+  if (condition && 'function' != typeof condition) {
+    var err = new Error('invalid condition: ' + condition);
+    callback(err);
+    return;
+  }
+
   if (self._values) {
-    callback(null, self._values);
+    done(self._values); // cache
   } else {
     self.keys(function(err, list) {
       var buf = [];
       if (err) {
         callback(err);
-      } else {
-        async.eachSeries(list, each, end);
+        return;
       }
+      each();
 
-      function each(id, next) {
-        self.collection.read(id, function(err, item) {
-          buf.push(item);
-          next(err);
-        });
-      }
-
-      function end(err) {
-        if (self.filters.sort) {
-          buf = self.filters.sort(buf);
+      function each(err, item) {
+        if (err) {
+          callback(err);
+          return;
         }
-        if (self.filters.offset) {
-          buf = self.filters.offset(buf);
+        if (item) {
+          if (!condition || condition(item)) {
+            buf.push(item);
+          }
         }
-        if (self.filters.limit) {
-          buf = self.filters.limit(buf);
+        if (list.length) {
+          var id = list.shift();
+          self.collection.read(id, each);
+        } else {
+          done(buf);
         }
-
-        callback(err, self._values = buf);
       }
     });
   }
+
+  function done(buf) {
+    if (self.filters.sort) {
+      buf = self.filters.sort(buf);
+    }
+    if (self.filters.offset) {
+      buf = self.filters.offset(buf);
+    }
+    if (self.filters.limit) {
+      buf = self.filters.limit(buf);
+    }
+    self._values = buf; // cache
+    callback(null, buf);
+  }
+
   return this;
 };
 
-/** invokes a callback function with the number of items found
+/** This invokes a callback function with the number of items found
  * @param {Function} callback - function(err, count) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -180,7 +152,7 @@ Cursor.prototype.count = function(callback) {
   return this;
 };
 
-/** specifies a sort parameters
+/** This specifies a sort parameters
  * @param {Object} param - sort parameters
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -206,7 +178,7 @@ Cursor.prototype.sort = function(param) {
   return this;
 };
 
-/** specifies a offset parameters
+/** This specifies a offset parameters
  * @param {Number} offset - offset parameter
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -220,7 +192,7 @@ Cursor.prototype.offset = function(offset) {
   return this;
 };
 
-/** specifies a limit parameters
+/** This specifies a limit parameters
  * @param {Number} limit - limit parameter
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -244,13 +216,13 @@ function NOP() {}</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li></ul><h3>Mixins</h3><ul><li><a href="CursorMixin.html">CursorMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="ConditionMixin.html">ConditionMixin</a></li><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri May 31 2013 00:04:50 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri May 31 2013 22:09:48 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -47,7 +47,7 @@
     
     
     <div class="description">
-        constructor
+        KagoDB class.
     </div>
     
 
@@ -128,7 +128,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 7
+        <a href="base.js.html">core/base.js</a>, line 7
     </li></ul></dd>
     
     
@@ -206,7 +206,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     
     <div class="description">
-        builds an instance as same as new child(). It would be good for method chaining.
+        This builds an instance as same as new child(). It would be good for method chaining.
     </div>
     
 
@@ -287,7 +287,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 42
+        <a href="base.js.html">core/base.js</a>, line 44
     </li></ul></dd>
     
     
@@ -346,7 +346,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     
     <div class="description">
-        gets a default parameter value for the class
+        This gets a default parameter value for the class.
     </div>
     
 
@@ -427,7 +427,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 63
+        <a href="base.js.html">core/base.js</a>, line 66
     </li></ul></dd>
     
     
@@ -474,7 +474,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     
     <div class="description">
-        generates a sub class which inherits KagoDB class or its descendant
+        This generates a sub class which inherits KagoDB class or its descendant.
     </div>
     
 
@@ -507,7 +507,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 53
+        <a href="base.js.html">core/base.js</a>, line 55
     </li></ul></dd>
     
     
@@ -538,7 +538,140 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>var MyClass = KagoDB.inherit();</code></pre>
+    <pre class="prettyprint"><code>var MyKago = KagoDB.inherit();
+var kago = new MyKago();</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="mixin"><span class="type-signature">&lt;static> </span>mixin<span class="signature">(mixin)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This loads a mixin class which will export instance methods.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mixin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mixin class which has exporter() class method</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="base.js.html">core/base.js</a>, line 28
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    this class itself for method chaining
+</div>
+
+
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>var MyMixin = require('mymixin');
+var KagoDB = require('kagodb');
+var MyKago = KagoDB.inherit();
+MyKago.use(MyMixin);
+var kago = new MyKago();</code></pre>
 
     
 </dd>
@@ -554,7 +687,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     
     <div class="description">
-        sets a default parameter value for the class
+        This sets a default parameter value for the class.
     </div>
     
 
@@ -681,7 +814,7 @@ var kago2 = KagoDB(options); // same as above</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 75
+        <a href="base.js.html">core/base.js</a>, line 78
     </li></ul></dd>
     
     
@@ -721,136 +854,6 @@ KagoDB.set({'storage': 'yaml'});</code></pre>
         
             
 <dt>
-    <h4 class="name" id="use"><span class="type-signature">&lt;static> </span>use<span class="signature">(mixin)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        load a mixin class which will export instance methods
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>mixin</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Function</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">mixin class which has exporter() class method</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 28
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    this class itself for method chaining
-</div>
-
-
-
-        
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="prettyprint"><code>var MyKago = KagoDB.inherit();
-MyKago.use(SomeMixin);
-var kago = new MyKago();</code></pre>
-
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="get"><span class="type-signature"></span>get<span class="signature">(key)</span><span class="type-signature"></span></h4>
     
     
@@ -859,7 +862,7 @@ var kago = new MyKago();</code></pre>
     
     
     <div class="description">
-        gets a parameter value for the instance parameters
+        This gets a parameter value for the instance parameters.
     </div>
     
 
@@ -940,7 +943,7 @@ var kago = new MyKago();</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 103
+        <a href="base.js.html">core/base.js</a>, line 106
     </li></ul></dd>
     
     
@@ -988,7 +991,7 @@ var path = kago.get('path');</code></pre>
     
     
     <div class="description">
-        sets a parameter value for the instance parameters
+        This sets a parameter value for the instance parameters.
     </div>
     
 
@@ -1115,7 +1118,7 @@ var path = kago.get('path');</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base.js.html">base.js</a>, line 116
+        <a href="base.js.html">core/base.js</a>, line 119
     </li></ul></dd>
     
     
@@ -1169,13 +1172,13 @@ kago.set({'storage': 'yaml'});</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li></ul><h3>Mixins</h3><ul><li><a href="CursorMixin.html">CursorMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="ConditionMixin.html">ConditionMixin</a></li><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri May 31 2013 00:04:51 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri May 31 2013 22:09:48 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>
