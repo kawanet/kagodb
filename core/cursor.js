@@ -1,6 +1,6 @@
 /*! core/cursor.js */
 
-var async = require('async');
+var utils = require('./utils');
 
 module.exports = Cursor;
 
@@ -16,7 +16,7 @@ Cursor.exporter = function() {
 
 /** creates a cursor with condition applied
  * @method CursorMixin.prototype.find
- * @param condition - query parameter
+ * @param condition - query parameters
  * @param {Function} callback - function(err, cursor) {}
  * @returns {Cursor} cursor
  * @example
@@ -36,7 +36,7 @@ function find(condition, callback) {
 
 /** counts number of items matched with condition
  * @method CursorMixin.prototype.count
- * @param condition - query parameter
+ * @param condition - query parameters
  * @param {Function} callback - function(err, cursor) {}
  * @returns collection instance itself for method chaining
  * @example
@@ -104,7 +104,7 @@ Cursor.prototype.toArray = function(callback) {
       if (err) {
         callback(err);
       } else {
-        async.eachSeries(list, each, end);
+        utils.eachSeries(list, each, end);
       }
 
       function each(id, next) {
