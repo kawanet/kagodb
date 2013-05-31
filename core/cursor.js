@@ -4,47 +4,6 @@ var utils = require('./utils');
 
 module.exports = Cursor;
 
-function parseConditoin(condition) {
-  // function type
-  if ('function' == typeof condition) {
-    return condition;
-  }
-
-  // default condition
-  condition = condition || {};
-
-  // other types than object
-  if ('object' != typeof condition) {
-    throw new Error('unknown condition: ' + condition);
-  }
-
-  var queries = Object.keys(condition);
-
-  // no condition: every item OK
-  if (!queries.length) {
-    return null;
-  }
-
-  // one condition: faster
-  if (queries.length == 1) {
-    var key = queries[0];
-    var val = condition[key];
-    if ('object' != typeof val) {
-      return function(item) {
-        return (item[key] == val);
-      };
-    }
-  }
-
-  // more conditions:
-  return function(item) {
-    for (var key in condition) {
-      if (item[key] != condition[key]) return false;
-    }
-    return true;
-  };
-}
-
 /**
  * @class CursorMixin
  * @mixin
@@ -70,8 +29,7 @@ Cursor.exporter = function() {
 
 function find(condition, callback) {
   callback = callback || NOP;
-  var func = parseConditoin(condition);
-  var cursor = new Cursor(this, func);
+  var cursor = new Cursor(this, condition);
   callback(null, cursor);
   return cursor;
 }
@@ -139,6 +97,13 @@ Cursor.prototype.toArray = function(callback) {
   var self = this;
   callback = callback || NOP;
 
+  var condition = this.condition;
+  if (condition && 'function' != typeof condition) {
+    var err = new Error('invalid condition: ' + condition);
+    callback(err);
+    return;
+  }
+
   if (self._values) {
     done(self._values); // cache
   } else {
@@ -156,7 +121,7 @@ Cursor.prototype.toArray = function(callback) {
           return;
         }
         if (item) {
-          if (!self.condition || self.condition(item)) {
+          if (!condition || condition(item)) {
             buf.push(item);
           }
         }
