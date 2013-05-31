@@ -4,6 +4,44 @@ var utils = require('./utils');
 
 module.exports = Cursor;
 
+function parseConditoin(condition) {
+  // function type
+  if ('function' == typeof condition) {
+    return condition;
+  }
+
+  // default condition
+  condition = condition || {};
+
+  // other types than object
+  if ('object' != typeof condition) {
+    throw new Error('unknown condition: ' + condition);
+  }
+
+  var queries = Object.keys(condition);
+  if (!queries.length) {
+    // no condition: every item OK
+    return function(item, next) {
+      next(true);
+    };
+  } else if (queries.length == 1) {
+    // one condition: faster
+    var key = queries[0];
+    var val = condition[key];
+    return function(item, next) {
+      next(item[key] == val);
+    };
+  } else {
+    // more conditions:
+    return function(item, next) {
+      for (var key in condition) {
+        if (item[key] != condition[key]) return next(false);
+      }
+      next(true);
+    };
+  }
+}
+
 /**
  * @class CursorMixin
  * @mixin
@@ -29,7 +67,8 @@ Cursor.exporter = function() {
 
 function find(condition, callback) {
   callback = callback || NOP;
-  var cursor = new Cursor(this, condition);
+  var func = parseConditoin(condition);
+  var cursor = new Cursor(this, func);
   callback(null, cursor);
   return cursor;
 }
@@ -109,8 +148,16 @@ Cursor.prototype.toArray = function(callback) {
 
       function each(id, next) {
         self.collection.read(id, function(err, item) {
-          buf.push(item);
-          next(err);
+          if (err) {
+            next(err);
+          } else {
+            self.condition(item, function(hit) {
+              if (hit) {
+                buf.push(item);
+              }
+              next();
+            });
+          }
         });
       }
 

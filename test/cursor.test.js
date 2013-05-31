@@ -204,5 +204,96 @@ describe('Cursor', function() {
         done();
       });
     });
+
+    it('find({})', function(done) {
+      var cond = {};
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, keys.length, 'all ok');
+        done();
+      });
+    });
+
+    it('find({string: "FOO"})', function(done) {
+      var cond = {
+        string: "FOO"
+      };
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 1, 'FOO count');
+        assert.equal(list[0].string, 'FOO', 'FOO string');
+        done();
+      });
+    });
+
+    it('find({decimal: 123})', function(done) {
+      var cond = {
+        decimal: 123
+      };
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 2, '123 count');
+        assert.equal(list[0].decimal, 123, '123 decimal 0');
+        assert.equal(list[1].decimal, 123, '123 decimal 1');
+        done();
+      });
+    });
+
+    it('find({numeric: 45.67})', function(done) {
+      var cond = {
+        numeric: 45.67
+      };
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 3, '45.67 count');
+        assert.equal(list[0].numeric, 45.67, '45.67 numeric 0');
+        assert.equal(list[1].numeric, 45.67, '45.67 numeric 1');
+        assert.equal(list[2].numeric, 45.67, '45.67 numeric 2');
+        done();
+      });
+    });
+
+    it('find(double)', function(done) {
+      var cond = {
+        decimal: 123,
+        numeric: 45.67
+      };
+      var sort = {
+        string: 1
+      };
+      collection.find(cond).sort(sort).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 2, 'count');
+        assert.equal(list[0].string, 'FOO', 'string FOO-QUX');
+        assert.equal(list[1].string, 'QUX', 'string FOO-QUX');
+        done();
+      });
+    });
+
+    it('find(triple)', function(done) {
+      var cond = {
+        string: "BAZ",
+        decimal: 999,
+        numeric: 11.11
+      };
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 1, 'count');
+        assert.equal(list[0].string, 'BAZ', 'string');
+        done();
+      });
+    });
+
+    it('find(Function)', function(done) {
+      var cond = function(item, next) {
+        next(item.string == 'FOO');
+      };
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'no error');
+        assert.equal(list.length, 1, 'FOO count');
+        assert.equal(list[0].string, 'FOO', 'FOO string');
+        done();
+      });
+    });
   });
 });
