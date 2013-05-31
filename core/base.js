@@ -9,8 +9,8 @@ function inherit(parent) {
    * @param {Object} options - option parameters for the instance
    * @returns {KagoDB} an instance
    * @example
-   * var kago = new KagoDB(options);
-   * var kago2 = KagoDB(options); // same as above
+   * var collection = new KagoDB(options);
+   * var collection2 = KagoDB(options); // same as above
    */
 
   // note that the below doesn't call super classes' constructors.
@@ -34,7 +34,7 @@ function inherit(parent) {
    * var KagoDB = require('kagodb');
    * var MyKago = KagoDB.inherit();
    * MyKago.use(MyMixin);
-   * var kago = new MyKago();
+   * var collection = new MyKago();
    */
   child.mixin = function(mixin) {
     mixin.call(child.prototype);
@@ -46,7 +46,7 @@ function inherit(parent) {
    * @param {Object} options - option parameters
    * @returns {KagoDB} an instance
    * @example
-   * var kago = KagoDB.build(options);
+   * var collection = KagoDB.build(options);
    */
   child.build = function(options) {
     return new child(options);
@@ -57,7 +57,7 @@ function inherit(parent) {
    * @returns a sub class
    * @example
    * var MyKago = KagoDB.inherit();
-   * var kago = new MyKago();
+   * var collection = new MyKago();
    */
   child.inherit = function() {
     return inherit(child);
@@ -108,8 +108,8 @@ function KagoDB() {}
  * @param {String} key - parameter name
  * @returns parameter value
  * @example
- * var kago = new KagoDB({path: 'data'});
- * var path = kago.get('path');
+ * var collection = new KagoDB({path: 'data'});
+ * var path = collection.get('path');
  */
 KagoDB.prototype.get = function(key) {
   var opts = this.options || (this.options = {});
@@ -122,9 +122,9 @@ KagoDB.prototype.get = function(key) {
  * @param {any} [val] - new parameter value
  * @returns this instance itself for method chaining
  * @example
- * var kago = new KagoDB();
- * kago.set('path', 'data');
- * kago.set({'storage': 'yaml'});
+ * var collection = new KagoDB();
+ * collection.set('path', 'data');
+ * collection.set({'storage': 'yaml'});
  */
 KagoDB.prototype.set = function(key, val) {
   var opts = this.options || (this.options = {});

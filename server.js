@@ -1,14 +1,15 @@
 /*! server.js */
 
 var express = require('express');
-var dbyaml = require('./index');
+var KagoDB = require('./index');
 
 var app = express();
 
 var opts = {
+  storage: 'yaml',
   path: 'data'
 };
 
-app.all('/data/*', dbyaml(opts).webapi());
+app.all('/data/*', KagoDB(opts).webapi());
 
 app.listen(3000);
