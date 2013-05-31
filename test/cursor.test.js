@@ -46,14 +46,14 @@ describe('Cursor', function() {
       }
 
       function end(err) {
-        assert(!err, 'no error');
+        assert(!err, err);
         done();
       }
     });
 
     it('find().count()', function(done) {
       collection.find().count(function(err, count) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(count, keys.length, 'count number');
         done();
       });
@@ -61,7 +61,7 @@ describe('Cursor', function() {
 
     it('count()', function(done) {
       collection.count(null, function(err, count) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(count, keys.length, 'count number');
         done();
       });
@@ -69,7 +69,7 @@ describe('Cursor', function() {
 
     it('find().toArray()', function(done) {
       collection.find().toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         done();
       });
@@ -77,7 +77,7 @@ describe('Cursor', function() {
 
     it('find().offset(2)', function(done) {
       collection.find().offset(2).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length - 2, 'offset 2 length');
         done();
       });
@@ -85,7 +85,7 @@ describe('Cursor', function() {
 
     it('find().offset(1000)', function(done) {
       collection.find().offset(1000).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, 0, 'offset 1000 length');
         done();
       });
@@ -93,7 +93,7 @@ describe('Cursor', function() {
 
     it('find().limit(2)', function(done) {
       collection.find().limit(2).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, 2, 'limit 2 length');
         done();
       });
@@ -101,7 +101,7 @@ describe('Cursor', function() {
 
     it('find().limit(1000)', function(done) {
       collection.find().limit(1000).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'limit 1000 length');
         done();
       });
@@ -112,7 +112,7 @@ describe('Cursor', function() {
         string: 1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'BAR', 'BAR/BAZ/FOO/QUX #0');
         assert.equal(list[3].string, 'QUX', 'BAR/BAZ/FOO/QUX #3');
@@ -125,7 +125,7 @@ describe('Cursor', function() {
         string: -1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'QUX', 'QUX/FOO/BAZ/BAR #0');
         assert.equal(list[3].string, 'BAR', 'QUX/FOO/BAZ/BAR #3');
@@ -138,7 +138,7 @@ describe('Cursor', function() {
         decimal: 1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'BAR', 'BAR/FOO/QUX/BAZ #0');
         assert.equal(list[3].string, 'BAZ', 'BAR/FOO/QUX/BAZ #3');
@@ -151,7 +151,7 @@ describe('Cursor', function() {
         decimal: -1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ/QUX/FOO/BAR #0');
         assert.equal(list[3].string, 'BAR', 'BAZ/QUX/FOO/BAR #3');
@@ -164,7 +164,7 @@ describe('Cursor', function() {
         numeric: 1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ/---/---/--- #0');
         done();
@@ -178,7 +178,7 @@ describe('Cursor', function() {
         string: 1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ-BAR-FOO-QUX #0');
         assert.equal(list[1].string, 'BAR', 'BAZ-BAR-FOO-QUX #1');
@@ -195,7 +195,7 @@ describe('Cursor', function() {
         string: -1
       };
       collection.find().sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, err);
         assert.equal(list.length, keys.length, 'find length');
         assert.equal(list[0].string, 'QUX', 'QUX-FOO-BAR-BAZ #0');
         assert.equal(list[1].string, 'FOO', 'QUX-FOO-BAR-BAZ #1');
@@ -208,8 +208,26 @@ describe('Cursor', function() {
     it('find({})', function(done) {
       var cond = {};
       collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error: ' + err);
         assert.equal(list.length, keys.length, 'all ok');
+        done();
+      });
+    });
+
+    it('findOne(null)', function(done) {
+      var cond = null;
+      collection.findOne(cond, function(err, item) {
+        assert(!err, 'findOne() error: ' + err);
+        assert(item, 'found');
+        done();
+      });
+    });
+
+    it('findOne({})', function(done) {
+      var cond = {};
+      collection.findOne(cond, function(err, item) {
+        assert(!err, 'findOne() error: ' + err);
+        assert(item, 'found');
         done();
       });
     });
@@ -219,10 +237,16 @@ describe('Cursor', function() {
         string: "FOO"
       };
       collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error: ' + err);
         assert.equal(list.length, 1, 'FOO count');
         assert.equal(list[0].string, 'FOO', 'FOO string');
-        done();
+
+        collection.findOne(cond, function(err, item) {
+          assert(!err, 'findOne() error: ' + err);
+          assert(item, 'found');
+          assert.equal(item.string, 'FOO', 'FOO string findOne');
+          done();
+        });
       });
     });
 
@@ -231,11 +255,17 @@ describe('Cursor', function() {
         decimal: 123
       };
       collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error: ' + err);
         assert.equal(list.length, 2, '123 count');
         assert.equal(list[0].decimal, 123, '123 decimal 0');
         assert.equal(list[1].decimal, 123, '123 decimal 1');
-        done();
+
+        collection.findOne(cond, function(err, item) {
+          assert(!err, 'findOne() error: ' + err);
+          assert(item, 'found');
+          assert.equal(item.decimal, 123, '123 decimal findOne');
+          done();
+        });
       });
     });
 
@@ -244,12 +274,18 @@ describe('Cursor', function() {
         numeric: 45.67
       };
       collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error: ' + err);
         assert.equal(list.length, 3, '45.67 count');
         assert.equal(list[0].numeric, 45.67, '45.67 numeric 0');
         assert.equal(list[1].numeric, 45.67, '45.67 numeric 1');
         assert.equal(list[2].numeric, 45.67, '45.67 numeric 2');
-        done();
+
+        collection.findOne(cond, function(err, item) {
+          assert(!err, 'findOne() error: ' + err);
+          assert(item, 'found');
+          assert.equal(item.numeric, 45.67, '45.67 numeric findOne');
+          done();
+        });
       });
     });
 
@@ -262,7 +298,7 @@ describe('Cursor', function() {
         string: 1
       };
       collection.find(cond).sort(sort).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error: ' + err);
         assert.equal(list.length, 2, 'count');
         assert.equal(list[0].string, 'FOO', 'string FOO-QUX');
         assert.equal(list[1].string, 'QUX', 'string FOO-QUX');
@@ -277,7 +313,7 @@ describe('Cursor', function() {
         numeric: 11.11
       };
       collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error: ' + err);
         assert.equal(list.length, 1, 'count');
         assert.equal(list[0].string, 'BAZ', 'string');
         done();
@@ -289,10 +325,16 @@ describe('Cursor', function() {
         return (item.string == 'FOO');
       };
       collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'no error');
+        assert(!err, 'find() error');
         assert.equal(list.length, 1, 'FOO count');
         assert.equal(list[0].string, 'FOO', 'FOO string');
-        done();
+
+        collection.findOne(cond, function(err, item) {
+          assert(!err, 'findOne() error: ' + err);
+          assert(item, 'found');
+          assert.equal(item.string, 'FOO', 'FOO string findOne');
+          done();
+        });
       });
     });
   });

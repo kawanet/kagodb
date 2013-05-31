@@ -9,7 +9,7 @@ var webapi = require('./mixin/webapi');
 var KagoDB = Base.inherit();
 
 KagoDB.mixin(storage);
-KagoDB.mixin(cursor);
+// KagoDB.mixin(cursor);
 KagoDB.mixin(condition);
 KagoDB.mixin(webapi);
 

@@ -1,5 +1,7 @@
 /* condition.js */
 
+var FindMixin = require('./find');
+
 /** This mixin overrides find() method to provide a function which tests conditions applied as an object.
  * @class ConditionMixin
  * @mixin
@@ -20,10 +22,13 @@
  */
 
 module.exports = function() {
-  var _find = this.find;
-  if (!_find) {
+  if (!this.find) {
+    FindMixin.call(this); // dependent mixin
+  }
+  if (!this.find) {
     throw new Error('find() method not available');
   }
+  var _find = this.find;
   this.find = function(condition) {
     var args = Array.prototype.slice.call(arguments);
     args[0] = conditionParser(args[0]);
