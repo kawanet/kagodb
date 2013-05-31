@@ -8,6 +8,7 @@ module.exports = Cursor;
  * @class Cursor
  * @param {KagoDB} collection - source collection
  * @param {Function} [condition] - test function
+ * @see {@link FindMixin#find}
  */
 
 function Cursor(collection, condition) {
@@ -16,7 +17,7 @@ function Cursor(collection, condition) {
   this.filters = {};
 }
 
-/** This invokes a callback function with a list of keys for all items
+/** This invokes a callback function with a list of keys for all items.
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
@@ -34,7 +35,7 @@ Cursor.prototype.keys = function(callback) {
   return this;
 };
 
-/** This invokes a callback function with a list of items found
+/** This invokes a callback function with a list of items found.
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  * @example

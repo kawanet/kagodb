@@ -4,9 +4,9 @@ var utils = require('./utils');
 
 function inherit(parent) {
 
-  /** KagoDB class.
+  /** KagoDB class constructor.
    * @class KagoDB
-   * @param {Object} options - option parameters
+   * @param {Object} options - option parameters for the instance
    * @returns {KagoDB} an instance
    * @example
    * var kago = new KagoDB(options);
@@ -41,7 +41,7 @@ function inherit(parent) {
     return child;
   };
 
-  /** This builds an instance as same as new child(). It would be good for method chaining.
+  /** This builds an instance as same as new KagoDB(). It would be good for method chaining.
    * @method KagoDB.build
    * @param {Object} options - option parameters
    * @returns {KagoDB} an instance

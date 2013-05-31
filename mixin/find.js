@@ -12,11 +12,12 @@ module.exports = function() {
   this.count = count;
 };
 
-/** creates a cursor with condition applied
+/** This creates a cursor object with a test function applied.
  * @method FindMixin.prototype.find
- * @param condition - query parameters
+ * @param {Function} condition - function(item) {return true;}
  * @param {Function} callback - function(err, cursor) {}
  * @returns {Cursor} cursor
+ * @see {@link ConditionMixin#find}  accepts an object as query parameters
  * @example
  * collection.find().toArray(function(err, list) {
  *   list.forEach(function(item) {
@@ -32,7 +33,7 @@ function find(condition, callback) {
   return cursor;
 }
 
-/** counts number of items matched with condition
+/** This counts number of items matched with condition.
  * @method FindMixin.prototype.count
  * @param condition - query parameters
  * @param {Function} callback - function(err, cursor) {}
