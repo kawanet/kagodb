@@ -4,17 +4,30 @@ var fs = require('fs');
 
 module.exports = StorageFile;
 
-function StorageFile() {}
+function StorageFile(options) {
+  this.options = options || {};
+}
 
-StorageFile.prototype.folder = function(path) {
-  throw new Error('folder() not implemented');
+StorageFile.prototype.folder = function() {
+  var path = this.options.path;
+  if (!path) {
+    throw new Error('"path" parameter for storage is not defined');
+  }
+  return path;
 };
-StorageFile.prototype.suffix = function(ext) {
-  throw new Error('suffix() not implemented');
+
+StorageFile.prototype.suffix = function() {
+  var suffix = this.options.suffix;
+  if (!suffix) {
+    throw new Error('"suffix" parameter for storage is not defined');
+  }
+  return suffix;
 };
+
 StorageFile.prototype.decode = function(source, callback) {
   throw new Error('decode() not implemented');
 };
+
 StorageFile.prototype.encode = function(item, callback) {
   throw new Error('encode() not implemented');
 };
@@ -22,12 +35,6 @@ StorageFile.prototype.encode = function(item, callback) {
 StorageFile.prototype.path = function(id) {
   var folder = this.folder();
   var suffix = this.suffix();
-  if ('undefined' === typeof folder) {
-    throw new Error('storage folder not defined');
-  }
-  if ('undefined' === typeof suffix) {
-    throw new Error('storage file suffix not defined');
-  }
   return folder + '/' + id + suffix;
 };
 
@@ -71,12 +78,6 @@ StorageFile.prototype.keys = function(callback) {
   callback = callback || NOP;
   var folder = this.folder();
   var suffix = this.suffix();
-  if ('undefined' === typeof folder) {
-    throw new Error('storage folder not defined');
-  }
-  if ('undefined' === typeof suffix) {
-    throw new Error('storage file suffix not defined');
-  }
   suffix = suffix.toLowerCase();
   var suflen = suffix.length;
   fs.readdir(folder, function(err, list) {

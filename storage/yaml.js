@@ -7,25 +7,31 @@ var StorageFile = require('./file-base')
 module.exports = utils.inherits(StorageYAML, StorageFile);
 
 function StorageYAML(options) {
-  if ('function' == typeof this.__super__) this.__super__();
-  options = options || {};
-  if (options.path) {
-    this.folder(options.path);
-  }
-  if (options.suffix) {
-    this.suffix(options.suffix);
-  }
+  this.__super__ = this.__super__ || NOP;
+  this.__super__.apply(this, arguments); // super class's constructor
+  this.options = this.options || {};
+  this.options.suffix = this.options.suffix || '.yaml';
 }
 
-StorageYAML.prototype.folder = function(path) {
-  return this._folder = path || this._folder;
+StorageYAML.prototype.decode = function(source, callback) {
+  var item;
+  try {
+    item = jsyaml.load(source);
+  } catch (err) {
+    callback(err);
+    return;
+  }
+  callback(null, item);
 };
-StorageYAML.prototype.suffix = function(ext) {
-  return this._suffix = ext || this._suffix || '.yaml';
+
+StorageYAML.prototype.encode = function(item, callback) {
+  var encoded;
+  try {
+    encoded = jsyaml.dump(item);
+  } catch (err) {
+    callback(err);
+  }
+  callback(null, encoded);
 };
-StorageYAML.prototype.decode = function(source) {
-  return jsyaml.load(source);
-};
-StorageYAML.prototype.encode = function(item) {
-  return jsyaml.dump(item);
-};
+
+function NOP() {}
