@@ -188,7 +188,7 @@ describe('Cursor', function() {
       });
     });
 
-    it('find().sort() multiple asc', function(done) {
+    it('find().sort() multiple desc', function(done) {
       var sort = {
         numeric: -1,
         decimal: -1,
@@ -201,6 +201,31 @@ describe('Cursor', function() {
         assert.equal(list[1].string, 'FOO', 'QUX-FOO-BAR-BAZ #1');
         assert.equal(list[2].string, 'BAR', 'QUX-FOO-BAR-BAZ #2');
         assert.equal(list[3].string, 'BAZ', 'QUX-FOO-BAR-BAZ #3');
+        done();
+      });
+    });
+
+    it('find().sort(Function) decimal', function(done) {
+      var order = function(a, b) {
+        return a.decimal - b.decimal;
+      };
+      collection.find().sort(order).toArray(function(err, list) {
+        assert(!err, err);
+        assert.equal(list.length, keys.length, 'find length');
+        assert.equal(list[0].string, 'BAR', 'BAR/FOO/QUX/BAZ #0');
+        assert.equal(list[3].string, 'BAZ', 'BAR/FOO/QUX/BAZ #3');
+        done();
+      });
+    });
+
+    it('find().sort(Function) numeric', function(done) {
+      var order = function(a, b) {
+        return a.numeric - b.numeric;
+      };
+      collection.find().sort(order).toArray(function(err, list) {
+        assert(!err, err);
+        assert.equal(list.length, keys.length, 'find length');
+        assert.equal(list[0].string, 'BAZ', 'BAZ/---/---/--- #0');
         done();
       });
     });

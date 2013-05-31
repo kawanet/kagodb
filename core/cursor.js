@@ -60,7 +60,7 @@ Cursor.prototype.toArray = function(callback) {
   var sort = self.filters.sort;
   var offset = self.filters.offset || 0;
   var limit = self.filters.limit || 0;
-  var last = (offset >=0 && limit >= 1) ? offset + limit : 0;
+  var last = (offset >= 0 && limit >= 1) ? offset + limit : 0;
 
   if (self._values) {
     done(self._values); // cache
@@ -145,26 +145,31 @@ Cursor.prototype.count = function(callback) {
 };
 
 /** This specifies a sort parameters
- * @param {Object} param - sort parameters
+ * @param {Function|Object} order - sort function or parameters
  * @returns {Cursor} instance itself for method chaining
  * @example
- * collection.find().sort({foo: 1, bar: -1}).toArray();
+ * collection.find().sort(function(a,b){return a.price - b.price;}).toArray();
+ * collection.find().sort({price: 1, stock: -1}).toArray();
  */
 
-Cursor.prototype.sort = function(param) {
-  var keys = Object.keys(param);
-  var keylen = keys.length;
-  var func = function(a, b) {
-    for (var i = 0; i < keylen; i++) {
-      var key = keys[i];
-      if (a[key] < b[key]) {
-        return -param[key];
-      } else if (a[key] > b[key]) {
-        return param[key];
+Cursor.prototype.sort = function(order) {
+  if ('object' == typeof order) {
+    var keys = Object.keys(order);
+    var keylen = keys.length;
+    var func = function(a, b) {
+      for (var i = 0; i < keylen; i++) {
+        var key = keys[i];
+        if (a[key] < b[key]) {
+          return -order[key];
+        } else if (a[key] > b[key]) {
+          return order[key];
+        }
       }
-    }
-  };
-  this.filters.sort = func;
+    };
+    this.filters.sort = func;
+  } else {
+    this.filters.sort = order;
+  }
   return this;
 };
 
