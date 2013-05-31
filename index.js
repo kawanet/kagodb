@@ -1,15 +1,15 @@
 /*! index.js */
 
 var Base = require('./core/base');
-var Storage = require('./core/storage');
-var Cursor = require('./core/cursor');
-var condition = require('./core/condition');
-var Webapi = require('./core/webapi');
+var storage = require('./mixin/storage');
+var cursor = require('./mixin/find');
+var condition = require('./mixin/condition');
+var webapi = require('./mixin/webapi');
 
 var KagoDB = Base.inherit();
-KagoDB.use(Storage);
-KagoDB.use(Cursor);
+KagoDB.use(storage);
+KagoDB.use(cursor);
 KagoDB.use(condition);
-KagoDB.use(Webapi);
+KagoDB.use(webapi);
 
 module.exports = KagoDB;

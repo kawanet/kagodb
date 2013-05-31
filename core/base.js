@@ -1,6 +1,6 @@
-/*! core/base.js */
+/*! base.js */
 
-var utils = require('../core/utils');
+var utils = require('./utils');
 
 function inherit(parent) {
 

@@ -1,4 +1,4 @@
-/*! core/utils.js */
+/*! utils.js */
 
 /** Utilities
  * @class Utils
