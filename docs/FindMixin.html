@@ -38,7 +38,7 @@
     
     
         
-            <div class="description">This mixin provides find() and count() methods.</div>
+            <div class="description">This mixin provides find(), findOne() and count() methods.</div>
         
         
         
@@ -98,7 +98,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="count"><span class="type-signature"></span>count<span class="signature">(condition, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="count"><span class="type-signature"></span>count<span class="signature">(condition, callback)</span><span class="type-signature"> &rarr; {<a href="KagoDB.html">KagoDB</a>}</span></h4>
     
     
 </dt>
@@ -106,7 +106,7 @@
     
     
     <div class="description">
-        counts number of items matched with condition
+        This counts number of items matched with condition.
     </div>
     
 
@@ -151,7 +151,7 @@
             
             
             
-            <td class="description last">query parameters</td>
+            <td class="description last">same as find() method</td>
         </tr>
 	
 	
@@ -205,7 +205,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="find.js.html">mixin/find.js</a>, line 35
+        <a href="find.js.html">mixin/find.js</a>, line 62
     </li></ul></dd>
     
     
@@ -231,6 +231,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="KagoDB.html">KagoDB</a></span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -246,7 +258,7 @@
         
             
 <dt>
-    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(condition, callback)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
+    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(condition, <span class="optional">callback</span>)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
     
     
 </dt>
@@ -254,7 +266,7 @@
     
     
     <div class="description">
-        creates a cursor with condition applied
+        This creates a cursor object with a test function applied.
     </div>
     
 
@@ -276,6 +288,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -293,13 +307,26 @@
             
             <td class="type">
             
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">query parameters</td>
+            
+            <td class="description last">function(item) {return true;}</td>
         </tr>
 	
 	
@@ -318,6 +345,16 @@
             
             </td>
             
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
@@ -353,7 +390,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="find.js.html">mixin/find.js</a>, line 15
+        <a href="find.js.html">mixin/find.js</a>, line 16
     </li></ul></dd>
     
     
@@ -374,7 +411,7 @@
     
             
 <div class="param-desc">
-    cursor
+    cursor instance
 </div>
 
 
@@ -405,6 +442,166 @@
     
 </dd>
 
+        
+            
+<dt>
+    <h4 class="name" id="findOne"><span class="type-signature"></span>findOne<span class="signature">(condition, callback)</span><span class="type-signature"> &rarr; {<a href="KagoDB.html">KagoDB</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This invokes a callback function with an item found under specified condition.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>condition</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">same as find() method</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">function(err, item) {}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="find.js.html">mixin/find.js</a>, line 36
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    collection instance itself for method chaining
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="KagoDB.html">KagoDB</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>collection.findOne({}, function(err, item) {
+  console.log(item);
+});</code></pre>
+
+    
+</dd>
+
         </dl>
     
     
@@ -427,7 +624,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri May 31 2013 22:09:48 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 00:08:20 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>
