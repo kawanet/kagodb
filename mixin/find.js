@@ -18,7 +18,6 @@ module.exports = function() {
  * @param {Function} condition - function(item) {return true;}
  * @param {Function} [callback] - function(err, cursor) {}
  * @returns {Cursor} cursor instance
- * @see {@link ConditionMixin#find}  accepts an object as query parameters
  * @example
  * collection.find().toArray(function(err, list) {
  *   list.forEach(function(item) {

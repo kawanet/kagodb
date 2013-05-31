@@ -12,7 +12,6 @@ var FindMixin = require('./find');
  * @param {Object} condition - query parameters
  * @param {Function} callback - function(err, cursor) {}
  * @returns {Cursor} cursor
- * @see {@link FindMixin#find} accepts a condition test function
  * @example
  * collection.find().toArray(function(err, list) {
  *   list.forEach(function(item) {

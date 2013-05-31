@@ -8,7 +8,6 @@ module.exports = Cursor;
  * @class Cursor
  * @param {KagoDB} collection - source collection
  * @param {Function} [condition] - test function
- * @see {@link FindMixin#find}
  */
 
 function Cursor(collection, condition) {
