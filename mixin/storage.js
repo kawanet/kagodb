@@ -95,14 +95,17 @@ function storage(store) {
     }
     if ('function' != typeof store) {
       store += '';
-      if (store.search(/^[\w\-\.]+$/) < 0) {
+      var preload = this.get('storage-preload') || {};
+      if (preload[store]) {
+        store = preload[store];
+      } else if (store.search(/^[\w\-\.]+$/) < 0) {
         throw new Error('invalid store name: ' + store);
       } else {
         var path = StorageBase + '/' + store;
         try {
           store = require(path);
-        } catch (e) {
-          throw new Error('storage class invalid: ' + store);
+        } catch (err) {
+          throw new Error('storage class failed: ' + err);
         }
         if (!store) {
           throw new Error('storage class invalid: ' + store);

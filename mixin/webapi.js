@@ -200,7 +200,7 @@ function getParams(req) {
 }
 
 WebapiMethods.prototype.progress = function() {
-  console.error.apply(null, arguments);
+  // console.error.apply(null, arguments);
 }
 
 function contentParser(content) {

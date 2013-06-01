@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>KagoDB Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link href="demo/demo.css" rel="stylesheet">
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <script src="js/kagodb.min.js"></script>
+  <script src="demo/demo.js"></script>
+</head>
+
+<body>
+
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="./">KagoDB</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li class="active">
+              <a href="#">Demo</a>
+            </li>
+          </ul>
+        </div>
+        <!--/.nav-collapse --> </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4">
+        <div class="well sidebar-nav">
+          <ul class="nav nav-list"id="storage-list">
+            <li class="nav-header">STORAGE</li>
+          </ul>
+        </div>
+        <div class="well sidebar-nav">
+          <ul class="nav nav-list" id="keys-list">
+            <li class="nav-header">KEYS</li>
+          </ul>
+        </div>
+      </div>
+      <div class="span8">
+        <div class="alert alert-success" id="info">Information:</div>
+        <div class="well sidebar-nav">
+          <ul class="nav nav-list">
+            <li class="nav-header">CONTENT</li>
+          </ul>
+          <div class="content-editor">
+            <form>
+              <fieldset>
+                <input id="form-title" type="text" placeholder="Document Title">
+                <textarea id="form-content" placeholder='{"Hello": "world!"}'></textarea>
+                <span class="btn btn-info" id="form-delete">DELETE</span>
+                <span class="btn btn-primary" id="form-write">WRITE</span>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <footer>
+      <p>&copy; KagoDB 2013</p>
+    </footer>
+
+  </div>
+  <!--/.fluid-container-->
+
+</body>
+</html>
