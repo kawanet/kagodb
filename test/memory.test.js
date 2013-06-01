@@ -8,9 +8,9 @@ describe('Memory Storage', function() {
   var opts = {
     storage: 'memory'
   };
-  var rand = Math.floor(Math.random() * 900000) + 100000;
-  var id1 = 'foo-' + rand;
-  var id2 = 'bar-' + rand;
+  var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
+  var id1 = 'foo-' + date;
+  var id2 = 'bar-' + date;
   var item = {
     string: "FOO",
     decimal: 123,
@@ -24,17 +24,17 @@ describe('Memory Storage', function() {
   describe('CRUD', function() {
     it('write', function(done) {
       collection.write(id1, item, function(err) {
-        assert(!err, 'write OK');
+        assert(!err, 'write failed');
         done();
       });
     });
 
     it('exist', function(done) {
       collection.exists(id1, function(err, res) {
-        assert(!err, 'exist OK');
+        assert(!err, 'exist failed');
         assert.ok(res, 'exist foo');
         collection.exists(id2, function(err, res) {
-          assert(!err, 'not-exist OK');
+          assert(!err, 'not-exist failed');
           assert.ok(!res, 'not-exist bar');
           done();
         });
@@ -43,7 +43,7 @@ describe('Memory Storage', function() {
 
     it('read', function(done) {
       collection.read(id1, function(err, res) {
-        // assert(!err, 'read OK');
+        assert(!err, 'read failed');
         assert.isString(res.string, 'read string type');
         assert.isNumber(res.decimal, 'read decimal type');
         assert.isNumber(res.numeric, 'read numeric type');
@@ -57,21 +57,28 @@ describe('Memory Storage', function() {
       });
     });
 
-    it('find', function(done) {
-      collection.find({}).toArray(function(err, res) {
-        assert(!err, 'find OK');
-        assert.ok(res, 'find foo');
-        res = res || [];
-        assert.ok(res.length, 'find foo length');
-        done();
+    it('keys & find', function(done) {
+      collection.keys(function(err, list) {
+        assert(!err, 'keys failed');
+        assert.ok(list, 'keys response');
+        list = list || [];
+        assert.ok(list.length, 'keys length');
+
+        collection.find().toArray(function(err, res) {
+          assert(!err, 'find failed');
+          assert.ok(res, 'find response');
+          res = res || [];
+          assert.equal(res.length, list.length, 'find length');
+          done();
+        });
       });
     });
 
     it('remove', function(done) {
       collection.remove(id1, function(err) {
-        assert(!err, 'remove OK');
+        assert(!err, 'remove failed');
         collection.exists(id1, function(err, res) {
-          assert(!err, 'exist OK');
+          assert(!err, 'exist failed');
           assert.ok(!res, 'not-exist foo');
           collection.remove(id2, function(err) {
             assert.ok(err, 'remove error detected');
@@ -113,6 +120,5 @@ describe('Memory Storage', function() {
         });
       });
     });
-
   });
 });
