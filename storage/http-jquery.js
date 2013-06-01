@@ -11,7 +11,7 @@ function ProxyJquery(options) {
 
 ProxyJquery.prototype.read = read;
 ProxyJquery.prototype.write = write;
-ProxyJquery.prototype.remove = remove;
+ProxyJquery.prototype.erase = erase;
 ProxyJquery.prototype.exists = exists;
 ProxyJquery.prototype.keys = keys;
 
@@ -58,14 +58,14 @@ function write(id, item, callback) {
   });
 }
 
-function remove(id, callback) {
+function erase(id, callback) {
   callback = callback || NOP;
   var url = this.endpoint() + id;
   var opt = {
     type: 'POST',
     url: url,
     data: {
-      method: 'remove'
+      method: 'erase'
     }
   };
   var jQuery = this.options.jquery;

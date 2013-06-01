@@ -89,15 +89,15 @@ WebapiMethods.prototype.write = function(collection, params, next) {
   });
 };
 
-WebapiMethods.prototype.remove = function(collection, params, next) {
+WebapiMethods.prototype.erase = function(collection, params, next) {
   var self = this;
-  collection.remove(params.id, function(err) {
-    console.error('remove:', params.id, err);
+  collection.erase(params.id, function(err) {
+    console.error('erase:', params.id, err);
     if (err) {
-      console.error('remove:', err);
+      console.error('erase:', err);
       return next(500); // Internal Server Error
     }
-    self.progress('remove:', params.id);
+    self.progress('erase:', params.id);
     next({
       success: true
     });
@@ -182,7 +182,7 @@ function getParams(req) {
         break;
 
       case 'delete':
-        params.method = 'remove';
+        params.method = 'erase';
         break;
 
       case 'head':

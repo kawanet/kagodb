@@ -87,14 +87,14 @@ describe('Proxy jQuery', function() {
       });
     });
 
-    it('remove', function(done) {
-      collection.remove(id1, function(err) {
-        assert(!err, 'remove failed' + err);
+    it('erase', function(done) {
+      collection.erase(id1, function(err) {
+        assert(!err, 'erase failed' + err);
         collection.exists(id1, function(err, res) {
           assert(!err, 'exist failed' + err);
           assert.ok(!res, 'not-exist foo');
-          collection.remove(id2, function(err) {
-            assert.ok(err, 'remove error detected');
+          collection.erase(id2, function(err) {
+            assert.ok(err, 'erase error detected');
             done();
           });
         });

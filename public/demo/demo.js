@@ -151,7 +151,7 @@ function showContent(kago, id) {
   fcontent.text('');
   fdelete.removeClass('disabled');
   fdelete.on('click', function() {
-    removeItem(kago, id);
+    eraseItem(kago, id);
   });
 
   info('Loading: ' + id);
@@ -167,8 +167,8 @@ function showContent(kago, id) {
   });
 }
 
-function removeItem(kago, id) {
-  kago.remove(id, function(err) {
+function eraseItem(kago, id) {
+  kago.erase(id, function(err) {
     if (err) {
       warn(err);
       return;

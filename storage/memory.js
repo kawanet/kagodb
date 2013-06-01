@@ -12,7 +12,7 @@ function StorageMemory(options) {
 
 StorageMemory.prototype.read = read;
 StorageMemory.prototype.write = write;
-StorageMemory.prototype.remove = remove;
+StorageMemory.prototype.erase = erase;
 StorageMemory.prototype.exists = exists;
 StorageMemory.prototype.keys = keys;
 
@@ -35,7 +35,7 @@ function write(id, item, callback) {
   callback();
 }
 
-function remove(id, callback) {
+function erase(id, callback) {
   callback = callback || NOP;
   var store = this._store || this.store();
   if (store.hasOwnProperty(id)) {

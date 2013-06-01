@@ -66,7 +66,7 @@ StorageFile.prototype.write = function(id, item, callback) {
   });
 };
 
-StorageFile.prototype.remove = function(id, callback) {
+StorageFile.prototype.erase = function(id, callback) {
   var path = this.path(id);
   fs.unlink(path, function(err) {
     callback(err);
