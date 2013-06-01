@@ -12,6 +12,8 @@
     "grunt-mocha-test": "*",
     "grunt-contrib-jshint": "*",
     "grunt-jsdoc": "*",
+    "grunt-browserify": "*",
+    "grunt-contrib-uglify": "*",
     "async": "*"
   }
 }
