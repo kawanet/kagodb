@@ -64,7 +64,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="find.js.html">mixin/find.js</a>, line 5
+        <a href="find.js.html">mixin/find.js</a>, line 7
     </li></ul></dd>
     
     
@@ -205,7 +205,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="find.js.html">mixin/find.js</a>, line 62
+        <a href="find.js.html">mixin/find.js</a>, line 112
     </li></ul></dd>
     
     
@@ -258,7 +258,7 @@
         
             
 <dt>
-    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(condition, <span class="optional">callback</span>)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
+    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(condition, projection)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
     
     
 </dt>
@@ -266,7 +266,8 @@
     
     
     <div class="description">
-        This creates a cursor object with a test function applied.
+        This creates a cursor object with condition given as a test function or query parameters.
+Null condition will find all items in the collection
     </div>
     
 
@@ -288,8 +289,6 @@
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -309,57 +308,45 @@
             
                 
 <span class="param-type">Function</span>
+|
+
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">function(item) {return true;}</td>
+            <td class="description last">test function or query parameters</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>projection</code></td>
             
             
             <td class="type">
             
                 
 <span class="param-type">Function</span>
+|
+
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">function(err, cursor) {}</td>
+            <td class="description last">map function or output properties</td>
         </tr>
 	
 	
@@ -390,7 +377,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="find.js.html">mixin/find.js</a>, line 16
+        <a href="find.js.html">mixin/find.js</a>, line 18
     </li></ul></dd>
     
     
@@ -433,9 +420,41 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>collection.find().toArray(function(err, list) {
+    <pre class="prettyprint"><code>// all items
+collection.find().toArray(function(err, list) {
   list.forEach(function(item) {
-    console.log(item);
+    console.log(item.name, item.price);
+  });
+});
+
+// condition using a test function
+var test = function(item) {
+  return item.price > 100;
+};
+collection.find(test).toArray(function(err, list) {
+  list.forEach(function(item) {
+    console.log(item.name, item.price);
+  });
+});
+
+// condition using query parameters
+var cond = {
+  name: "Apple"
+};
+collection.find(cond).toArray(function(err, list) {
+  list.forEach(function(item) {
+    console.log(item.name, item.price);
+  });
+});
+
+// projection
+var proj = {
+  name: 1,
+  price: 1
+};
+collection.find({}, proj).toArray(function(err, list) {
+  list.forEach(function(item) {
+    console.log(item.name, item.price);
   });
 });</code></pre>
 
@@ -552,7 +571,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="find.js.html">mixin/find.js</a>, line 36
+        <a href="find.js.html">mixin/find.js</a>, line 86
     </li></ul></dd>
     
     
@@ -618,13 +637,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="ConditionMixin.html">ConditionMixin</a></li><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 00:08:20 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:35:29 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

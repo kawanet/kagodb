@@ -56,95 +56,151 @@ module.exports = function() {
 function webapi() {
   var collection = this;
   var f;
+  var methods = new WebapiMethods();
 
-  f = function(req, res) {
-    express.bodyParser()(req, res, function() {
-      var params = f.getParams(req);
-      if (!params.method)
-        return res.send(400);
+  return function(req, res) {
+    methods.progress('webapi:', req.method, req.url, req.query, req.body);
 
-      if (!f.methods[params.method])
-        return res.send(400);
+    var parser = collection.get('webapi-preprocess') || express.bodyParser();
+    var responder = collection.get('webapi-responder') || res.send;
+    responder = responder.bind(res);
 
-      f.methods[params.method](req, res, collection, params);
+    parser(req, res, function() {
+      var params = getParams(req);
+      if (!params.method) {
+        return responder(400); // Bad Request
+      }
+
+      if (!methods[params.method]) {
+        return responder(400); // Bad Request
+      }
+      methods[params.method](collection, params, responder);
     });
   };
-
-  f.getParams = getParams;
-  f.methods = new WebapiMethods();
-
-  return f;
 }
 
 function WebapiMethods() {}
 
-WebapiMethods.prototype.read = function(req, res, collection, params) {
-  collection.read(params.id, errorCheck(function(err, item) {
-    res.json(item);
-  }));
-};
-
-WebapiMethods.prototype.write = function(req, res, collection, params) {
-  collection.write(params.id, params.content, errorCheck(function(err) {
-    res.json({
-      success: true
-    });
-  }));
-};
-
-WebapiMethods.prototype.remove = function(req, res, collection, params) {
-  collection.remove(params.id, errorCheck(function(err) {
-    res.json({
-      success: true
-    });
-  }));
-};
-
-WebapiMethods.prototype.exists = function(req, res, collection, params) {
-  collection.exists(params.id, errorCheck(function(err, exist) {
-    if (req.method.toLowerCase() === 'head') {
-      res.send(exist ? 200 : 404);
-    } else {
-      res.json({
-        exist: exist
-      });
+WebapiMethods.prototype.read = function(collection, params, next) {
+  var self = this;
+  collection.exists(params.id, function(err, exist) {
+    if (err) {
+      console.error('read:', err);
+      return next(500); // Internal Server Error
     }
-  }));
+    if (!exist) {
+      return next(404); // Not Found
+    }
+    collection.read(params.id, function(err, item) {
+      if (err) {
+        console.error('read:', err);
+        return next(500); // Internal Server Error
+      }
+      self.progress('read:', params.id, item);
+      next(item);
+    });
+  })
 };
 
-WebapiMethods.prototype.find = function(req, res, collection, params) {
-  var cursor = collection.find(params.condition);
+WebapiMethods.prototype.write = function(collection, params, next) {
+  var self = this;
+  collection.write(params.id, params.content, function(err) {
+    if (err) {
+      console.error('write:', err);
+      return next(500); // Internal Server Error
+    }
+    self.progress('write:', params.id);
+    next({
+      success: true
+    });
+  });
+};
+
+WebapiMethods.prototype.erase = function(collection, params, next) {
+  var self = this;
+  collection.erase(params.id, function(err) {
+    console.error('erase:', params.id, err);
+    if (err) {
+      console.error('erase:', err);
+      return next(500); // Internal Server Error
+    }
+    self.progress('erase:', params.id);
+    next({
+      success: true
+    });
+  });
+};
+
+WebapiMethods.prototype.exists = function(collection, params, next) {
+  var self = this;
+  collection.exists(params.id, function(err, exist) {
+    if (err) {
+      console.error('exists:', err);
+      return next(500); // Internal Server Error
+    }
+    self.progress('exists:', params.id, !! exist);
+    next({
+      exist: !! exist
+    });
+  });
+};
+
+WebapiMethods.prototype.find = function(collection, params, next) {
+  var self = this;
+  var cursor = collection.find(params.condition, params.projection);
   if (params.limit) cursor.limit(params.limit);
   if (params.offset) cursor.offset(params.offset);
   if (params.sort) cursor.sort(params.sort);
-  cursor.toArray(errorCheck(function(err, list) {
-    res.json({
+  cursor.toArray(function(err, list) {
+    if (err) {
+      console.error('find:', err);
+      return next(500); // Internal Server Error
+    }
+    self.progress('find:', params, list.length);
+    next({
       data: list
     });
-  }));
+  });
 };
 
-WebapiMethods.prototype.count = function(req, res, collection, params) {
-  collection.count(params.condition, errorCheck(function(err, count) {
-    res.json({
+WebapiMethods.prototype.count = function(collection, params, next) {
+  var self = this;
+  collection.count(params.condition, function(err, count) {
+    if (err) {
+      console.error('count:', err);
+      return next(500); // Internal Server Error
+    }
+    self.progress('count:', params);
+    next({
       count: count
     });
-  }));
+  });
+};
+
+WebapiMethods.prototype.index = function(collection, params, next) {
+  var self = this;
+  collection.index(function(err, list) {
+    if (err) {
+      console.error('index:', err);
+      return next(500); // Internal Server Error
+    }
+    self.progress('index:', params);
+    next({
+      index: list
+    });
+  });
 };
 
 function getParams(req) {
-  var params = req.query;
+  var http_method = req.method.toLowerCase();
+  var params = (http_method == 'post') ? req.body : req.query;
+  var id = req.params[0];
+  if (id) params.id = id;
 
   if (!params.method) {
-    var http_method = req.method.toLowerCase();
-    params.id = req.params[0];
     switch (http_method) {
       case 'get':
-        if (params.id) {
-          params.method = 'read';
-        } else {
-          params.method = 'find';
-        }
+        params.method = 'read';
         break;
 
       case 'put':
@@ -153,36 +209,37 @@ function getParams(req) {
         break;
 
       case 'delete':
-        params.method = 'remove';
+        params.method = 'erase';
         break;
 
       case 'head':
-        params.method = 'exists';
+        // params.method = 'exists';
+        params.method = 'read';
         break;
     }
   }
 
   if (typeof params.content === 'string') {
-    try {
-      params.content = JSON.parse(params.content);
-    } catch (e) {
-      console.error(e, params.content);
-      params.content = null;
-    }
+    params.content = contentParser(params.content);
   }
 
   return params;
 }
 
-function errorCheck(callback) {
-  return function(err) {
-    if (err) {
-      console.error(err);
-      return res.send(500);
-    }
-    callback.apply(null, arguments);
-  };
-}</code></pre>
+WebapiMethods.prototype.progress = function() {
+  // console.error.apply(null, arguments);
+}
+
+function contentParser(content) {
+  var body;
+  try {
+    body = JSON.parse(content);
+  } catch (e) {
+    console.error(e, content);
+  }
+  return body;
+}
+</code></pre>
         </article>
     </section>
 
@@ -192,13 +249,13 @@ function errorCheck(callback) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="ConditionMixin.html">ConditionMixin</a></li><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 00:08:20 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:35:28 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

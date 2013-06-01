@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Mixin: WebapiMixin</title>
+    <title>JSDoc: Class: Condition</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Mixin: WebapiMixin</h1>
+    <h1 class="page-title">Class: Condition</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    WebapiMixin
+    Condition
     </h2>
     
 </header>  
@@ -38,10 +38,26 @@
     
     
         
-            <div class="description">This mixin provides webapi() method which gives a RESTful Web API feature for <a href="http://expressjs.com">Express.js</a>.</div>
-        
-        
-        
+<dt>
+    <h4 class="name" id="Condition"><span class="type-signature"></span>new Condition<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Condition parser.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
 <dl class="details">
     
         
@@ -64,7 +80,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webapi.js.html">mixin/webapi.js</a>, line 5
+        <a href="condition.js.html">core/condition.js</a>, line 3
     </li></ul></dd>
     
     
@@ -75,8 +91,16 @@
     
 </dl>
 
-        
-        
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
     
     </div>
     
@@ -98,7 +122,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="webapi"><span class="type-signature"></span>webapi<span class="signature">()</span><span class="type-signature"> &rarr; {Function}</span></h4>
+    <h4 class="name" id="parser"><span class="type-signature">&lt;static> </span>parser<span class="signature">(condition)</span><span class="type-signature"> &rarr; {Function}</span></h4>
     
     
 </dt>
@@ -106,7 +130,7 @@
     
     
     <div class="description">
-        This generates a RESTful Web API function for <a href="http://expressjs.com">Express.js</a>.
+        This parses a condition object given as an object.
     </div>
     
 
@@ -114,6 +138,54 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>condition</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">query parameters</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -139,7 +211,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webapi.js.html">mixin/webapi.js</a>, line 14
+        <a href="condition.js.html">core/condition.js</a>, line 5
     </li></ul></dd>
     
     
@@ -160,7 +232,7 @@
     
             
 <div class="param-desc">
-    a Web API function
+    test function generated
 </div>
 
 
@@ -179,19 +251,6 @@
 
         
     
-    
-        <h5>Example</h5>
-        
-    <pre class="prettyprint"><code>var express = require('express');
-var KagoDB = require('KagoDB');
-var app = express();
-var opts = {
-  storage: 'json',
-  path: './data/'
-};
-app.all('/data/*', KagoDB(opts).webapi());
-app.listen(3000);</code></pre>
-
     
 </dd>
 

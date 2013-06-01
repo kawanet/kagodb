@@ -38,7 +38,7 @@
     
     
         
-            <div class="description">This mixin provides storage() method as well as CRUD methods: write(), read(), remove(), exists(), keys().</div>
+            <div class="description">This mixin provides storage() method as well as low-level CRUD methods: write(), read(), erase(), exists(), index().</div>
         
         
         
@@ -96,6 +96,298 @@
         <h3 class="subsection-title">Methods</h3>
         
         <dl>
+            
+<dt>
+    <h4 class="name" id="erase"><span class="type-signature"></span>erase<span class="signature">(id, callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This erases an item.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">item ID</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">function(err) {}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">mixin/storage.js</a>, line 44
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    collection instance itself for method chaining
+</div>
+
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="erase"><span class="type-signature"></span>erase<span class="signature">(id, callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This lists all item IDs in array.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">item ID</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">function(err, list) {}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">mixin/storage.js</a>, line 68
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    collection instance itself for method chaining
+</div>
+
+
+
+        
+    
+    
+</dd>
+
+        
             
 <dt>
     <h4 class="name" id="exists"><span class="type-signature"></span>exists<span class="signature">(id, callback)</span><span class="type-signature"></span></h4>
@@ -357,298 +649,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="storage.js.html">mixin/storage.js</a>, line 19
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    collection instance itself for method chaining
-</div>
-
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(id, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        This removes an item.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">item ID</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Function</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">function(err) {}</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">mixin/storage.js</a>, line 44
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    collection instance itself for method chaining
-</div>
-
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(id, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        This lists all item IDs in array.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">item ID</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Function</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">function(err, list) {}</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">mixin/storage.js</a>, line 68
     </li></ul></dd>
     
     
@@ -1002,13 +1002,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="ConditionMixin.html">ConditionMixin</a></li><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 00:08:20 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:35:29 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>
