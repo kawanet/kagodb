@@ -18,19 +18,19 @@ function Cursor(collection, condition, projection) {
   this.filters = {};
 }
 
-/** This invokes a callback function with a list of keys for all items.
+/** This invokes a callback function with an index for all items.
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
 
-Cursor.prototype.keys = function(callback) {
+Cursor.prototype.index = function(callback) {
   var self = this;
   callback = callback || NOP;
-  if (self._keys) {
-    callback(null, self._keys);
+  if (self._index) {
+    callback(null, self._index);
   } else {
-    self.collection.keys(function(err, list) {
-      callback(err, self._keys = list);
+    self.collection.index(function(err, list) {
+      callback(err, self._index = list);
     });
   }
   return this;
@@ -66,7 +66,7 @@ Cursor.prototype.toArray = function(callback) {
   if (self._values) {
     done(self._values); // cache
   } else {
-    self.keys(function(err, list) {
+    self.index(function(err, list) {
       var buf = [];
       if (err) {
         callback(err);
@@ -138,7 +138,7 @@ Cursor.prototype.toArray = function(callback) {
 
 Cursor.prototype.count = function(callback) {
   callback = callback || NOP;
-  this.keys(function(err, list) {
+  this.index(function(err, list) {
     if (err) {
       callback(err);
     } else {
@@ -158,11 +158,11 @@ Cursor.prototype.count = function(callback) {
 
 Cursor.prototype.sort = function(order) {
   if ('object' == typeof order) {
-    var keys = Object.keys(order);
-    var keylen = keys.length;
+    var index = Object.keys(order);
+    var keylen = index.length;
     var func = function(a, b) {
       for (var i = 0; i < keylen; i++) {
-        var key = keys[i];
+        var key = index[i];
         if (a[key] < b[key]) {
           return -order[key];
         } else if (a[key] > b[key]) {

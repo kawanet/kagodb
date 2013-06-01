@@ -150,16 +150,16 @@ WebapiMethods.prototype.count = function(collection, params, next) {
   });
 };
 
-WebapiMethods.prototype.keys = function(collection, params, next) {
+WebapiMethods.prototype.index = function(collection, params, next) {
   var self = this;
-  collection.keys(function(err, list) {
+  collection.index(function(err, list) {
     if (err) {
-      console.error('keys:', err);
+      console.error('index:', err);
       return next(500); // Internal Server Error
     }
-    self.progress('keys:', params);
+    self.progress('index:', params);
     next({
-      keys: list
+      index: list
     });
   });
 };

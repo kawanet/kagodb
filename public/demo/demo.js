@@ -53,12 +53,12 @@ function showKeys(kago, id) {
     }
   });
   info('Loading: ' + name);
-  kago.keys(function(err, list) {
+  kago.index(function(err, list) {
     if (err) {
       warn(err);
       return;
     }
-    var ul = $('#keys-list');
+    var ul = $('#index-list');
     var head = ul.find('li:first');
     ul.empty();
     head.text('KEYS (' + list.length + ')');
@@ -101,8 +101,8 @@ function showKeys(kago, id) {
 }
 
 function clearContent(kago, id, content) {
-  $('#keys-list li.active').removeClass('active');
-  $('#keys-list li').each(function(idx, elem) {
+  $('#index-list li.active').removeClass('active');
+  $('#index-list li').each(function(idx, elem) {
     var $elem = $(elem);
     if ($elem.data('key') == id) {
       $elem.addClass('active');

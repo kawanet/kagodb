@@ -14,7 +14,7 @@ StorageMemory.prototype.read = read;
 StorageMemory.prototype.write = write;
 StorageMemory.prototype.erase = erase;
 StorageMemory.prototype.exists = exists;
-StorageMemory.prototype.keys = keys;
+StorageMemory.prototype.index = index;
 
 function read(id, callback) {
   callback = callback || NOP;
@@ -54,7 +54,7 @@ function exists(id, callback) {
   callback(null, exist);
 }
 
-function keys(callback) {
+function index(callback) {
   callback = callback || NOP;
   var store = this._store || this.store();
   var list = Object.keys(store);

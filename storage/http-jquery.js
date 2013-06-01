@@ -13,7 +13,7 @@ ProxyJquery.prototype.read = read;
 ProxyJquery.prototype.write = write;
 ProxyJquery.prototype.erase = erase;
 ProxyJquery.prototype.exists = exists;
-ProxyJquery.prototype.keys = keys;
+ProxyJquery.prototype.index = index;
 
 function read(id, callback) {
   callback = callback || NOP;
@@ -100,14 +100,14 @@ function exists(id, callback) {
   });
 }
 
-function keys(callback) {
+function index(callback) {
   callback = callback || NOP;
   var url = this.endpoint();
   var opt = {
     type: 'POST',
     url: url,
     data: {
-      method: 'keys'
+      method: 'index'
     }
   };
   var jQuery = this.options.jquery;
@@ -116,7 +116,7 @@ function keys(callback) {
     callback(ajaxFail(jqXHR, status, error));
   }).done(function(data, status, jqXHR) {
     data = data || {};
-    callback(null, data.keys);
+    callback(null, data.index);
   });
 }
 

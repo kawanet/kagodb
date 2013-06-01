@@ -118,7 +118,7 @@ KagoDB.prototype.get = function(key) {
 
 /** This sets a parameter value for the instance parameters.
  * @method KagoDB.prototype.set
- * @param {String|Object} keys - parameter name or a parameters object
+ * @param {String|Object} key - parameter name or a parameters object
  * @param {any} [val] - new parameter value
  * @returns this instance itself for method chaining
  * @example

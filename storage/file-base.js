@@ -80,7 +80,7 @@ StorageFile.prototype.exists = function(id, callback) {
   });
 };
 
-StorageFile.prototype.keys = function(callback) {
+StorageFile.prototype.index = function(callback) {
   callback = callback || NOP;
   var folder = this.folder();
   var suffix = this.suffix();

@@ -71,12 +71,12 @@ describe('Proxy jQuery', function() {
       });
     });
 
-    it('keys & find', function(done) {
-      collection.keys(function(err, list) {
-        assert(!err, 'keys failed' + err);
-        assert.ok(list, 'keys response');
+    it('index & find', function(done) {
+      collection.index(function(err, list) {
+        assert(!err, 'index failed' + err);
+        assert.ok(list, 'index response');
         list = list || [];
-        assert.ok(list.length, 'keys length');
+        assert.ok(list.length, 'index length');
         collection.find().toArray(function(err, res) {
           assert(!err, 'find failed' + err);
           assert.ok(res, 'find response');

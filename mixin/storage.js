@@ -2,7 +2,7 @@
 
 var StorageBase = '../storage';
 
-/** This mixin provides storage() method as well as CRUD methods: write(), read(), erase(), exists(), keys().
+/** This mixin provides storage() method as well as low-level CRUD methods: write(), read(), erase(), exists(), index().
  * @class StorageMixin
  * @mixin
  */
@@ -12,7 +12,7 @@ module.exports = function() {
   this.write = write;
   this.erase = erase;
   this.exists = exists;
-  this.keys = keys;
+  this.index = index;
   this.storage = storage;
 };
 
@@ -72,8 +72,8 @@ function exists(id, callback) {
  * @returns collection instance itself for method chaining
  */
 
-function keys(callback) {
-  this.storage().keys(callback);
+function index(callback) {
+  this.storage().index(callback);
   return this;
 }
 
