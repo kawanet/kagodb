@@ -2,7 +2,7 @@
 
 module.exports = StorageMemory;
 
-var Stores = {};
+var SharedStore = {};
 
 function StorageMemory(options) {
   if (!(this instanceof StorageMemory)) return new StorageMemory(options);
@@ -18,8 +18,7 @@ StorageMemory.prototype.keys = keys;
 
 function read(id, callback) {
   callback = callback || NOP;
-  var ns = this.options.namespace;
-  var store = Stores[ns] || (Stores[ns] = {});
+  var store = this._store || this.store();
   if (store.hasOwnProperty(id)) {
     var item = store[id];
     callback(null, item);
@@ -31,16 +30,14 @@ function read(id, callback) {
 
 function write(id, item, callback) {
   callback = callback || NOP;
-  var ns = this.options.namespace;
-  var store = Stores[ns] || (Stores[ns] = {});
+  var store = this._store || this.store();
   store[id] = item;
   callback();
 }
 
 function remove(id, callback) {
   callback = callback || NOP;
-  var ns = this.options.namespace;
-  var store = Stores[ns] || (Stores[ns] = {});
+  var store = this._store || this.store();
   if (store.hasOwnProperty(id)) {
     delete store[id];
     callback();
@@ -52,18 +49,29 @@ function remove(id, callback) {
 
 function exists(id, callback) {
   callback = callback || NOP;
-  var ns = this.options.namespace;
-  var store = Stores[ns] || (Stores[ns] = {});
+  var store = this._store || this.store();
   var exist = store.hasOwnProperty(id);
   callback(null, exist);
 }
 
 function keys(callback) {
   callback = callback || NOP;
-  var ns = this.options.namespace;
-  var store = Stores[ns] || (Stores[ns] = {});
+  var store = this._store || this.store();
   var list = Object.keys(store);
   callback(null, list);
 }
+
+StorageMemory.prototype.store = function() {
+  var ns, store;
+  if (!this._store) {
+    if (ns = this.options.namespace) {
+      store = SharedStore[ns] || (SharedStore[ns] = {}); // shared memory in a process
+    } else {
+      store = {}; // volatile memory available only in a instance
+    }
+    this._store = store;
+  }
+  return this._store;
+};
 
 function NOP() {}

@@ -29,35 +29,33 @@ module.exports = function() {
 function webapi() {
   var collection = this;
   var f;
+  var methods = new WebapiMethods();
 
-  f = function(req, res) {
+  return function(req, res) {
+    methods.progress('webapi:', req.method, req.url, req.query, req.body);
+
     var parser = collection.get('webapi-preprocess') || express.bodyParser();
     var responder = collection.get('webapi-responder') || res.send;
     responder = responder.bind(res);
 
     parser(req, res, function() {
-      var params = f.getParams(req);
+      var params = getParams(req);
       if (!params.method) {
         return responder(400); // Bad Request
       }
 
-      var method = f.methods[params.method];
-      if (!method) {
+      if (!methods[params.method]) {
         return responder(400); // Bad Request
       }
-      method(collection, params, responder);
+      methods[params.method](collection, params, responder);
     });
   };
-
-  f.getParams = getParams;
-  f.methods = new WebapiMethods();
-
-  return f;
 }
 
 function WebapiMethods() {}
 
 WebapiMethods.prototype.read = function(collection, params, next) {
+  var self = this;
   collection.exists(params.id, function(err, exist) {
     if (err) {
       console.error('read:', err);
@@ -71,18 +69,20 @@ WebapiMethods.prototype.read = function(collection, params, next) {
         console.error('read:', err);
         return next(500); // Internal Server Error
       }
+      self.progress('read:', params.id, item);
       next(item);
     });
   })
 };
 
 WebapiMethods.prototype.write = function(collection, params, next) {
-
+  var self = this;
   collection.write(params.id, params.content, function(err) {
     if (err) {
       console.error('write:', err);
       return next(500); // Internal Server Error
     }
+    self.progress('write:', params.id);
     next({
       success: true
     });
@@ -90,11 +90,14 @@ WebapiMethods.prototype.write = function(collection, params, next) {
 };
 
 WebapiMethods.prototype.remove = function(collection, params, next) {
+  var self = this;
   collection.remove(params.id, function(err) {
+    console.error('remove:', params.id, err);
     if (err) {
       console.error('remove:', err);
       return next(500); // Internal Server Error
     }
+    self.progress('remove:', params.id);
     next({
       success: true
     });
@@ -102,23 +105,22 @@ WebapiMethods.prototype.remove = function(collection, params, next) {
 };
 
 WebapiMethods.prototype.exists = function(collection, params, next) {
+  var self = this;
   collection.exists(params.id, function(err, exist) {
     if (err) {
       console.error('exists:', err);
       return next(500); // Internal Server Error
     }
-    if (req.method.toLowerCase() === 'head') {
-      next(exist ? 200 : 404);
-    } else {
-      next({
-        exist: !! exist
-      });
-    }
+    self.progress('exists:', params.id, !! exist);
+    next({
+      exist: !! exist
+    });
   });
 };
 
 WebapiMethods.prototype.find = function(collection, params, next) {
-  var cursor = collection.find(params.condition);
+  var self = this;
+  var cursor = collection.find(params.condition, params.projection);
   if (params.limit) cursor.limit(params.limit);
   if (params.offset) cursor.offset(params.offset);
   if (params.sort) cursor.sort(params.sort);
@@ -127,6 +129,7 @@ WebapiMethods.prototype.find = function(collection, params, next) {
       console.error('find:', err);
       return next(500); // Internal Server Error
     }
+    self.progress('find:', params, list.length);
     next({
       data: list
     });
@@ -134,11 +137,13 @@ WebapiMethods.prototype.find = function(collection, params, next) {
 };
 
 WebapiMethods.prototype.count = function(collection, params, next) {
+  var self = this;
   collection.count(params.condition, function(err, count) {
     if (err) {
       console.error('count:', err);
       return next(500); // Internal Server Error
     }
+    self.progress('count:', params);
     next({
       count: count
     });
@@ -146,18 +151,15 @@ WebapiMethods.prototype.count = function(collection, params, next) {
 };
 
 function getParams(req) {
-  var params = req.query;
+  var http_method = req.method.toLowerCase();
+  var params = (http_method == 'post') ? req.body : req.query;
+  var id = req.params[0];
+  if (id) params.id = id;
 
   if (!params.method) {
-    var http_method = req.method.toLowerCase();
-    params.id = req.params[0];
     switch (http_method) {
       case 'get':
-        if (params.id) {
-          params.method = 'read';
-        } else {
-          params.method = 'find';
-        }
+        params.method = 'read';
         break;
 
       case 'put':
@@ -170,7 +172,8 @@ function getParams(req) {
         break;
 
       case 'head':
-        params.method = 'exists';
+        // params.method = 'exists';
+        params.method = 'read';
         break;
     }
   }
@@ -180,6 +183,10 @@ function getParams(req) {
   }
 
   return params;
+}
+
+WebapiMethods.prototype.progress = function() {
+  console.error.apply(null, arguments);
 }
 
 function contentParser(content) {
