@@ -14,6 +14,7 @@
     "grunt-jsdoc": "*",
     "grunt-browserify": "*",
     "grunt-contrib-uglify": "*",
-    "async": "*"
+    "async": "*",
+    "jquery": "*"
   }
 }

@@ -373,7 +373,6 @@ describe('Cursor', function() {
         assert.equal(list.length, keys.length, 'found');
         for (var i = 0; i < list.length; i++) {
           var item = list[i];
-          console.log(item);
           assert(item.string, 'string should exist');
           assert(!item.decimal, 'decimal should not exist');
           assert(!item.numeric, 'numeric should not exist');
@@ -393,8 +392,7 @@ describe('Cursor', function() {
         assert.equal(list.length, keys.length, 'found');
         for (var i = 0; i < list.length; i++) {
           var item = list[i];
-           console.log(item);
-         assert(!item.string, 'string should not exist');
+          assert(!item.string, 'string should not exist');
           assert(item.decimal, 'decimal should exist');
           assert(item.numeric, 'numeric should exist');
         }
