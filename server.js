@@ -5,8 +5,7 @@ var KagoDB = require('./index');
 
 var opts = {
   storage: 'yaml',
-  path: './data',
-  'webapi-responder': express.response.jsonp
+  path: './data'
 };
 
 var app = express();

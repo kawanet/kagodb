@@ -34,11 +34,13 @@ function webapi() {
     var parser = collection.get('webapi-preprocess') || express.bodyParser();
     var responder = collection.get('webapi-responder') || res.send;
     responder = responder.bind(res);
+
     parser(req, res, function() {
       var params = f.getParams(req);
       if (!params.method) {
         return responder(400); // Bad Request
       }
+
       var method = f.methods[params.method];
       if (!method) {
         return responder(400); // Bad Request
@@ -174,13 +176,18 @@ function getParams(req) {
   }
 
   if (typeof params.content === 'string') {
-    try {
-      params.content = JSON.parse(params.content);
-    } catch (e) {
-      console.error(e, params.content);
-      params.content = null;
-    }
+    params.content = contentParser(params.content);
   }
 
   return params;
+}
+
+function contentParser(content) {
+  var body;
+  try {
+    body = JSON.parse(content);
+  } catch (e) {
+    console.error(e, content);
+  }
+  return body;
 }
