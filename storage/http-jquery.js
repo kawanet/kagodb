@@ -12,7 +12,7 @@ function ProxyJquery(options) {
 ProxyJquery.prototype.read = read;
 ProxyJquery.prototype.write = write;
 ProxyJquery.prototype.erase = erase;
-ProxyJquery.prototype.exists = exists;
+ProxyJquery.prototype.exist = exist;
 ProxyJquery.prototype.index = index;
 
 function read(id, callback) {
@@ -78,14 +78,14 @@ function erase(id, callback) {
   });
 }
 
-function exists(id, callback) {
+function exist(id, callback) {
   callback = callback || NOP;
   var url = this.endpoint() + id;
   var opt = {
     type: 'POST',
     url: url,
     data: {
-      method: 'exists'
+      method: 'exist'
     }
   };
   var jQuery = this.options.jquery;
@@ -95,8 +95,8 @@ function exists(id, callback) {
   }).done(function(data, status, jqXHR) {
     // console.error(jqXHR.responseText);
     data = data || {};
-    var exist = data.exist;
-    callback(null, exist);
+    var flag = !! data.exist;
+    callback(null, flag);
   });
 }
 

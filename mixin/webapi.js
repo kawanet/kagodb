@@ -56,7 +56,7 @@ function WebapiMethods() {}
 
 WebapiMethods.prototype.read = function(collection, params, next) {
   var self = this;
-  collection.exists(params.id, function(err, exist) {
+  collection.exist(params.id, function(err, exist) {
     if (err) {
       console.error('read:', err);
       return next(500); // Internal Server Error
@@ -104,14 +104,14 @@ WebapiMethods.prototype.erase = function(collection, params, next) {
   });
 };
 
-WebapiMethods.prototype.exists = function(collection, params, next) {
+WebapiMethods.prototype.exist = function(collection, params, next) {
   var self = this;
-  collection.exists(params.id, function(err, exist) {
+  collection.exist(params.id, function(err, exist) {
     if (err) {
-      console.error('exists:', err);
+      console.error('exist:', err);
       return next(500); // Internal Server Error
     }
-    self.progress('exists:', params.id, !! exist);
+    self.progress('exist:', params.id, !! exist);
     next({
       exist: !! exist
     });
@@ -186,7 +186,7 @@ function getParams(req) {
         break;
 
       case 'head':
-        // params.method = 'exists';
+        // params.method = 'exist';
         params.method = 'read';
         break;
     }

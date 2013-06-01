@@ -44,10 +44,10 @@ describe('Proxy jQuery', function() {
     });
 
     it('exist', function(done) {
-      collection.exists(id1, function(err, res) {
+      collection.exist(id1, function(err, res) {
         assert(!err, 'exist failed' + err);
         assert.ok(res, 'exist foo');
-        collection.exists(id2, function(err, res) {
+        collection.exist(id2, function(err, res) {
           assert(!err, 'not-exist failed' + err);
           assert.ok(!res, 'not-exist bar');
           done();
@@ -90,7 +90,7 @@ describe('Proxy jQuery', function() {
     it('erase', function(done) {
       collection.erase(id1, function(err) {
         assert(!err, 'erase failed' + err);
-        collection.exists(id1, function(err, res) {
+        collection.exist(id1, function(err, res) {
           assert(!err, 'exist failed' + err);
           assert.ok(!res, 'not-exist foo');
           collection.erase(id2, function(err) {

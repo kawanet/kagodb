@@ -13,7 +13,7 @@ function StorageMemory(options) {
 StorageMemory.prototype.read = read;
 StorageMemory.prototype.write = write;
 StorageMemory.prototype.erase = erase;
-StorageMemory.prototype.exists = exists;
+StorageMemory.prototype.exist = exist;
 StorageMemory.prototype.index = index;
 
 function read(id, callback) {
@@ -47,11 +47,11 @@ function erase(id, callback) {
   }
 }
 
-function exists(id, callback) {
+function exist(id, callback) {
   callback = callback || NOP;
   var store = this._store || this.store();
-  var exist = store.hasOwnProperty(id);
-  callback(null, exist);
+  var exists = store.hasOwnProperty(id);
+  callback(null, exists);
 }
 
 function index(callback) {

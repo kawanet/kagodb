@@ -35,17 +35,17 @@ describe('YAML Storage', function() {
     });
 
     it('exist', function(done) {
-      collection.exists(id1, function(err, res) {
+      collection.exist(id1, function(err, res) {
         assert(!err, 'exist failed');
         assert.ok(res, 'exist foo');
-        collection.exists(id2, function(err, res) {
+        collection.exist(id2, function(err, res) {
           assert(!err, 'not-exist failed');
           assert.ok(!res, 'not-exist bar');
 
           fs.stat(path1, function(err, stat) {
-            assert(!err, 'file 1 exists');
+            assert(!err, 'file 1 exist');
             fs.stat(path2, function(err, stat) {
-              assert(err, 'file 2 not exists');
+              assert(err, 'file 2 not exist');
               done();
             });
           });
@@ -89,16 +89,16 @@ describe('YAML Storage', function() {
     it('erase', function(done) {
       collection.erase(id1, function(err) {
         assert(!err, 'erase failed');
-        collection.exists(id1, function(err, res) {
+        collection.exist(id1, function(err, res) {
           assert(!err, 'exist failed');
           assert.ok(!res, 'not-exist foo');
           collection.erase(id2, function(err) {
             assert.ok(err, 'erase error detected');
 
             fs.stat(path1, function(err, stat) {
-              assert(err, 'file 1 exists');
+              assert(err, 'file 1 exist');
               fs.stat(path2, function(err, stat) {
-                assert(err, 'file 2 not exists');
+                assert(err, 'file 2 not exist');
                 done();
               });
             });

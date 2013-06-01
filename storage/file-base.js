@@ -73,7 +73,7 @@ StorageFile.prototype.erase = function(id, callback) {
   });
 };
 
-StorageFile.prototype.exists = function(id, callback) {
+StorageFile.prototype.exist = function(id, callback) {
   var path = this.path(id);
   fs.stat(path, function(err, stat) {
     callback(null, !! stat);
