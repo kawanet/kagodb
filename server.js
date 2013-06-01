@@ -3,13 +3,13 @@
 var express = require('express');
 var KagoDB = require('./index');
 
-var app = express();
-
 var opts = {
   storage: 'yaml',
-  path: 'data'
+  path: './data',
+  'webapi-responder': express.response.jsonp
 };
 
+var app = express();
+app.use(express.static(__dirname + '/public'));
 app.all('/data/*', KagoDB(opts).webapi());
-
 app.listen(3000);
