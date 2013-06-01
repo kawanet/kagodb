@@ -8,11 +8,13 @@ module.exports = Cursor;
  * @class Cursor
  * @param {KagoDB} collection - source collection
  * @param {Function} [condition] - test function
+ * @param {Function} [projection] - map function
  */
 
-function Cursor(collection, condition) {
+function Cursor(collection, condition, projection) {
   this.collection = collection;
   this.condition = condition;
+  this.projection = projection;
   this.filters = {};
 }
 
@@ -114,6 +116,9 @@ Cursor.prototype.toArray = function(callback) {
     }
     if (limit) {
       buf = buf.splice(0, limit);
+    }
+    if (self.projection) {
+      buf = buf.map(self.projection);
     }
     self._values = buf; // cache
     callback(null, buf);

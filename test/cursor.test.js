@@ -234,7 +234,7 @@ describe('Cursor', function() {
       var cond = {};
       collection.find(cond).toArray(function(err, list) {
         assert(!err, 'find() error: ' + err);
-        assert.equal(list.length, keys.length, 'all ok');
+        assert.equal(list.length, keys.length, 'found');
         done();
       });
     });
@@ -362,5 +362,45 @@ describe('Cursor', function() {
         });
       });
     });
+
+    it('find({}, {string:1})', function(done) {
+      var cond = {};
+      var proj = {
+        string: 1
+      };
+      collection.find(cond, proj).toArray(function(err, list) {
+        assert(!err, 'find() error: ' + err);
+        assert.equal(list.length, keys.length, 'found');
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i];
+          console.log(item);
+          assert(item.string, 'string should exist');
+          assert(!item.decimal, 'decimal should not exist');
+          assert(!item.numeric, 'numeric should not exist');
+        }
+        done();
+      });
+    });
+
+    it('find({}, {decimal:1, numeric:1})', function(done) {
+      var cond = {};
+      var proj = {
+        decimal: 1,
+        numeric: 1
+      };
+      collection.find(cond, proj).toArray(function(err, list) {
+        assert(!err, 'find() error: ' + err);
+        assert.equal(list.length, keys.length, 'found');
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i];
+           console.log(item);
+         assert(!item.string, 'string should not exist');
+          assert(item.decimal, 'decimal should exist');
+          assert(item.numeric, 'numeric should exist');
+        }
+        done();
+      });
+    });
+
   });
 });
