@@ -1,7 +1,7 @@
 /*! json.js */
 
-var utils = require('../core/utils')
-var StorageFile = require('./file-base')
+var utils = require('../core/utils');
+var StorageFile = require('./file-base');
 
 module.exports = utils.inherits(StorageJSON, StorageFile);
 
