@@ -18,19 +18,11 @@ ProxyJquery.prototype.index = index;
 function read(id, callback) {
   callback = callback || NOP;
   var url = this.endpoint() + id;
-  var opt = {
-    type: 'GET',
-    url: url,
-    dataType: 'json'
+  var opts = {
+    method: 'GET',
+    url: url
   };
-  var jQuery = this.options.jquery;
-  if (!jQuery) throw new Error('jQuery not loaded');
-  jQuery.ajax(opt).fail(function(jqXHR, status, error) {
-    callback(ajaxFail(jqXHR, status, error));
-  }).done(function(data, status, jqXHR) {
-    // console.error(jqXHR.responseText);
-    callback(null, data);
-  });
+  this.request(opts, callback);
 }
 
 function write(id, item, callback) {
@@ -40,83 +32,60 @@ function write(id, item, callback) {
     method: 'write',
     content: item
   };
-  var opt = {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    type: 'POST',
+  var opts = {
+    method: 'POST',
     url: url,
-    data: JSON.stringify(data)
+    json: data
   };
-  var jQuery = this.options.jquery;
-  if (!jQuery) throw new Error('jQuery not loaded');
-  jQuery.ajax(opt).fail(function(jqXHR, status, error) {
-    callback(ajaxFail(jqXHR, status, error));
-  }).done(function(data, status, jqXHR) {
-    // console.error(jqXHR.responseText);
-    callback();
-  });
+  this.request(opts, callback);
 }
 
 function erase(id, callback) {
   callback = callback || NOP;
   var url = this.endpoint() + id;
-  var opt = {
-    type: 'POST',
-    url: url,
-    data: {
-      method: 'erase'
-    }
+  var data = {
+    method: 'erase'
   };
-  var jQuery = this.options.jquery;
-  if (!jQuery) throw new Error('jQuery not loaded');
-  jQuery.ajax(opt).fail(function(jqXHR, status, error) {
-    callback(ajaxFail(jqXHR, status, error));
-  }).done(function(data, status, jqXHR) {
-    // console.error(jqXHR.responseText);
-    callback();
-  });
+  var opts = {
+    method: 'POST',
+    url: url,
+    form: data
+  };
+  this.request(opts, callback);
 }
 
 function exist(id, callback) {
   callback = callback || NOP;
   var url = this.endpoint() + id;
-  var opt = {
-    type: 'POST',
-    url: url,
-    data: {
-      method: 'exist'
-    }
+  var data = {
+    method: 'exist'
   };
-  var jQuery = this.options.jquery;
-  if (!jQuery) throw new Error('jQuery not loaded');
-  jQuery.ajax(opt).fail(function(jqXHR, status, error) {
-    callback(ajaxFail(jqXHR, status, error));
-  }).done(function(data, status, jqXHR) {
-    // console.error(jqXHR.responseText);
-    data = data || {};
-    var flag = !! data.exist;
-    callback(null, flag);
+  var opts = {
+    method: 'POST',
+    url: url,
+    form: data
+  };
+  this.request(opts, function(err, res) {
+    res = res || {};
+    var flag = !! res.exist;
+    callback(err, flag);
   });
 }
 
 function index(callback) {
   callback = callback || NOP;
   var url = this.endpoint();
-  var opt = {
-    type: 'POST',
-    url: url,
-    data: {
-      method: 'index'
-    }
+  var data = {
+    method: 'index'
   };
-  var jQuery = this.options.jquery;
-  if (!jQuery) throw new Error('jQuery not loaded');
-  jQuery.ajax(opt).fail(function(jqXHR, status, error) {
-    callback(ajaxFail(jqXHR, status, error));
-  }).done(function(data, status, jqXHR) {
-    data = data || {};
-    callback(null, data.index);
+  var opts = {
+    method: 'POST',
+    url: url,
+    form: data
+  };
+  this.request(opts, function(err, res) {
+    res = res || {};
+    callback(err, res.index);
   });
 }
 
@@ -128,15 +97,32 @@ ProxyJquery.prototype.endpoint = function() {
   return endpoint.replace(/\/*$/, '/');
 }
 
-function ajaxFail(jqXHR, status, error) {
-  if (!(error instanceof Error)) {
-    jqXHR = jqXHR || {};
-    status = jqXHR.status || status;
-    error = jqXHR.responseText || error || '';
-    error = new Error(status + ' ' + error);
+ProxyJquery.prototype.request = function(opts, callback) {
+  var jopts = {};
+  jopts.type = opts.method || 'GET';
+  jopts.url = opts.url;
+  jopts.dataType = 'json';
+  if (opts.json) {
+    jopts.headers = {
+      'Content-Type': 'application/json'
+    };
+    jopts.data = JSON.stringify(opts.json);
+  } else if (opts.form) {
+    jopts.data = opts.form;
   }
-
-  return error;
-}
+  var jQuery = this.options.jquery;
+  if (!jQuery) throw new Error('jQuery not loaded');
+  jQuery.ajax(jopts).fail(function(jqXHR, status, error) {
+    if (!(error instanceof Error)) {
+      jqXHR = jqXHR || {};
+      status = jqXHR.status || status;
+      error = jqXHR.responseText || error || '';
+      error = new Error(status + ' ' + error);
+    }
+    callback(error);
+  }).done(function(data, status, jqXHR) {
+    callback(null, data);
+  });
+};
 
 function NOP() {}
