@@ -31,15 +31,19 @@ function webapi() {
   var f;
 
   f = function(req, res) {
-    express.bodyParser()(req, res, function() {
+    var parser = collection.get('webapi-preprocess') || express.bodyParser();
+    var responder = collection.get('webapi-responder') || res.send;
+    responder = responder.bind(res);
+    parser(req, res, function() {
       var params = f.getParams(req);
-      if (!params.method)
-        return res.send(400);
-
-      if (!f.methods[params.method])
-        return res.send(400);
-
-      f.methods[params.method](req, res, collection, params);
+      if (!params.method) {
+        return responder(400); // Bad Request
+      }
+      var method = f.methods[params.method];
+      if (!method) {
+        return responder(400); // Bad Request
+      }
+      method(collection, params, responder);
     });
   };
 
@@ -51,58 +55,92 @@ function webapi() {
 
 function WebapiMethods() {}
 
-WebapiMethods.prototype.read = function(req, res, collection, params) {
-  collection.read(params.id, errorCheck(function(err, item) {
-    res.json(item);
-  }));
+WebapiMethods.prototype.read = function(collection, params, next) {
+  collection.exists(params.id, function(err, exist) {
+    if (err) {
+      console.error('read:', err);
+      return next(500); // Internal Server Error
+    }
+    if (!exist) {
+      return next(404); // Not Found
+    }
+    collection.read(params.id, function(err, item) {
+      if (err) {
+        console.error('read:', err);
+        return next(500); // Internal Server Error
+      }
+      next(item);
+    });
+  })
 };
 
-WebapiMethods.prototype.write = function(req, res, collection, params) {
-  collection.write(params.id, params.content, errorCheck(function(err) {
-    res.json({
+WebapiMethods.prototype.write = function(collection, params, next) {
+
+  collection.write(params.id, params.content, function(err) {
+    if (err) {
+      console.error('write:', err);
+      return next(500); // Internal Server Error
+    }
+    next({
       success: true
     });
-  }));
+  });
 };
 
-WebapiMethods.prototype.remove = function(req, res, collection, params) {
-  collection.remove(params.id, errorCheck(function(err) {
-    res.json({
+WebapiMethods.prototype.remove = function(collection, params, next) {
+  collection.remove(params.id, function(err) {
+    if (err) {
+      console.error('remove:', err);
+      return next(500); // Internal Server Error
+    }
+    next({
       success: true
     });
-  }));
+  });
 };
 
-WebapiMethods.prototype.exists = function(req, res, collection, params) {
-  collection.exists(params.id, errorCheck(function(err, exist) {
+WebapiMethods.prototype.exists = function(collection, params, next) {
+  collection.exists(params.id, function(err, exist) {
+    if (err) {
+      console.error('exists:', err);
+      return next(500); // Internal Server Error
+    }
     if (req.method.toLowerCase() === 'head') {
-      res.send(exist ? 200 : 404);
+      next(exist ? 200 : 404);
     } else {
-      res.json({
-        exist: exist
+      next({
+        exist: !! exist
       });
     }
-  }));
+  });
 };
 
-WebapiMethods.prototype.find = function(req, res, collection, params) {
+WebapiMethods.prototype.find = function(collection, params, next) {
   var cursor = collection.find(params.condition);
   if (params.limit) cursor.limit(params.limit);
   if (params.offset) cursor.offset(params.offset);
   if (params.sort) cursor.sort(params.sort);
-  cursor.toArray(errorCheck(function(err, list) {
-    res.json({
+  cursor.toArray(function(err, list) {
+    if (err) {
+      console.error('find:', err);
+      return next(500); // Internal Server Error
+    }
+    next({
       data: list
     });
-  }));
+  });
 };
 
-WebapiMethods.prototype.count = function(req, res, collection, params) {
-  collection.count(params.condition, errorCheck(function(err, count) {
-    res.json({
+WebapiMethods.prototype.count = function(collection, params, next) {
+  collection.count(params.condition, function(err, count) {
+    if (err) {
+      console.error('count:', err);
+      return next(500); // Internal Server Error
+    }
+    next({
       count: count
     });
-  }));
+  });
 };
 
 function getParams(req) {
@@ -145,14 +183,4 @@ function getParams(req) {
   }
 
   return params;
-}
-
-function errorCheck(callback) {
-  return function(err) {
-    if (err) {
-      console.error(err);
-      return res.send(500);
-    }
-    callback.apply(null, arguments);
-  };
 }
