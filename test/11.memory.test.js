@@ -2,8 +2,8 @@
 
 var assert = require('chai').assert;
 var KagoDB = require('../index');
-
 var crud_tests = require('./lib/crud_tests');
+
 describe('Memory Storage', function() {
 
   describe('CRUD without namespace', function() {
