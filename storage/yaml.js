@@ -2,17 +2,21 @@
 
 var jsyaml = require('js-yaml');
 var utils = require('../core/utils');
-var StorageFile = require('./file-base');
+var file_base = require('./file-base');
 
-module.exports = utils.inherits(StorageYAML, StorageFile);
+module.exports = function() {
+  var mixin = file_base.apply(this, arguments);
+  mixin.file_suffix = file_suffix;
+  mixin.file_decode = file_decode;
+  mixin.file_encode = file_encode;
+  return mixin;
+};
 
-function StorageYAML(options) {
-  if (!(this instanceof StorageYAML)) return new StorageYAML(options);
-  if (this.__super__) this.__super__.apply(this, arguments); // super class's constructor
-  this.options.suffix = this.options.suffix || '.yaml';
+function file_suffix() {
+  return this.get('suffix') || '.yaml';
 }
 
-StorageYAML.prototype.decode = function(source, callback) {
+function file_decode(source, callback) {
   var item;
   try {
     item = jsyaml.load(source);
@@ -21,9 +25,9 @@ StorageYAML.prototype.decode = function(source, callback) {
     return;
   }
   callback(null, item);
-};
+}
 
-StorageYAML.prototype.encode = function(item, callback) {
+function file_encode(item, callback) {
   var encoded;
   try {
     encoded = jsyaml.dump(item);
@@ -31,4 +35,4 @@ StorageYAML.prototype.encode = function(item, callback) {
     callback(err);
   }
   callback(null, encoded);
-};
+}

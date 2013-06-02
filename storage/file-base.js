@@ -2,61 +2,69 @@
 
 var fs = require('fs');
 
-module.exports = StorageFile;
+module.exports = function() {
+  var mixin = {};
+  mixin.read = read;
+  mixin.write = write;
+  mixin.erase = erase;
+  mixin.exist = exist;
+  mixin.index = index;
+  mixin.file_path = file_path;
+  mixin.file_folder = file_folder;
+  mixin.file_suffix = file_suffix;
+  mixin.file_decode = file_decode;
+  mixin.file_encode = file_encode;
+  return mixin;
+};
 
-function StorageFile(options) {
-  if (!(this instanceof StorageFile)) return new StorageFile(options);
-  this.options = options || {};
-}
-
-StorageFile.prototype.folder = function() {
-  var path = this.options.path;
+function file_folder() {
+  var path = this.get('path');
   if (!path) {
     throw new Error('"path" parameter for storage is not defined');
   }
   return path;
-};
+}
 
-StorageFile.prototype.suffix = function() {
-  var suffix = this.options.suffix;
+function file_suffix() {
+  var suffix = this.get('suffix');
   if (!suffix) {
     throw new Error('"suffix" parameter for storage is not defined');
   }
   return suffix;
-};
+}
 
-StorageFile.prototype.decode = function(source, callback) {
+function file_decode(source, callback) {
   throw new Error('decode() not implemented');
-};
+}
 
-StorageFile.prototype.encode = function(item, callback) {
+function file_encode(item, callback) {
   throw new Error('encode() not implemented');
-};
+}
 
-StorageFile.prototype.path = function(id) {
-  var folder = this.folder();
-  var suffix = this.suffix();
+function file_path(id) {
+  var folder = this.file_folder();
+  var suffix = this.file_suffix();
   return folder + '/' + id + suffix;
-};
+}
 
-StorageFile.prototype.read = function(id, callback) {
+function read(id, callback) {
   callback = callback || NOP;
-  var path = this.path(id);
+  var path = this.file_path(id);
   var self = this;
   fs.readFile(path, 'utf8', function(err, content) {
     if (err) {
       callback(err);
     } else {
-      self.decode(content, function(err, item) {
+      self.file_decode(content, function(err, item) {
         callback(err, item);
       });
     }
   });
-};
+}
 
-StorageFile.prototype.write = function(id, item, callback) {
-  var path = this.path(id);
-  this.encode(item, function(err, encoded) {
+function write(id, item, callback) {
+  var path = this.file_path(id);
+  this.file_encode(item, function(err, encoded) {
     if (err) {
       callback(err);
     } else {
@@ -65,26 +73,26 @@ StorageFile.prototype.write = function(id, item, callback) {
       });
     }
   });
-};
+}
 
-StorageFile.prototype.erase = function(id, callback) {
-  var path = this.path(id);
+function erase(id, callback) {
+  var path = this.file_path(id);
   fs.unlink(path, function(err) {
     callback(err);
   });
-};
+}
 
-StorageFile.prototype.exist = function(id, callback) {
-  var path = this.path(id);
+function exist(id, callback) {
+  var path = this.file_path(id);
   fs.stat(path, function(err, stat) {
     callback(null, !! stat);
   });
-};
+}
 
-StorageFile.prototype.index = function(callback) {
+function index(callback) {
   callback = callback || NOP;
-  var folder = this.folder();
-  var suffix = this.suffix();
+  var folder = this.file_folder();
+  var suffix = this.file_suffix();
   suffix = suffix.toLowerCase();
   var suflen = suffix.length;
   fs.readdir(folder, function(err, list) {
@@ -100,6 +108,6 @@ StorageFile.prototype.index = function(callback) {
       callback(null, list);
     }
   });
-};
+}
 
 function NOP() {}

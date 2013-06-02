@@ -1,17 +1,21 @@
 /*! json.js */
 
 var utils = require('../core/utils');
-var StorageFile = require('./file-base');
+var file_base = require('./file-base');
 
-module.exports = utils.inherits(StorageJSON, StorageFile);
+module.exports = function() {
+  var mixin = file_base.apply(this, arguments);
+  mixin.file_suffix = file_suffix;
+  mixin.file_decode = file_decode;
+  mixin.file_encode = file_encode;
+  return mixin;
+};
 
-function StorageJSON(options) {
-  if (!(this instanceof StorageJSON)) return new StorageJSON(options);
-  if (this.__super__) this.__super__.apply(this, arguments); // super class's constructor
-  this.options.suffix = this.options.suffix || '.json';
+function file_suffix() {
+  return this.get('suffix') || '.json';
 }
 
-StorageJSON.prototype.decode = function(source, callback) {
+function file_decode(source, callback) {
   var item;
   try {
     item = JSON.parse(source);
@@ -20,9 +24,9 @@ StorageJSON.prototype.decode = function(source, callback) {
     return;
   }
   callback(null, item);
-};
+}
 
-StorageJSON.prototype.encode = function(item, callback) {
+function file_encode(item, callback) {
   var encoded;
   var replacer = this.options['json-replacer'];
   var spaces = this.options['json-spaces'];
@@ -32,6 +36,6 @@ StorageJSON.prototype.encode = function(item, callback) {
     callback(err);
   }
   callback(null, encoded);
-};
+}
 
 function NOP() {}
