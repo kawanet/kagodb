@@ -88,34 +88,41 @@ function index(callback) {
 function storage(store) {
   // erase store instance cache
   if (store) {
-    this._store = null;
+    this._storage = null;
   }
-  if (!this._store) {
-    store = store || this.get('storage');
-    if (!store) {
-      throw new Error('storage not specified');
-    }
-    if ('function' != typeof store) {
-      store += '';
-      var preload = this.get('storage-preload') || {};
-      if (preload[store]) {
-        store = preload[store];
-      } else if (store.search(/^[\w\-\.]+$/) < 0) {
-        throw new Error('invalid store name: ' + store);
-      } else {
-        var path = StorageBase + '/' + store;
-        try {
-          store = require(path);
-        } catch (err) {
-          throw new Error('storage class failed: ' + err);
-        }
-        if (!store) {
-          throw new Error('storage class invalid: ' + store);
-        }
+  if (this._storage) {
+    return this._storage;
+  }
+
+  store = store || this.get('storage');
+  if (!store) {
+    throw new Error('storage not specified');
+  }
+
+  if ('function' != typeof store) {
+    store += '';
+    var preload = this.get('storage-preload') || {};
+    if (preload[store]) {
+      store = preload[store];
+    } else if (store.search(/^[\w\-\.]+$/) < 0) {
+      throw new Error('invalid store name: ' + store);
+    } else {
+      var path = StorageBase + '/' + store;
+      try {
+        store = require(path);
+      } catch (err) {
+        throw new Error('storage class failed: ' + err);
+      }
+      if (!store) {
+        throw new Error('storage class invalid: ' + store);
       }
     }
-    // cache the last store instance
-    this._store = new store(this.options);
   }
-  return this._store;
+  this._storage = store(this.options);
+  if ('object' == typeof this._storage) {
+    this.mixin(this._storage);
+    return this;
+  } else {
+    return this._storage;
+  }
 }

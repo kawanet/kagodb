@@ -6,9 +6,8 @@ var StorageFile = require('./file-base');
 module.exports = utils.inherits(StorageJSON, StorageFile);
 
 function StorageJSON(options) {
-  this.__super__ = this.__super__ || NOP;
-  this.__super__.apply(this, arguments); // super class's constructor
-  this.options = this.options || {};
+  if (!(this instanceof StorageJSON)) return new StorageJSON(options);
+  if (this.__super__) this.__super__.apply(this, arguments); // super class's constructor
   this.options.suffix = this.options.suffix || '.json';
 }
 

@@ -5,6 +5,7 @@ var fs = require('fs');
 module.exports = StorageFile;
 
 function StorageFile(options) {
+  if (!(this instanceof StorageFile)) return new StorageFile(options);
   this.options = options || {};
 }
 
