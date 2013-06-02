@@ -136,7 +136,7 @@ KagoDB.prototype.set = function(key, val) {
     for (key in args) {
       opts[key] = args[key];
     }
-  } else {
+  } else if (len > 1 || 'undefined' != typeof key) {
     throw new Error('invalid set(' + key + ', ' + val + ')');
   }
   return this;
