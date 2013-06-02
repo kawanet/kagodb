@@ -93,7 +93,7 @@ ProxyBase.prototype.endpoint = function() {
     throw new Error('endpoint not defined');
   }
   return endpoint.replace(/\/*$/, '/');
-}
+};
 
 ProxyBase.prototype.request = function(opts, callback) {
   throw new Error('request() not implemented');

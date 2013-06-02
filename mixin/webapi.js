@@ -74,7 +74,7 @@ WebapiMethods.prototype.read = function(collection, params, next) {
       self.progress('read:', params.id, item);
       next(item);
     });
-  })
+  });
 };
 
 WebapiMethods.prototype.write = function(collection, params, next) {
@@ -203,7 +203,7 @@ function getParams(req) {
 
 WebapiMethods.prototype.progress = function() {
   // console.error.apply(null, arguments);
-}
+};
 
 function contentParser(content) {
   var body;

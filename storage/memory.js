@@ -64,7 +64,8 @@ function index(callback) {
 StorageMemory.prototype.store = function() {
   var ns, store;
   if (!this._store) {
-    if (ns = this.options.namespace) {
+    ns = this.options.namespace;
+    if (ns) {
       store = SharedStore[ns] || (SharedStore[ns] = {}); // shared memory in a process
     } else {
       store = {}; // volatile memory available only in a instance

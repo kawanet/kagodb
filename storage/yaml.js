@@ -1,8 +1,8 @@
 /*! yaml.js */
 
 var jsyaml = require('js-yaml');
-var utils = require('../core/utils')
-var StorageFile = require('./file-base')
+var utils = require('../core/utils');
+var StorageFile = require('./file-base');
 
 module.exports = utils.inherits(StorageYAML, StorageFile);
 
