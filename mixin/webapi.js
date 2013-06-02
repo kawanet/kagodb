@@ -10,6 +10,7 @@ var express = require('express');
 module.exports = function() {
   var mixin = {};
   mixin.webapi = webapi;
+  mixin.webapiFilter = null;
   return mixin;
 };
 
@@ -30,7 +31,6 @@ module.exports = function() {
 
 function webapi() {
   var collection = this;
-  var f;
   var methods = new WebapiMethods();
 
   return function(req, res) {
@@ -49,7 +49,16 @@ function webapi() {
       if (!methods[params.method]) {
         return responder(400); // Bad Request
       }
-      methods[params.method](collection, params, responder);
+
+      var f = function() {
+        methods[params.method](collection, params, responder);
+      };
+
+      if (collection.webapiFilter) {
+        collection.webapiFilter(params, responder, f);
+      } else {
+        f();
+      }
     });
   };
 }
