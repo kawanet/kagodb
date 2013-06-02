@@ -8,7 +8,9 @@ var express = require('express');
  */
 
 module.exports = function() {
-  this.webapi = webapi;
+  var mixin = {};
+  mixin.webapi = webapi;
+  return mixin;
 };
 
 /** This generates a RESTful Web API function for {@link http://expressjs.com Express.js}.

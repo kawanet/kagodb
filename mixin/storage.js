@@ -8,12 +8,14 @@ var StorageBase = '../storage';
  */
 
 module.exports = function() {
-  this.read = read;
-  this.write = write;
-  this.erase = erase;
-  this.exist = exist;
-  this.index = index;
-  this.storage = storage;
+  var mixin = {};
+  mixin.read = read;
+  mixin.write = write;
+  mixin.erase = erase;
+  mixin.exist = exist;
+  mixin.index = index;
+  mixin.storage = storage;
+  return mixin;
 };
 
 /** This reads an item.

@@ -10,9 +10,11 @@ var Projection = require('../core/projection');
  */
 
 module.exports = function() {
-  this.find = find;
-  this.findOne = findOne;
-  this.count = count;
+  var mixin = {};
+  mixin.find = find;
+  mixin.findOne = findOne;
+  mixin.count = count;
+  return mixin;
 };
 
 /** This creates a cursor object with condition given as a test function or query parameters.

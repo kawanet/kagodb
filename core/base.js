@@ -37,7 +37,7 @@ function inherit(parent) {
    * var collection = new MyKago();
    */
   child.mixin = function(mixin) {
-    mixin.call(child.prototype);
+    _mixin(child.prototype, mixin);
     return child;
   };
 
@@ -131,13 +131,33 @@ KagoDB.prototype.set = function(key, val) {
   var len = arguments.length;
   if (len == 2 && key) {
     opts[key] = val;
-  } else if (len == 1 && key) {
+  } else if (len == 1 && 'object' == typeof key) {
     var args = key;
     for (key in args) {
       opts[key] = args[key];
     }
+  } else {
+    throw new Error('invalid set(' + key + ', ' + val + ')');
   }
   return this;
 };
+
+KagoDB.prototype.mixin = function(mixin) {
+  _mixin(this, mixin);
+  return this;
+};
+
+function _mixin(target, mixin) {
+  if ('function' == typeof mixin) {
+    mixin = mixin.call(target);
+  }
+  if ('object' == typeof mixin) {
+    for (var key in mixin) {
+      target[key] = mixin[key];
+    }
+  } else if (!mixin) {
+    throw new Error('invalid mixin(' + mixin + ')');
+  }
+}
 
 module.exports = inherit(KagoDB);

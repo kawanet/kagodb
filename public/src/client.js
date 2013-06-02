@@ -5,8 +5,8 @@ var storage = require('../../mixin/storage');
 var cursor = require('../../mixin/find');
 
 var KagoDB = Base.inherit();
-KagoDB.mixin(storage);
-KagoDB.mixin(cursor);
+KagoDB.mixin(storage());
+KagoDB.mixin(cursor());
 
 var preload = {
   'memory': require('../../storage/memory'),
