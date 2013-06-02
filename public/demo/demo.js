@@ -5,12 +5,12 @@ var kagos = [];
 $(function() {
   var data = {
     name: 'Server /data/',
-    storage: 'http-jquery',
+    storage: 'http_jquery',
     endpoint: '/data/'
   };
   var memory = {
     name: 'Server /memory/',
-    storage: 'http-jquery',
+    storage: 'http_jquery',
     endpoint: '/memory/'
   };
   var local = {
