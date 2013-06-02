@@ -46,7 +46,7 @@ module.exports = function(grunt) {
     browserify: {
       all: {
         files: {
-          'public/js/kagodb.bundle.js': ['public/src/export.js']
+          'public/js/kagodb.browserify.js': ['public/src/export.js']
         }
       }
     },
@@ -55,13 +55,13 @@ module.exports = function(grunt) {
     uglify: {
       all: {
         files: {
-          'public/js/kagodb.min.js': ['public/js/kagodb.bundle.js']
+          'public/js/kagodb.min.js': ['public/js/kagodb.browserify.js']
         }
       }
     }
   });
 
   grunt.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.registerTask('bundle', ['browserify', 'uglify']);
-  grunt.registerTask('all', ['default', 'jsdoc', 'bundle']);
+  grunt.registerTask('browserify', ['browserify', 'uglify']);
+  grunt.registerTask('all', ['default', 'jsdoc', 'browserify']);
 };
