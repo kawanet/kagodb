@@ -1,7 +1,9 @@
 /*! memory.js */
 
+var encode = require('../core/encode');
+
 module.exports = function() {
-  var mixin = {};
+  var mixin = encode.call(this);
   mixin.read = read;
   mixin.write = write;
   mixin.erase = erase;
@@ -11,22 +13,17 @@ module.exports = function() {
   return mixin;
 };
 
-var default_encode = JSON.stringify;
-var default_decode = JSON.parse;
-
 function read(id, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
   var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
-  if (serial > 0 && !this._memory_decode) {
-    this._memory_decode = this.get('memory_decode') || default_decode;
-  }
   if (store.hasOwnProperty(id)) {
     var item = store[id];
-    if (this._memory_decode) {
-      item = this._memory_decode(item);
+    if (serial > 0) {
+      this.decode(item, callback);
+    } else {
+      callback(null, item);
     }
-    callback(null, item);
   } else {
     var err = new Error('Item not found');
     callback(err, null);
@@ -37,14 +34,17 @@ function write(id, item, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
   var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
-  if (serial > 0 && !this._memory_encode) {
-    this._memory_encode = this.get('memory_encode') || default_encode;
+  if (serial > 0) {
+    this.encode(item, function(err, item) {
+      if (!err) {
+        store[id] = item;
+      }
+      callback(err);
+    });
+  } else {
+    store[id] = item;
+    callback();
   }
-  if (this._memory_encode) {
-    item = this._memory_encode(item);
-  }
-  store[id] = item;
-  callback();
 }
 
 function erase(id, callback) {

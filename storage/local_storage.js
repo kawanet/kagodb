@@ -3,7 +3,7 @@
 var memory = require('./memory');
 
 module.exports = function() {
-  var mixin = memory.apply(this, arguments);
+  var mixin = memory.call(this);
   mixin.memory_store = memory_store;
   return mixin;
 };

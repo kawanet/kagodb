@@ -4,10 +4,10 @@ var jsyaml = require('js-yaml');
 var file_base = require('../core/file_base');
 
 module.exports = function() {
-  var mixin = file_base.apply(this, arguments);
+  var mixin = file_base.call(this);
   mixin.file_suffix = file_suffix;
-  mixin.file_decode = file_decode;
-  mixin.file_encode = file_encode;
+  mixin.decode = decode;
+  mixin.encode = encode;
   return mixin;
 };
 
@@ -15,7 +15,7 @@ function file_suffix() {
   return this.get('suffix') || '.yaml';
 }
 
-function file_decode(source, callback) {
+function decode(source, callback) {
   var item;
   try {
     item = jsyaml.load(source);
@@ -26,7 +26,7 @@ function file_decode(source, callback) {
   callback(null, item);
 }
 
-function file_encode(item, callback) {
+function encode(item, callback) {
   var encoded;
   try {
     encoded = jsyaml.dump(item);

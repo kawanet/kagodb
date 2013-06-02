@@ -3,7 +3,7 @@
 var http_base = require('../core/http_base');
 
 module.exports = function() {
-  var mixin = http_base.apply(this, arguments);
+  var mixin = http_base.call(this);
   mixin.proxy_request = proxy_request;
   return mixin;
 };

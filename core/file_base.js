@@ -1,9 +1,10 @@
 /*! file_base.js */
 
 var fs = require('fs');
+var encode = require('./encode');
 
 module.exports = function() {
-  var mixin = {};
+  var mixin = encode.call(this);
   mixin.read = read;
   mixin.write = write;
   mixin.erase = erase;
@@ -12,10 +13,6 @@ module.exports = function() {
   mixin.file_path = file_path;
   mixin.file_folder = file_folder;
   mixin.file_suffix = file_suffix;
-  mixin.file_decode = file_decode;
-  mixin.file_encode = file_encode;
-  mixin.file_escape = encodeURIComponent;
-  mixin.file_unescape = decodeURIComponent;
   return mixin;
 };
 
@@ -35,18 +32,10 @@ function file_suffix() {
   return suffix;
 }
 
-function file_decode(source, callback) {
-  throw new Error('decode() not implemented');
-}
-
-function file_encode(item, callback) {
-  throw new Error('encode() not implemented');
-}
-
 function file_path(id) {
   var folder = this.file_folder();
   var suffix = this.file_suffix();
-  return folder + '/' + this.file_escape(id) + suffix;
+  return folder + '/' + this.escape(id) + suffix;
 }
 
 function read(id, callback) {
@@ -57,7 +46,7 @@ function read(id, callback) {
     if (err) {
       callback(err);
     } else {
-      self.file_decode(content, function(err, item) {
+      self.decode(content, function(err, item) {
         callback(err, item);
       });
     }
@@ -66,7 +55,7 @@ function read(id, callback) {
 
 function write(id, item, callback) {
   var path = this.file_path(id);
-  this.file_encode(item, function(err, encoded) {
+  this.encode(item, function(err, encoded) {
     if (err) {
       callback(err);
     } else {
@@ -109,7 +98,7 @@ function index(callback) {
         return file.substr(0, file.length - suflen);
       });
       list = list.map(function(file) {
-        return self.file_unescape(file);
+        return self.unescape(file);
       });
       callback(null, list);
     }
