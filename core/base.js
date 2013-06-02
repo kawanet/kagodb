@@ -25,9 +25,9 @@ function inherit(parent) {
 
   child.options = copy(parent.options);
 
-  /** This loads a mixin class which will export instance methods.
+  /** This applies a mixin object which exports instance methods.
    * @method KagoDB.mixin
-   * @param {Function} mixin - mixin class which has exporter() class method
+   * @param {Object|Function} mixin - mixin object or mixin function which returns mixin object
    * @returns this class itself for method chaining
    * @example
    * var MyMixin = require('mymixin');
@@ -120,7 +120,7 @@ KagoDB.prototype.get = function(key) {
  * @method KagoDB.prototype.set
  * @param {String|Object} key - parameter name or a parameters object
  * @param {any} [val] - new parameter value
- * @returns this instance itself for method chaining
+ * @returns {KagoDB} this instance itself for method chaining
  * @example
  * var collection = new KagoDB();
  * collection.set('path', 'data');

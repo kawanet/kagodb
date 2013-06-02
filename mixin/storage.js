@@ -79,50 +79,52 @@ function index(callback) {
   return this;
 }
 
-/** This gets or sets a storage engine.
+/** This applies a storage mixin specified at 'storage' property.
  * @method StorageMixin.prototype.storage
- * @param {Function|String} [store] - storage class or storage name
- * @returns storage instance
+ * @param {Function|String} [store] - storage mixin or storage name
+ * @returns {KagoDB} this instance itself for method chaining
  */
 
 function storage(store) {
-  // erase store instance cache
-  if (store) {
-    this._storage = null;
-  }
-  if (this._storage) {
-    return this._storage;
-  }
-
   store = store || this.get('storage');
   if (!store) {
     throw new Error('storage not specified');
   }
 
+  var name = store + '';
   if ('function' != typeof store) {
-    store += '';
     var preload = this.get('storage-preload') || {};
-    if (preload[store]) {
-      store = preload[store];
-    } else if (store.search(/^[\w\-\.]+$/) < 0) {
-      throw new Error('invalid store name: ' + store);
+    if (preload[name]) {
+      store = preload[name];
+    } else if (name.search(/^[\w\-\.]+$/) < 0) {
+      throw new Error('invalid store name: ' + name);
     } else {
-      var path = StorageBase + '/' + store;
       try {
-        store = require(path);
+        store = require(StorageBase + '/' + name);
       } catch (err) {
         throw new Error('storage class failed: ' + err);
       }
       if (!store) {
-        throw new Error('storage class invalid: ' + store);
+        throw new Error('storage class invalid: ' + name);
       }
     }
   }
-  this._storage = store(this.options);
-  if ('object' == typeof this._storage) {
-    this.mixin(this._storage);
-    return this;
-  } else {
-    return this._storage;
+  var mixin = store();
+  if (!mixin.read) {
+    throw new Error('storage has no read() method: ' + name);
   }
+  if (!mixin.write) {
+    throw new Error('storage has no write() method: ' + name);
+  }
+  if (!mixin.erase) {
+    throw new Error('storage has no erase() method: ' + name);
+  }
+  if (!mixin.exist) {
+    throw new Error('storage has no exist() method: ' + name);
+  }
+  if (!mixin.index) {
+    throw new Error('storage has no index() method: ' + name);
+  }
+  this.mixin(mixin);
+  return this;
 }
