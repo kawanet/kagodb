@@ -23,7 +23,9 @@ describe('JSON Storage', function() {
   describe('File existance', function() {
     var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
     var id1 = 'foo-' + date;
-    var path1 = opts.path + '/' + id1 + '.' + opts.storage;
+    var id2 = 'bar ' + date;
+    var path1 = opts.path + '/' + encodeURIComponent(id1) + '.' + opts.storage;
+    var path2 = opts.path + '/' + encodeURIComponent(id2) + '.' + opts.storage;
     var item = {
       string: "FOO",
       decimal: 123,
@@ -36,11 +38,35 @@ describe('JSON Storage', function() {
         assert(!err, 'write failed');
         fs.stat(path1, function(err, stat) {
           assert(!err, 'file should exist');
-          collection.erase(id1, function(err) {
-            assert(!err, 'erase failed');
-            fs.stat(path1, function(err, stat) {
-              assert(err, 'file shoud not exist');
-              done();
+          collection.index(function(err, list) {
+            assert(!err, 'index failed');
+            assert.ok(check(list, id1), 'index should contain ' + id1);
+            collection.erase(id1, function(err) {
+              assert(!err, 'erase failed');
+              fs.stat(path1, function(err, stat) {
+                assert(err, 'file shoud not exist');
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it(path2, function(done) {
+      collection.write(id2, item, function(err) {
+        assert(!err, 'write failed');
+        fs.stat(path2, function(err, stat) {
+          assert(!err, 'file should exist');
+          collection.index(function(err, list) {
+            assert(!err, 'index failed');
+            assert.ok(check(list, id2), 'index should contain ' + id2);
+            collection.erase(id2, function(err) {
+              assert(!err, 'erase failed');
+              fs.stat(path2, function(err, stat) {
+                assert(err, 'file shoud not exist');
+                done();
+              });
             });
           });
         });
@@ -48,3 +74,9 @@ describe('JSON Storage', function() {
     });
   });
 });
+
+function check(list, test) {
+  return list.filter(function(key) {
+    return key == test;
+  }).length;
+}

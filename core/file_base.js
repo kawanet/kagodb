@@ -14,6 +14,8 @@ module.exports = function() {
   mixin.file_suffix = file_suffix;
   mixin.file_decode = file_decode;
   mixin.file_encode = file_encode;
+  mixin.file_escape = encodeURIComponent;
+  mixin.file_unescape = decodeURIComponent;
   return mixin;
 };
 
@@ -44,7 +46,7 @@ function file_encode(item, callback) {
 function file_path(id) {
   var folder = this.file_folder();
   var suffix = this.file_suffix();
-  return folder + '/' + id + suffix;
+  return folder + '/' + this.file_escape(id) + suffix;
 }
 
 function read(id, callback) {
@@ -90,6 +92,7 @@ function exist(id, callback) {
 }
 
 function index(callback) {
+  var self = this;
   callback = callback || NOP;
   var folder = this.file_folder();
   var suffix = this.file_suffix();
@@ -104,6 +107,9 @@ function index(callback) {
       });
       list = list.map(function(file) {
         return file.substr(0, file.length - suflen);
+      });
+      list = list.map(function(file) {
+        return self.file_unescape(file);
       });
       callback(null, list);
     }
