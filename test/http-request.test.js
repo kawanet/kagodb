@@ -1,4 +1,4 @@
-/*! http-jquery.test.js */
+/*! http_jquery.test.js */
 
 var assert = require('chai').assert;
 var KagoDB = require('../index');
@@ -17,7 +17,7 @@ describe('Proxy Request', function() {
 
   var collection;
   var opts = {
-    storage: 'http-request',
+    storage: 'http_request',
     endpoint: endpoint
   };
   var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');

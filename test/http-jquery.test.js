@@ -1,4 +1,4 @@
-/*! http-jquery.test.js */
+/*! http_jquery.test.js */
 
 var assert = require('chai').assert;
 var KagoDB = require('../index');
@@ -18,7 +18,7 @@ describe('Proxy jQuery', function() {
 
   var collection;
   var opts = {
-    storage: 'http-jquery',
+    storage: 'http_jquery',
     endpoint: endpoint,
     jquery: jQuery
   };
