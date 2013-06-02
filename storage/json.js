@@ -27,8 +27,8 @@ function file_decode(source, callback) {
 
 function file_encode(item, callback) {
   var encoded;
-  var replacer = this.options['json-replacer'];
-  var spaces = this.options['json-spaces'];
+  var replacer = this.get('json_replacer');
+  var spaces = this.get('json_spaces');
   try {
     encoded = JSON.stringify(item, replacer, spaces);
   } catch (err) {

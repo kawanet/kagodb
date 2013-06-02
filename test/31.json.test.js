@@ -9,7 +9,7 @@ describe('JSON Storage', function() {
   var opts = {
     storage: 'json',
     path: './data',
-    'json-spaces': ' '
+    json_spaces: ' '
   };
 
   describe('CRUD', function() {
