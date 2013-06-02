@@ -10,11 +10,30 @@ module.exports = function() {
   mixin.erase = erase;
   mixin.exist = exist;
   mixin.index = index;
-  mixin.file_path = file_path;
+  mixin.escape = escape;
+  mixin.unescape = unescape;
   mixin.file_folder = file_folder;
   mixin.file_suffix = file_suffix;
   return mixin;
 };
+
+function escape(id) {
+  var folder = this.file_folder();
+  var suffix = this.file_suffix();
+  return folder + '/' + encodeURIComponent(id) + suffix;
+}
+
+function unescape(id) {
+  id = id.replace(/^.*\//, '');
+  var suffix = this.file_suffix();
+  var suftest = id.substr(-suffix.length);
+  if (suffix.toLowerCase() == suftest.toLowerCase()) {
+    id = id.substr(0, id.length - suffix.length);
+    id = decodeURIComponent(id);
+    return id;
+  }
+  return new Error('Invalid ID: ' + id);
+}
 
 function file_folder() {
   var path = this.get('path');
@@ -32,15 +51,9 @@ function file_suffix() {
   return suffix;
 }
 
-function file_path(id) {
-  var folder = this.file_folder();
-  var suffix = this.file_suffix();
-  return folder + '/' + this.escape(id) + suffix;
-}
-
 function read(id, callback) {
   callback = callback || NOP;
-  var path = this.file_path(id);
+  var path = this.escape(id);
   var self = this;
   fs.readFile(path, 'utf8', function(err, content) {
     if (err) {
@@ -54,7 +67,7 @@ function read(id, callback) {
 }
 
 function write(id, item, callback) {
-  var path = this.file_path(id);
+  var path = this.escape(id);
   this.encode(item, function(err, encoded) {
     if (err) {
       callback(err);
@@ -67,38 +80,30 @@ function write(id, item, callback) {
 }
 
 function erase(id, callback) {
-  var path = this.file_path(id);
+  var path = this.escape(id);
   fs.unlink(path, function(err) {
     callback(err);
   });
 }
 
 function exist(id, callback) {
-  var path = this.file_path(id);
+  var path = this.escape(id);
   fs.stat(path, function(err, stat) {
     callback(null, !! stat);
   });
 }
 
 function index(callback) {
-  var self = this;
   callback = callback || NOP;
   var folder = this.file_folder();
-  var suffix = this.file_suffix();
-  suffix = suffix.toLowerCase();
-  var suflen = suffix.length;
+  var unescape = this.unescape.bind(this);
   fs.readdir(folder, function(err, list) {
     if (err) {
       callback(err);
     } else {
-      list = list.filter(function(file) {
-        return (file.substr(-suflen).toLowerCase() == suffix);
-      });
-      list = list.map(function(file) {
-        return file.substr(0, file.length - suflen);
-      });
-      list = list.map(function(file) {
-        return self.unescape(file);
+      list = list.map(unescape);
+      list = list.filter(function(id) {
+        return !(id instanceof Error);
       });
       callback(null, list);
     }
