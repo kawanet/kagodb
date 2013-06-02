@@ -3,25 +3,32 @@
 var kagos = [];
 
 $(function() {
-  var data = {
-    name: 'Server /data/',
+  var server_file = {
+    name: 'Server File',
     storage: 'http_jquery',
     endpoint: '/data/'
   };
-  var memory = {
-    name: 'Server /memory/',
+  var server_memory = {
+    name: 'Server Memory',
     storage: 'http_jquery',
     endpoint: '/memory/'
   };
-  var local = {
-    name: 'Local',
+  var local_memory = {
+    name: 'Local Memory',
     storage: 'memory',
     namespace: 'local',
     memory_serialize: true
   };
-  kagos.push(KagoDB(local));
-  kagos.push(KagoDB(memory));
-  kagos.push(KagoDB(data));
+  var local_storage = {
+    name: 'Local Storage',
+    storage: 'local_storage',
+    namespace: 'local',
+    memory_serialize: true
+  };
+  kagos.push(KagoDB(local_storage));
+  kagos.push(KagoDB(local_memory));
+  kagos.push(KagoDB(server_file));
+  kagos.push(KagoDB(server_memory));
   showStorages(kagos);
 });
 

@@ -10,7 +10,8 @@ KagoDB.mixin(find());
 
 var preload = {
   'memory': require('../storage/memory'),
-  'http_jquery': require('../storage/http_jquery')
+  'http_jquery': require('../storage/http_jquery'),
+  'local_storage': require('../storage/local_storage')
 };
 KagoDB.set('storage_preload', preload);
 
