@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     // https://github.com/gruntjs/grunt-contrib-jshint
     jshint: {
       all: {
-        src: ['./*.js', 'core/*.js', 'mixin/*.js', 'storage/*.js', 'bundle/*.js', 'test/*.js']
+        src: ['./*.js', '*/*.js', 'test/*/*.js']
       },
       options: {
         // eqnull: true,
