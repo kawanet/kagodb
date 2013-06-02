@@ -399,6 +399,5 @@ describe('Cursor', function() {
         done();
       });
     });
-
   });
 });
