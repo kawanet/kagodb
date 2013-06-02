@@ -5,7 +5,7 @@ var fs = require('fs');
 var KagoDB = require('../index');
 var crud_tests = require('./lib/crud_tests');
 
-describe(' Storage', function() {
+describe('YAML Storage', function() {
   var opts = {
     storage: 'yaml',
     path: './data'

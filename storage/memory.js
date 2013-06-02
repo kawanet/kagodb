@@ -17,7 +17,10 @@ function read(id, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
   var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
-  if (store.hasOwnProperty(id)) {
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
+  if (store.hasOwnProperty(id) && this.decode) {
     var item = store[id];
     if (serial > 0) {
       this.decode(item, callback);
@@ -34,7 +37,10 @@ function write(id, item, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
   var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
-  if (serial > 0) {
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
+  if (serial > 0 && this.encode) {
     this.encode(item, function(err, item) {
       if (!err) {
         store[id] = item;
@@ -50,6 +56,10 @@ function write(id, item, callback) {
 function erase(id, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
   if (store.hasOwnProperty(id)) {
     delete store[id];
     callback();
@@ -62,6 +72,10 @@ function erase(id, callback) {
 function exist(id, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
   var exists = store.hasOwnProperty(id);
   callback(null, exists);
 }
@@ -69,7 +83,15 @@ function exist(id, callback) {
 function index(callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
   var list = Object.keys(store);
+  if (serial > 0 && this.unescape) {
+    var unescape = this.unescape.bind(this);
+    list = list.map(unescape);
+    list = list.filter(function(id) {
+      return !(id instanceof Error);
+    });
+  }
   callback(null, list);
 }
 

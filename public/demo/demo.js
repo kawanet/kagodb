@@ -16,13 +16,13 @@ $(function() {
   var local_memory = {
     name: 'Local Memory',
     storage: 'memory',
-    namespace: 'local',
+    namespace: 'kagodb',
     memory_serialize: true
   };
   var local_storage = {
     name: 'Local Storage',
     storage: 'local_storage',
-    namespace: 'local',
+    namespace: 'kagodb',
     memory_serialize: true
   };
   kagos.push(KagoDB(local_storage));
