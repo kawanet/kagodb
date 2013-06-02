@@ -1,6 +1,6 @@
 /*! http-jquery.js */
 
-var proxy_base = require('./http-base');
+var proxy_base = require('../core/http-base');
 
 module.exports = function() {
   var mixin = proxy_base.apply(this, arguments);

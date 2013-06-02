@@ -1,8 +1,7 @@
 /*! yaml.js */
 
 var jsyaml = require('js-yaml');
-var utils = require('../core/utils');
-var file_base = require('./file-base');
+var file_base = require('../core/file-base');
 
 module.exports = function() {
   var mixin = file_base.apply(this, arguments);
