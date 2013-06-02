@@ -22,61 +22,47 @@ describe('JSON Storage', function() {
 
   describe('File existance', function() {
     var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
-    var id1 = 'foo-' + date;
-    var id2 = 'bar ' + date;
-    var path1 = opts.path + '/' + encodeURIComponent(id1) + '.' + opts.storage;
-    var path2 = opts.path + '/' + encodeURIComponent(id2) + '.' + opts.storage;
-    var item = {
-      string: "FOO",
-      decimal: 123,
-      numeric: 45.67
-    };
+    var idA = 'foo-' + date;
+    var idB = 'bar ' + date;
+    var pathA = opts.path + '/' + encodeURIComponent(idA) + '.' + opts.storage;
+    var pathB = opts.path + '/' + encodeURIComponent(idB) + '.' + opts.storage;
+
     var collection = new KagoDB(opts);
+    write_to_erase(collection, idA, pathA);
+    write_to_erase(collection, idB, pathB);
+  });
+});
 
-    it(path1, function(done) {
-      collection.write(id1, item, function(err) {
-        assert(!err, 'write failed');
-        fs.stat(path1, function(err, stat) {
-          assert(!err, 'file should exist');
-          collection.index(function(err, list) {
-            assert(!err, 'index failed');
-            assert.ok(check(list, id1), 'index should contain ' + id1);
-            collection.erase(id1, function(err) {
-              assert(!err, 'erase failed');
-              fs.stat(path1, function(err, stat) {
-                assert(err, 'file shoud not exist');
-                done();
-              });
-            });
-          });
-        });
-      });
-    });
-
-    it(path2, function(done) {
-      collection.write(id2, item, function(err) {
-        assert(!err, 'write failed');
-        fs.stat(path2, function(err, stat) {
-          assert(!err, 'file should exist');
-          collection.index(function(err, list) {
-            assert(!err, 'index failed');
-            assert.ok(check(list, id2), 'index should contain ' + id2);
-            collection.erase(id2, function(err) {
-              assert(!err, 'erase failed');
-              fs.stat(path2, function(err, stat) {
-                assert(err, 'file shoud not exist');
-                done();
-              });
+function write_to_erase(collection, id, path) {
+  var item = {
+    string: "FOO",
+    decimal: 123,
+    numeric: 45.67
+  };
+  it(path, function(done) {
+    collection.write(id, item, function(err) {
+      assert(!err, 'write failed');
+      check_exists(path, function(err, exist) {
+        assert(exist, 'item should exist');
+        collection.index(function(err, list) {
+          assert(!err, 'index failed');
+          var contain = list.filter(function(key) {
+            return key == id;
+          }).length;
+          assert.ok(contain, 'index should contain item: ' + id);
+          collection.erase(id, function(err) {
+            assert(!err, 'erase failed');
+            check_exists(path, function(err, exist) {
+              assert(!exist, 'item shoud not exist');
+              done();
             });
           });
         });
       });
     });
   });
-});
+}
 
-function check(list, test) {
-  return list.filter(function(key) {
-    return key == test;
-  }).length;
+function check_exists(path, callback) {
+  fs.stat(path, callback);
 }
