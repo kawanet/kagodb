@@ -1,16 +1,14 @@
 /*! http-jquery.js */
 
-var utils = require('../core/utils');
-var ProxyBase = require('./http-base');
+var proxy_base = require('./http-base');
 
-module.exports = utils.inherits(ProxyJQuery, ProxyBase);
+module.exports = function() {
+  var mixin = proxy_base.apply(this, arguments);
+  mixin.proxy_request = proxy_request;
+  return mixin;
+};
 
-function ProxyJQuery(options) {
-  if (!(this instanceof ProxyJQuery)) return new ProxyJQuery(options);
-  this.options = options || {};
-}
-
-ProxyJQuery.prototype.request = function(opts, callback) {
+function proxy_request(opts, callback) {
   var jopts = {};
   jopts.type = opts.method || 'GET';
   jopts.url = opts.url;
@@ -36,4 +34,4 @@ ProxyJQuery.prototype.request = function(opts, callback) {
   }).done(function(data, status, jqXHR) {
     callback(null, data);
   });
-};
+}

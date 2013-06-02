@@ -1,31 +1,30 @@
 /*! http-base.js */
 
-module.exports = ProxyBase;
-
-function ProxyBase(options) {
-  if (!(this instanceof ProxyBase)) return new ProxyBase(options);
-  this.options = options || {};
-}
-
-ProxyBase.prototype.read = read;
-ProxyBase.prototype.write = write;
-ProxyBase.prototype.erase = erase;
-ProxyBase.prototype.exist = exist;
-ProxyBase.prototype.index = index;
+module.exports = function() {
+  var mixin = {};
+  mixin.read = read;
+  mixin.write = write;
+  mixin.erase = erase;
+  mixin.exist = exist;
+  mixin.index = index;
+  mixin.proxy_request = proxy_request;
+  mixin.proxy_endpoint = proxy_endpoint;
+  return mixin;
+};
 
 function read(id, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
+  var url = this.proxy_endpoint() + id;
   var opts = {
     method: 'GET',
     url: url
   };
-  this.request(opts, callback);
+  this.proxy_request(opts, callback);
 }
 
 function write(id, item, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
+  var url = this.proxy_endpoint() + id;
   var data = {
     method: 'write',
     content: item
@@ -35,12 +34,12 @@ function write(id, item, callback) {
     url: url,
     json: data
   };
-  this.request(opts, callback);
+  this.proxy_request(opts, callback);
 }
 
 function erase(id, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
+  var url = this.proxy_endpoint() + id;
   var data = {
     method: 'erase'
   };
@@ -49,12 +48,12 @@ function erase(id, callback) {
     url: url,
     form: data
   };
-  this.request(opts, callback);
+  this.proxy_request(opts, callback);
 }
 
 function exist(id, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
+  var url = this.proxy_endpoint() + id;
   var data = {
     method: 'exist'
   };
@@ -63,7 +62,7 @@ function exist(id, callback) {
     url: url,
     form: data
   };
-  this.request(opts, function(err, res) {
+  this.proxy_request(opts, function(err, res) {
     res = res || {};
     var flag = !! res.exist;
     callback(err, flag);
@@ -72,7 +71,7 @@ function exist(id, callback) {
 
 function index(callback) {
   callback = callback || NOP;
-  var url = this.endpoint();
+  var url = this.proxy_endpoint();
   var data = {
     method: 'index'
   };
@@ -81,22 +80,22 @@ function index(callback) {
     url: url,
     form: data
   };
-  this.request(opts, function(err, res) {
+  this.proxy_request(opts, function(err, res) {
     res = res || {};
     callback(err, res.index);
   });
 }
 
-ProxyBase.prototype.endpoint = function() {
+function proxy_endpoint() {
   var endpoint = this.options.endpoint;
   if (!endpoint) {
     throw new Error('endpoint not defined');
   }
   return endpoint.replace(/\/*$/, '/');
-};
+}
 
-ProxyBase.prototype.request = function(opts, callback) {
+function proxy_request(opts, callback) {
   throw new Error('request() not implemented');
-};
+}
 
 function NOP() {}
