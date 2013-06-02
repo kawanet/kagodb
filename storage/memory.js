@@ -11,11 +11,21 @@ module.exports = function() {
   return mixin;
 };
 
+var default_encode = JSON.stringify;
+var default_decode = JSON.parse;
+
 function read(id, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && !this._memory_decode) {
+    this._memory_decode = this.get('memory_decode') || default_decode;
+  }
   if (store.hasOwnProperty(id)) {
     var item = store[id];
+    if (this._memory_decode) {
+      item = this._memory_decode(item);
+    }
     callback(null, item);
   } else {
     var err = new Error('Item not found');
@@ -26,6 +36,13 @@ function read(id, callback) {
 function write(id, item, callback) {
   callback = callback || NOP;
   var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && !this._memory_encode) {
+    this._memory_encode = this.get('memory_encode') || default_encode;
+  }
+  if (this._memory_encode) {
+    item = this._memory_encode(item);
+  }
   store[id] = item;
   callback();
 }

@@ -16,7 +16,8 @@ $(function() {
   var local = {
     name: 'Local',
     storage: 'memory',
-    namespace: 'local'
+    namespace: 'local',
+    memory_serialize: true
   };
   kagos.push(KagoDB(local));
   kagos.push(KagoDB(memory));
