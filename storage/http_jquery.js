@@ -21,7 +21,7 @@ function proxy_request(opts, callback) {
   } else if (opts.form) {
     jopts.data = opts.form;
   }
-  var jQuery = this.options.jquery;
+  var jQuery = this.get('jquery');
   if (!jQuery) throw new Error('jQuery not loaded');
   jQuery.ajax(jopts).fail(function(jqXHR, status, error) {
     if (!(error instanceof Error)) {

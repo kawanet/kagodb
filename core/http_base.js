@@ -87,7 +87,7 @@ function index(callback) {
 }
 
 function proxy_endpoint() {
-  var endpoint = this.options.endpoint;
+  var endpoint = this.get('endpoint');
   if (!endpoint) {
     throw new Error('endpoint not defined');
   }

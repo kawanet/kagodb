@@ -36,8 +36,8 @@ function webapi() {
   return function(req, res) {
     methods.progress('webapi:', req.method, req.url, req.query, req.body);
 
-    var parser = collection.get('webapi-preprocess') || express.bodyParser();
-    var responder = collection.get('webapi-responder') || res.send;
+    var parser = collection.get('webapi_preprocess') || express.bodyParser();
+    var responder = collection.get('webapi_responder') || res.send;
     responder = responder.bind(res);
 
     parser(req, res, function() {

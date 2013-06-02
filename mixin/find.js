@@ -65,13 +65,13 @@ module.exports = function() {
 
 function find(condition, projection) {
   // parse condition
-  var condParser = this.get('condition-parser') || Condition.parser;
+  var condParser = this.get('condition_parser') || Condition.parser;
   if ('function' != typeof condParser) {
     throw new Error('invalid condition parser: ' + condParser);
   }
   var parserFunc = condParser(condition);
 
-  var projParser = this.get('projection-parser') || Projection.parser;
+  var projParser = this.get('projection_parser') || Projection.parser;
   if ('function' != typeof projParser) {
     throw new Error('invalid projection parser: ' + projParser);
   }

@@ -1,7 +1,7 @@
 /*! http_jquery.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../bundle/browser');
 var jQuery = require('jquery');
 var crud_tests = require('./lib/crud_tests');
 

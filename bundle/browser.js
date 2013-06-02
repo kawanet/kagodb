@@ -2,16 +2,16 @@
 
 var Base = require('../core/base');
 var storage = require('../mixin/storage');
-var cursor = require('../mixin/find');
+var find = require('../mixin/find');
 
 var KagoDB = Base.inherit();
 KagoDB.mixin(storage());
-KagoDB.mixin(cursor());
+KagoDB.mixin(find());
 
 var preload = {
   'memory': require('../storage/memory'),
   'http_jquery': require('../storage/http_jquery')
 };
-KagoDB.set('storage-preload', preload);
+KagoDB.set('storage_preload', preload);
 
 module.exports = KagoDB;

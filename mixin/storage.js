@@ -93,7 +93,7 @@ function storage(store) {
 
   var name = store + '';
   if ('function' != typeof store) {
-    var preload = this.get('storage-preload') || {};
+    var preload = this.get('storage_preload') || {};
     if (preload[name]) {
       store = preload[name];
     } else if (name.search(/^[\w\-\.]+$/) < 0) {
