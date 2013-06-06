@@ -150,12 +150,14 @@ KagoDB.prototype.mixin = function(mixin) {
 function _mixin(target, mixin) {
   if ('function' == typeof mixin) {
     mixin = mixin.call(target);
-  }
-  if ('object' == typeof mixin) {
+    if (mixin) {
+      _mixin(target, mixin);
+    }
+  } else if ('object' == typeof mixin) {
     for (var key in mixin) {
       target[key] = mixin[key];
     }
-  } else if (!mixin) {
+  } else {
     throw new Error('invalid mixin(' + mixin + ')');
   }
 }
