@@ -62,6 +62,6 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.registerTask('browserify', ['browserify', 'uglify']);
+  grunt.registerTask('bundle', ['browserify', 'uglify']);
   grunt.registerTask('all', ['default', 'jsdoc', 'browserify']);
 };
