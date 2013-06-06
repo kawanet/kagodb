@@ -17,13 +17,13 @@ function inherit(parent) {
 
   function child(options) {
     if (!(this instanceof child)) return new child(options);
-    this.set(child.options);
+    this.set(child.settings);
     this.set(options);
   }
 
   utils.inherits(child, parent);
 
-  child.options = copy(parent.options);
+  child.settings = copy(parent.settings);
 
   /** This applies a mixin object which exports instance methods.
    * @method KagoDB.mixin
@@ -71,7 +71,7 @@ function inherit(parent) {
    * var path = KagoDB.get('path');
    */
   child.get = function(key) {
-    var opts = child.options || (child.options = {});
+    var opts = child.settings || (child.settings = {});
     return opts[key];
   };
 
@@ -85,7 +85,7 @@ function inherit(parent) {
    * KagoDB.set({'storage': 'yaml'});
    */
   child.set = function(key, val) {
-    var opts = child.options || (child.options = {});
+    var opts = child.settings || (child.settings = {});
     opts[key] = val;
     return child;
   };
@@ -112,7 +112,7 @@ function KagoDB() {}
  * var path = collection.get('path');
  */
 KagoDB.prototype.get = function(key) {
-  var opts = this.options || (this.options = {});
+  var opts = this.settings || (this.settings = {});
   return opts[key];
 };
 
@@ -127,7 +127,7 @@ KagoDB.prototype.get = function(key) {
  * collection.set({'storage': 'yaml'});
  */
 KagoDB.prototype.set = function(key, val) {
-  var opts = this.options || (this.options = {});
+  var opts = this.settings || (this.settings = {});
   var len = arguments.length;
   if (len == 2 && key) {
     opts[key] = val;
