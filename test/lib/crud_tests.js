@@ -24,10 +24,10 @@ function crud_tests(kit) {
   it('exist', function(done) {
     kit.collection.exist(id1, function(err, res) {
       assert(!err, 'exist failed');
-      assert.ok(res, 'exist foo');
+      assert(res, 'exist foo');
       kit.collection.exist(id2, function(err, res) {
         assert(!err, 'not-exist failed');
-        assert.ok(!res, 'not-exist bar');
+        assert(!res, 'not-exist bar');
         done();
       });
     });
@@ -43,7 +43,7 @@ function crud_tests(kit) {
       assert.equal(res.decimal, item.decimal, 'read decimal content');
       assert.equal(res.numeric, item.numeric, 'read numeric content');
       kit.collection.read(id2, function(err, res) {
-        assert.ok(err, 'read error detected');
+        assert(err, 'read error detected');
         done();
       });
     });
@@ -52,13 +52,13 @@ function crud_tests(kit) {
   it('index & find', function(done) {
     kit.collection.index(function(err, list) {
       assert(!err, 'index failed');
-      assert.ok(list, 'index response');
+      assert(list, 'index response');
       list = list || [];
       assert(list.length, 'index should return some');
 
       kit.collection.find().toArray(function(err, res) {
         assert(!err, 'find failed');
-        assert.ok(res, 'find response');
+        assert(res, 'find response');
         res = res || [];
         assert(res.length, 'find should return some');
         assert.equal(list.length, res.length, 'index & find should return same number of items');
@@ -72,9 +72,9 @@ function crud_tests(kit) {
       assert(!err, 'erase failed');
       kit.collection.exist(id1, function(err, res) {
         assert(!err, 'exist failed');
-        assert.ok(!res, 'not-exist foo');
+        assert(!res, 'not-exist foo');
         kit.collection.erase(id2, function(err) {
-          assert.ok(err, 'erase error detected');
+          assert(err, 'erase error detected');
           done();
         });
       });

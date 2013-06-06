@@ -9,7 +9,7 @@ describe('Proxy jQuery', function() {
   var endpoint = process.env.TEST_ENDPOINT;
 
   describe('$TEST_ENDPOINT', function() {
-    var name = endpoint || 'i.g. TEST_ENDPOINT=http://localhost:3000/memory/';
+    var name = endpoint || 'e.g. TEST_ENDPOINT=http://localhost:3000/memory/ grunt';
     it(name, function(done) {
       done();
     });
