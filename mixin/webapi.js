@@ -36,6 +36,7 @@ function webapi() {
     var app = new MiniApp();
     app.use(api.bodyParser());
     app.use(api.prepare());
+    app.use(api.ready());
     app.verb('put', api.methods.write);
     app.verb('delete', api.methods.erase);
     app.use(api.dispatch(api.methods));
@@ -54,6 +55,10 @@ function webapi() {
       req.kagoapi = api;
       next();
     };
+  };
+
+  api.ready = function(){
+    return NOOP;
   };
 
   api.methods = new WebapiMethods();
@@ -107,6 +112,10 @@ function webapi() {
   };
 
   return api;
+}
+
+function NOOP(req, res, next) {
+  next();
 }
 
 function MiniApp() {}
