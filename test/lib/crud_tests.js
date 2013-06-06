@@ -54,13 +54,14 @@ function crud_tests(kit) {
       assert(!err, 'index failed');
       assert.ok(list, 'index response');
       list = list || [];
-      assert.ok(list.length, 'index length');
+      assert(list.length, 'index should return some');
 
       kit.collection.find().toArray(function(err, res) {
         assert(!err, 'find failed');
         assert.ok(res, 'find response');
         res = res || [];
-        assert.equal(res.length, list.length, 'find length');
+        assert(res.length, 'find should return some');
+        assert.equal(list.length, res.length, 'index & find should return same number of items');
         done();
       });
     });

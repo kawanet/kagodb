@@ -15,6 +15,6 @@ var opt2 = {
 
 var app = express();
 app.use(express.static(__dirname + '/public'));
-app.all('/data/*', KagoDB(opt1).webapi());
-app.all('/memory/*', KagoDB(opt2).webapi());
+app.all('/data/:id?', KagoDB(opt1).webapi());
+app.all('/memory/:id?', KagoDB(opt2).webapi());
 app.listen(3000);
