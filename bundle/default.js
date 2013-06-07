@@ -6,6 +6,7 @@ var find = require('../mixin/find');
 var webapi = require('../mixin/webapi');
 var version = require('../mixin/version');
 var pkey = require('../mixin/pkey');
+var objectid = require('../mixin/objectid');
 
 var KagoDB = Base.inherit();
 
@@ -13,6 +14,7 @@ KagoDB.mixin(version());
 KagoDB.mixin(find());
 KagoDB.mixin(storage());
 KagoDB.mixin(pkey());
+KagoDB.mixin(objectid());
 KagoDB.mixin(webapi());
 
 module.exports = KagoDB;
