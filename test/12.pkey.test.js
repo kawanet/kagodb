@@ -23,8 +23,42 @@ describe('Primary key', function() {
   var kago2 = new Kago2(opts);
   kago1.set('primary_key', '_id1');
 
-  describe('write and read:', function() {
+  describe('set primary key via', function() {
+    it('pkey()', function(done) {
+      var kago = new KagoDB();
+      kago.pkey('foo');
+      assert(kago.pkey(), 'foo', 'pkey() getter should return a primary key');
+      assert(kago.get('primary_key'), 'foo', 'get("primary_key") should return a pirmary key');
+      done();
+    });
 
+    it('set()', function(done) {
+      var kago = new KagoDB();
+      kago.set('primary_key', 'bar');
+      assert(kago.pkey(), 'bar', 'pkey() getter should return a primary key');
+      assert(kago.get('primary_key'), 'bar', 'get("primary_key") should return a pirmary key');
+      done();
+    });
+  });
+
+  describe('get primary key of', function() {
+    it('kago0', function(done) {
+      assert(!kago0.pkey(), 'kago0 should not have a pirmary key');
+      done();
+    });
+
+    it('kago1', function(done) {
+      assert.equal(kago1.pkey(), '_id1', 'kago1 should have a pirmary key');
+      done();
+    });
+
+    it('kago2', function(done) {
+      assert.equal(kago2.pkey(), '_id2', 'kago2 should have a pirmary key');
+      done();
+    });
+  });
+
+  describe('write and read:', function() {
     it('kago0.write()', function(done) {
       var id = 'garply';
       var item = {
@@ -103,6 +137,5 @@ describe('Primary key', function() {
         });
       });
     });
-
   });
 });
