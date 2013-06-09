@@ -1,6 +1,7 @@
 /*! http_base.js */
 
 var encode = require('./encode');
+var utils = require('../core/utils');
 
 module.exports = function() {
   var mixin = encode.call(this);
@@ -10,27 +11,31 @@ module.exports = function() {
   mixin.exist = exist;
   mixin.index = index;
   mixin.request = request;
-  mixin.endpoint = endpoint;
+  mixin.http_endpoint = http_endpoint;
+  mixin.http_param = http_param;
   return mixin;
 };
 
 function read(id, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
+  var url = this.http_endpoint() + id;
+  var data = this.http_param();
   var opts = {
     method: 'GET',
-    url: url
+    url: url,
   };
+  if (Object.keys(data)) {
+    opts.form = data;
+  }
   this.request(opts, callback);
 }
 
 function write(id, item, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
-  var data = {
-    method: 'write',
-    content: item
-  };
+  var url = this.http_endpoint() + id;
+  var data = this.http_param();
+  data.method = 'write';
+  data.content = item;
   var opts = {
     method: 'POST',
     url: url,
@@ -41,10 +46,9 @@ function write(id, item, callback) {
 
 function erase(id, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
-  var data = {
-    method: 'erase'
-  };
+  var url = this.http_endpoint() + id;
+  var data = this.http_param();
+  data.method = 'erase';
   var opts = {
     method: 'POST',
     url: url,
@@ -55,10 +59,9 @@ function erase(id, callback) {
 
 function exist(id, callback) {
   callback = callback || NOP;
-  var url = this.endpoint() + id;
-  var data = {
-    method: 'exist'
-  };
+  var url = this.http_endpoint() + id;
+  var data = this.http_param();
+  data.method = 'exist';
   var opts = {
     method: 'POST',
     url: url,
@@ -73,10 +76,9 @@ function exist(id, callback) {
 
 function index(callback) {
   callback = callback || NOP;
-  var url = this.endpoint();
-  var data = {
-    method: 'index'
-  };
+  var url = this.http_endpoint();
+  var data = this.http_param();
+  data.method = 'index';
   var opts = {
     method: 'POST',
     url: url,
@@ -88,7 +90,18 @@ function index(callback) {
   });
 }
 
-function endpoint() {
+function http_param() {
+  var source = this.get('http_param') || {};
+  var param = utils.clone(source);
+  for (var key in param) {
+    if ('function' == typeof param[key]) {
+      param[key] = param[key](); // lazy evaluation
+    }
+  }
+  return param;
+}
+
+function http_endpoint() {
   var url = this.get('endpoint');
   if (!url) {
     throw new Error('endpoint not defined');

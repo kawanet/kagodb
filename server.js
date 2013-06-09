@@ -10,7 +10,8 @@ var opt1 = {
 
 var opt2 = {
   storage: 'memory',
-  namespace: 'shared'
+  namespace: 'shared',
+  primary_key: '_id'
 };
 
 var app = express();

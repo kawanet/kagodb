@@ -3,21 +3,28 @@
 var kagos = [];
 
 $(function() {
+  var param = {};
+  param._ = function() {
+    return Math.floor((new Date()).getTime() / 1000);
+  };
   var server_file = {
     name: 'Server File',
     storage: 'http_jquery',
-    endpoint: '/data/'
+    endpoint: '/data/',
+    http_param: param
   };
   var server_memory = {
     name: 'Server Memory',
     storage: 'http_jquery',
-    endpoint: '/memory/'
+    endpoint: '/memory/',
+    http_param: param
   };
   var local_memory = {
     name: 'Local Memory',
     storage: 'memory',
     namespace: 'kagodb',
-    memory_serialize: true
+    memory_serialize: true,
+    primary_key: '_id'
   };
   var local_storage = {
     name: 'Local Storage',
