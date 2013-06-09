@@ -5,7 +5,7 @@ var KagoDB = require('../bundle/browser');
 var jQuery = require('jquery');
 var crud_tests = require('./lib/crud_tests');
 
-describe('Proxy jQuery', function() {
+describe('HTTP tests via jQuery', function() {
   var endpoint = process.env.TEST_ENDPOINT;
 
   describe('$TEST_ENDPOINT', function() {

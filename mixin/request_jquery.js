@@ -8,7 +8,16 @@ module.exports = function() {
 };
 
 function request(opts, callback) {
+  var self = this;
   var jopts = {};
+  var jQuery = this.get('jquery');
+
+  // var jquery_path = 'jquery';
+  // jQuery = jQuery || require(jquery_path);
+
+  if (!jQuery) throw new Error('jQuery not loaded');
+
+  // create a HTTP request
   jopts.type = opts.method || 'GET';
   jopts.url = opts.url;
   jopts.dataType = 'json';
@@ -17,14 +26,13 @@ function request(opts, callback) {
       'Content-Type': 'application/json'
     };
     jopts.data = JSON.stringify(opts.json);
-    delete opts.json;
   } else if (opts.form) {
     jopts.data = opts.form;
-    delete opts.form;
   }
-  var jQuery = this.get('jquery');
-  if (!jQuery) throw new Error('jQuery not loaded');
+
+  // perform a HTTP request
   jQuery.ajax(jopts).fail(function(jqXHR, status, error) {
+    if (self.on) self.on('response', jqXHR);
     if (!(error instanceof Error)) {
       jqXHR = jqXHR || {};
       status = jqXHR.status || status;
@@ -33,6 +41,7 @@ function request(opts, callback) {
     }
     callback(error);
   }).done(function(data, status, jqXHR) {
-    callback(null, data, jqXHR);
+    if (self.on) self.on('response', jqXHR);
+    callback(null, data);
   });
 }

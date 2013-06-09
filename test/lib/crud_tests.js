@@ -16,14 +16,14 @@ function crud_tests(kit) {
 
   it('write', function(done) {
     kit.collection.write(id1, item, function(err) {
-      assert(!err, 'write failed');
+      assert(!err, 'write failed: ' + err);
       done();
     });
   });
 
   it('exist', function(done) {
     kit.collection.exist(id1, function(err, res) {
-      assert(!err, 'exist failed');
+      assert(!err, 'exist failed: ' + err);
       assert(res, 'exist foo');
       kit.collection.exist(id2, function(err, res) {
         assert(!err, 'not-exist failed');
@@ -35,7 +35,7 @@ function crud_tests(kit) {
 
   it('read', function(done) {
     kit.collection.read(id1, function(err, res) {
-      assert(!err, 'read failed');
+      assert(!err, 'read failed: ' + err);
       assert.isString(res.string, 'read string type');
       assert.isNumber(res.decimal, 'read decimal type');
       assert.isNumber(res.numeric, 'read numeric type');
@@ -43,7 +43,7 @@ function crud_tests(kit) {
       assert.equal(res.decimal, item.decimal, 'read decimal content');
       assert.equal(res.numeric, item.numeric, 'read numeric content');
       kit.collection.read(id2, function(err, res) {
-        assert(err, 'read error detected');
+        assert(err, 'read error should be detected');
         done();
       });
     });
@@ -51,7 +51,7 @@ function crud_tests(kit) {
 
   it('index & find', function(done) {
     kit.collection.index(function(err, list) {
-      assert(!err, 'index failed');
+      assert(!err, 'index failed: ' + err);
       assert(list, 'index response');
       list = list || [];
       assert(list.length, 'index should return some');
@@ -69,12 +69,12 @@ function crud_tests(kit) {
 
   it('erase', function(done) {
     kit.collection.erase(id1, function(err) {
-      assert(!err, 'erase failed');
+      assert(!err, 'erase failed: ' + err);
       kit.collection.exist(id1, function(err, res) {
         assert(!err, 'exist failed');
         assert(!res, 'not-exist foo');
         kit.collection.erase(id2, function(err) {
-          assert(err, 'erase error detected');
+          assert(err, 'erase error should be detected');
           done();
         });
       });

@@ -1,10 +1,11 @@
-/*! http_jquery.test.js */
+/*! http_superagent.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../bundle/browser');
+var superagent = require('supertest/node_modules/superagent');
 var crud_tests = require('./lib/crud_tests');
 
-describe('HTTP tests via request', function() {
+describe('HTTP tests via superagent', function() {
   var endpoint = process.env.TEST_ENDPOINT;
 
   describe('$TEST_ENDPOINT', function() {
@@ -17,8 +18,9 @@ describe('HTTP tests via request', function() {
   if (!endpoint) return;
 
   var opts = {
-    storage: 'http_request',
-    endpoint: endpoint
+    storage: 'http_superagent',
+    endpoint: endpoint,
+    superagent: superagent
   };
 
   describe('CRUD', function() {
