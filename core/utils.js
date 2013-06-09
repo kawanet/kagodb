@@ -55,4 +55,24 @@ exports.eachSeries = function(arr, iterator, callback) {
   each();
 };
 
+/** It copies all of the properties in the source objects over to the destination object.
+ * @method Utils.extend
+ * @param {Object} dest - destination object
+ * @param {Object} source - source object
+ * @return {Object} destination object
+ * @see http://underscorejs.org/#extend
+ */
+
+exports.extend = function(dest, source) {
+  source = source || {};
+  for (var key in source) {
+    dest[key] = source[key];
+  }
+  return dest;
+};
+
+/**
+ * @ignore
+ */
+
 function NOP() {}

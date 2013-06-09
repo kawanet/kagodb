@@ -9,24 +9,24 @@ module.exports = function() {
   mixin.erase = erase;
   mixin.exist = exist;
   mixin.index = index;
-  mixin.proxy_request = proxy_request;
-  mixin.proxy_endpoint = proxy_endpoint;
+  mixin.request = request;
+  mixin.endpoint = endpoint;
   return mixin;
 };
 
 function read(id, callback) {
   callback = callback || NOP;
-  var url = this.proxy_endpoint() + id;
+  var url = this.endpoint() + id;
   var opts = {
     method: 'GET',
     url: url
   };
-  this.proxy_request(opts, callback);
+  this.request(opts, callback);
 }
 
 function write(id, item, callback) {
   callback = callback || NOP;
-  var url = this.proxy_endpoint() + id;
+  var url = this.endpoint() + id;
   var data = {
     method: 'write',
     content: item
@@ -36,12 +36,12 @@ function write(id, item, callback) {
     url: url,
     json: data
   };
-  this.proxy_request(opts, callback);
+  this.request(opts, callback);
 }
 
 function erase(id, callback) {
   callback = callback || NOP;
-  var url = this.proxy_endpoint() + id;
+  var url = this.endpoint() + id;
   var data = {
     method: 'erase'
   };
@@ -50,12 +50,12 @@ function erase(id, callback) {
     url: url,
     form: data
   };
-  this.proxy_request(opts, callback);
+  this.request(opts, callback);
 }
 
 function exist(id, callback) {
   callback = callback || NOP;
-  var url = this.proxy_endpoint() + id;
+  var url = this.endpoint() + id;
   var data = {
     method: 'exist'
   };
@@ -64,7 +64,7 @@ function exist(id, callback) {
     url: url,
     form: data
   };
-  this.proxy_request(opts, function(err, res) {
+  this.request(opts, function(err, res) {
     res = res || {};
     var flag = !! res.exist;
     callback(err, flag);
@@ -73,7 +73,7 @@ function exist(id, callback) {
 
 function index(callback) {
   callback = callback || NOP;
-  var url = this.proxy_endpoint();
+  var url = this.endpoint();
   var data = {
     method: 'index'
   };
@@ -82,21 +82,21 @@ function index(callback) {
     url: url,
     form: data
   };
-  this.proxy_request(opts, function(err, res) {
+  this.request(opts, function(err, res) {
     res = res || {};
     callback(err, res.index);
   });
 }
 
-function proxy_endpoint() {
-  var endpoint = this.get('endpoint');
-  if (!endpoint) {
+function endpoint() {
+  var url = this.get('endpoint');
+  if (!url) {
     throw new Error('endpoint not defined');
   }
-  return endpoint.replace(/\/*$/, '/');
+  return url.replace(/\/*$/, '/');
 }
 
-function proxy_request(opts, callback) {
+function request(opts, callback) {
   throw new Error('request() not implemented');
 }
 

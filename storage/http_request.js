@@ -1,23 +1,14 @@
 /*! http_request.js */
 
-var request = require('request');
 var http_base = require('../core/http_base');
+var request = require('../mixin/request');
+var utils = require('../core/utils');
 
 module.exports = function() {
-  var mixin = http_base.call(this);
-  mixin.proxy_request = proxy_request;
+  var http_mixin = http_base.call(this);
+  var request_mixin = request.call(this);
+  var mixin = {};
+  utils.extend(mixin, http_mixin);
+  utils.extend(mixin, request_mixin);
   return mixin;
 };
-
-function proxy_request(opts, callback) {
-  request(opts, function(err, response, body) {
-    if (!err && 'string' == typeof body && body.length) {
-      try {
-        body = JSON.parse(body);
-      } catch (e) {
-        err = e;
-      }
-    }
-    callback(err, body);
-  });
-}
