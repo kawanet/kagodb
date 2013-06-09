@@ -23,7 +23,7 @@ function inherit(parent) {
 
   utils.inherits(child, parent);
 
-  child.settings = copy(parent.settings);
+  child.settings = utils.clone(parent.settings);
 
   /** This applies a mixin object which exports instance methods.
    * @method KagoDB.mixin
@@ -91,14 +91,6 @@ function inherit(parent) {
   };
 
   return child;
-}
-
-function copy(parent) {
-  var object = {};
-  for (var key in parent) {
-    object[key] = parent[key];
-  }
-  return object;
 }
 
 function KagoDB() {}

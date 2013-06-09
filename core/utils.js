@@ -71,6 +71,21 @@ exports.extend = function(dest, source) {
   return dest;
 };
 
+/** It creates a shallow-copied clone of the object.
+ * Any nested objects or arrays will be copied by reference, not duplicated.
+ * @param {Object} source - source object
+ * @return {Object} cloned object
+ * @see http://underscorejs.org/#clone
+ */
+
+exports.clone = function(source) {
+  var object = {};
+  for (var key in source) {
+    object[key] = source[key];
+  }
+  return object;
+};
+
 /**
  * @ignore
  */
