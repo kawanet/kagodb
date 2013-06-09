@@ -4,6 +4,12 @@
  * @class Utils
  */
 
+exports = module.exports = function() {
+  return {
+    utils: exports
+  };
+};
+
 /**
  * It imports super class's instance methods to the child class inherited.
  * @method Utils.inherits
