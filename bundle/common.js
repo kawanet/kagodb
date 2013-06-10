@@ -8,6 +8,7 @@ var pkey = require('../mixin/pkey');
 var objectid = require('../mixin/objectid');
 var events = require('../mixin/events');
 var utils = require('../core/utils');
+var model = require('../mixin/model');
 
 var KagoDB = Base.inherit();
 
@@ -18,5 +19,6 @@ KagoDB.mixin(utils());
 KagoDB.mixin(events());
 KagoDB.mixin(pkey());
 KagoDB.mixin(objectid());
+KagoDB.mixin(model());
 
 module.exports = KagoDB;

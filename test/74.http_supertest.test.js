@@ -7,14 +7,12 @@ var crud_tests = require('./lib/crud_tests');
 var express = require('express');
 
 var app = express();
-var opt2 = {
-  storage: 'memory',
-  namespace: 'shared',
-  primary_key: '_id'
+var opts = {
+  storage: 'memory'
 };
-app.all('/memory/:id?', KagoDB(opt2).webapi());
+app.all('/memory/:id?', KagoDB(opts).webapi());
 
-describe('HTTP tests via supertest', function() {
+describe('HTTP (emulation) tests via supertest', function() {
   var endpoint = '/memory/';
   var myagent = supertest(app);
   var opts = {

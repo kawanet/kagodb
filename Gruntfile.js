@@ -17,8 +17,7 @@ module.exports = function(grunt) {
         src: ['./*.js', '*/*.js', 'test/lib/*.js']
       },
       options: {
-        // eqnull: true,
-        // proto: true
+        '-W103': true // The '__proto__' property is deprecated.
       }
     },
 

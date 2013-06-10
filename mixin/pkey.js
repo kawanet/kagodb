@@ -5,7 +5,7 @@
  * @mixin
  */
 
-module.exports = function(primary_key) {
+module.exports = function(default_pkey) {
   return mixin;
 
   function mixin() {
@@ -32,7 +32,7 @@ module.exports = function(primary_key) {
       }
       pkey = this._pkey;
       if (!pkey && pkey !== null) {
-        pkey = this._pkey = this.get('primary_key') || primary_key || null;
+        pkey = this._pkey = this.get('primary_key') || default_pkey || null;
       }
       return pkey;
     };

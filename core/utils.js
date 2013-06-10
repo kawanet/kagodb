@@ -92,6 +92,29 @@ exports.clone = function(source) {
   return object;
 };
 
+/** This makes an item as the model class's instance.
+ * @param {Object} item - target item
+ * @param {Function} model - model class (constructor)
+ * @return {Object} blessed item
+ */
+
+exports.bless = function(item, model) {
+  if (model && 'object' == typeof item) {
+    if (item.__proto__) {
+      // overwrite item's __proto__ when available (faster)
+      item.__proto__ = model.prototype;
+    } else {
+      // copy properties in a new object per default (slower)
+      var tmp = new model();
+      for (var key in item) {
+        if (item.hasOwnProperty(key)) tmp[key] = item[key];
+      }
+      item = tmp;
+    }
+    return item;
+  }
+};
+
 /**
  * @ignore
  */
