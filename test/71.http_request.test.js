@@ -1,8 +1,8 @@
 /*! http_jquery.test.js */
 
-var assert = require('chai').assert;
 var KagoDB = require('../index');
 var crud_tests = require('./lib/crud_tests');
+var http_tests = require('./lib/http_tests');
 
 describe('HTTP tests via request', function() {
   var endpoint = process.env.TEST_ENDPOINT;
@@ -27,5 +27,11 @@ describe('HTTP tests via request', function() {
       kit.collection = new KagoDB(opts);
     });
     crud_tests(kit);
+  });
+
+  describe('Events', function() {
+    var kit = {};
+    kit.collection = new KagoDB(opts);
+    http_tests(kit);
   });
 });

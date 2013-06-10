@@ -1,4 +1,4 @@
-/*! crud.js */
+/*! crud_tests.js */
 
 var assert = require('chai').assert;
 

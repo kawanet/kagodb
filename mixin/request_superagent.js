@@ -33,10 +33,11 @@ function request(opts, callback) {
       req.type('form').send(opts.form);
     }
   }
+  if (self.emit) self.emit('request', req);
 
   // perform a HTTP request
   req.end(function(err, res) {
-    if (self.on) self.on('response', res);
+    if (self.emit) self.emit('response', res);
     if (err) {
       callback(err, res);
     } else {

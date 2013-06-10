@@ -29,10 +29,11 @@ function request(opts, callback) {
   } else if (opts.form) {
     jopts.data = opts.form;
   }
+  if (self.emit) self.emit('request', jopts);
 
   // perform a HTTP request
   jQuery.ajax(jopts).fail(function(jqXHR, status, error) {
-    if (self.on) self.on('response', jqXHR);
+    if (self.emit) self.emit('response', jqXHR);
     if (!(error instanceof Error)) {
       jqXHR = jqXHR || {};
       status = jqXHR.status || status;
@@ -41,7 +42,7 @@ function request(opts, callback) {
     }
     callback(error);
   }).done(function(data, status, jqXHR) {
-    if (self.on) self.on('response', jqXHR);
+    if (self.emit) self.emit('response', jqXHR);
     callback(null, data);
   });
 }
