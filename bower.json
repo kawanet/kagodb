@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "main": "public/js/kagodb.min.js",
   "ignore": [
       "**/.*",
@@ -13,7 +13,6 @@
       "mixin",
       "node_modules",
       "package.json",
-      "public/src",
       "server.js",
       "storage",
       "test"

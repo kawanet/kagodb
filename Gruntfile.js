@@ -45,9 +45,12 @@ module.exports = function(grunt) {
     browserify: {
       all: {
         files: {
-          'public/js/kagodb.browserify.js': ['public/src/export.js']
+          'public/js/kagodb.browserify.js': ['bundle/browser.js']
+        },
+        options: {
+          standalone: 'KagoDB'
         }
-      }
+      },
     },
 
     // https://github.com/gruntjs/grunt-contrib-uglify
