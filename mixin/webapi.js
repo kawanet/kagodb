@@ -57,7 +57,7 @@ function webapi() {
     };
   };
 
-  api.ready = function(){
+  api.ready = function() {
     return NOOP;
   };
 
@@ -97,18 +97,10 @@ function webapi() {
     try {
       value = JSON.parse(value);
     } catch (err) {
-      api.warn('JSON.parse error:', err, value);
+      collection.emit('warn', 'JSON.parse error', err, value);
       value = err;
     }
     return value;
-  };
-
-  api.warn = function() {
-    console.error.apply(null, arguments);
-  };
-
-  api.info = function() {
-    // console.error.apply(null, arguments);
   };
 
   return api;
@@ -167,19 +159,19 @@ WebapiMethods.prototype.read = function(req, res, next) {
   }
 
   // run
-  kagoapi.info('read:', id);
+  collection.emit('webapi', 'read', id);
   collection.exist(id, function(err, exist) {
     if (err) {
-      kagoapi.warn('read: exist failed -', err);
+      collection.emit('warn', 'read: exist failed -', err);
       return res.send(500); // Internal Server Error
     }
     if (!exist) {
-      kagoapi.warn('read: item does not exist -', id);
+      collection.emit('warn', 'read: item does not exist -', id);
       return res.send(404); // Not Found
     }
     collection.read(id, function(err, item) {
       if (err) {
-        kagoapi.warn('read: read failed -', err);
+        collection.emit('warn', 'read: read failed -', err);
         return res.send(500); // Internal Server Error
       }
       return res.send(item);
@@ -208,23 +200,23 @@ WebapiMethods.prototype.write = function(req, res, next) {
 
   // validate parameter
   if (!content || 'object' !== typeof content) {
-    kagoapi.warn('write: invalid content -', content);
+    collection.emit('warn', 'write: invalid content -', content);
     return res.send(400); // Bad Request
   }
   if (content instanceof Error) {
-    kagoapi.warn('write: content parse failed -', content);
+    collection.emit('warn', 'write: content parse failed -', content);
     return res.send(400); // Bad Request
   }
   if (!Object.keys(content).length) {
-    kagoapi.warn('write: empty content -', content);
+    collection.emit('warn', 'write: empty content -', content);
     return res.send(400); // Bad Request
   }
 
   // run
-  kagoapi.info('write:', id, content);
+  collection.emit('webapi', 'write', id, content);
   collection.write(id, content, function(err) {
     if (err) {
-      kagoapi.warn('write: write failed -', err);
+      collection.emit('warn', 'write: write failed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
@@ -244,10 +236,10 @@ WebapiMethods.prototype.erase = function(req, res, next) {
   }
 
   // run
-  kagoapi.info('erase:', id);
+  collection.emit('webapi', 'erase', id);
   collection.erase(id, function(err) {
     if (err) {
-      kagoapi.warn('erase: erase failed -', err);
+      collection.emit('warn', 'erase: erase failed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
@@ -267,10 +259,10 @@ WebapiMethods.prototype.exist = function(req, res, next) {
   }
 
   // run
-  kagoapi.info('exist:', id);
+  collection.emit('webapi', 'exist', id);
   collection.exist(id, function(err, exist) {
     if (err) {
-      kagoapi.warn('exist: exist failed -', err);
+      collection.emit('warn', 'exist: exist failed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
@@ -284,10 +276,10 @@ WebapiMethods.prototype.index = function(req, res, next) {
   var kagoapi = req.kagoapi;
 
   // run
-  kagoapi.info('index:');
+  collection.emit('webapi', 'index:');
   collection.index(function(err, list) {
     if (err) {
-      kagoapi.warn('index: index failed -', err);
+      collection.emit('warn', 'index: index failed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
@@ -315,27 +307,27 @@ WebapiMethods.prototype.find = function(req, res, next) {
 
   // validate parameters
   if (condition instanceof Error) {
-    kagoapi.warn('find: condition parse failed -', condition);
+    collection.emit('warn', 'find: condition parse failed -', condition);
     return res.send(400); // Bad Request
   }
   if (projection instanceof Error) {
-    kagoapi.warn('find: projection parse failed -', projection);
+    collection.emit('warn', 'find: projection parse failed -', projection);
     return res.send(400); // Bad Request
   }
   if (sort instanceof Error) {
-    kagoapi.warn('find: sort parse failed -', sort);
+    collection.emit('warn', 'find: sort parse failed -', sort);
     return res.send(400); // Bad Request
   }
 
   // run
-  kagoapi.info('find:', condition, projection, sort, offset, limit);
+  collection.emit('webapi', 'find', condition, projection, sort, offset, limit);
   cursor = collection.find(condition, projection);
   if (sort) cursor.sort(sort);
   if (limit) cursor.limit(limit);
   if (offset) cursor.offset(offset);
   cursor.toArray(function(err, list) {
     if (err) {
-      kagoapi.warn('find: toArray ailed -', err);
+      collection.emit('warn', 'find: toArray ailed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
@@ -354,15 +346,15 @@ WebapiMethods.prototype.count = function(req, res, next) {
 
   // validate parameter
   if (condition instanceof Error) {
-    kagoapi.warn('count: condition parse failed -', content);
+    collection.emit('warn', 'count: condition parse failed -', content);
     return res.send(400); // Bad Request
   }
 
   // run
-  kagoapi.info('count:', condition);
+  collection.emit('webapi', 'count', condition);
   collection.count(condition, function(err, count) {
     if (err) {
-      kagoapi.warn('count: count failed -', err);
+      collection.emit('warn', 'count: count failed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
