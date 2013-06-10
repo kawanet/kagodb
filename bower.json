@@ -1,0 +1,25 @@
+{
+  "name": "kagodb",
+  "version": "0.2.6",
+  "main": "public/js/kagodb.min.js",
+  "ignore": [
+      "**/.*",
+      "Gruntfile.js",
+      "bundle",
+      "core",
+      "data",
+      "gh-pages",
+      "index.js",
+      "mixin",
+      "node_modules",
+      "package.json",
+      "public/src",
+      "server.js",
+      "storage",
+      "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kawanet/kagodb.git"
+  }
+}
