@@ -25,6 +25,8 @@ function inherit(parent) {
 
   child.settings = utils.clone(parent.settings);
 
+  child.bundle = utils.clone(parent.bundle || {});
+
   /** This applies a mixin object which exports instance methods.
    * @method KagoDB.mixin
    * @param {Object|Function} mixin - mixin object or mixin function which returns mixin object
