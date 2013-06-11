@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     // https://github.com/gruntjs/grunt-contrib-jshint
     jshint: {
       all: {
-        src: ['./*.js', '*/*.js', 'test/lib/*.js']
+        src: ['./*.js', './*.json', '*/*.js', 'test/lib/*.js']
       },
       options: {
         '-W103': true // The '__proto__' property is deprecated.

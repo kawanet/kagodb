@@ -19,6 +19,8 @@
     "grunt-contrib-uglify": "*",
     "async": "*",
     "jquery": "*",
-    "supertest": "*"
+    "supertest": "*",
+    "browserify": "*",
+    "browserify-shim": "*"
   }
 }
