@@ -1,7 +1,6 @@
 /*! http_superagent.test.js */
 
 var KagoDB = require('../bundle/browser');
-var superagent = require('supertest/node_modules/superagent');
 var crud_tests = require('./lib/crud_tests');
 var http_tests = require('./lib/http_tests');
 
@@ -19,8 +18,7 @@ describe('HTTP tests via superagent', function() {
 
   var opts = {
     storage: 'http_superagent',
-    endpoint: endpoint,
-    superagent: superagent
+    endpoint: endpoint
   };
 
   describe('CRUD', function() {

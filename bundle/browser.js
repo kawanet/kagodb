@@ -12,9 +12,4 @@ var preload = {
 var KagoDB = Common.inherit();
 KagoDB.set('storage_preload', preload);
 
-var _window = require('../core/window');
-KagoDB.set('jquery', _window.jQuery);
-KagoDB.set('superagent', _window.superagent);
-KagoDB.set('local_storage', _window.localStorage || {});
-
 module.exports = KagoDB;

@@ -1,6 +1,8 @@
 /*! local_storage.js */
 
+var wrequire = require('wrequire');
 var memory = require('./memory');
+var localStorage = {};
 
 module.exports = function() {
   var mixin = memory.call(this);
@@ -13,9 +15,7 @@ module.exports = function() {
 function memory_store() {
   this._memory_serialize = 1;
   var object = this.get('local_storage');
-  if (!object) {
-    throw new Error('Please .set("local_storage", window.localStorage || {}) before using this.');
-  }
+  object = object || wrequire('localStorage') || localStorage;
   return object;
 }
 

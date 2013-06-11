@@ -1,5 +1,7 @@
 /*! request_jquery.js */
 
+var wrequire = require('wrequire');
+
 module.exports = function() {
   var mixin = {
     request: request
@@ -11,10 +13,7 @@ function request(opts, callback) {
   var self = this;
   var jopts = {};
   var jQuery = this.get('jquery');
-
-  // var jquery_path = 'jquery';
-  // jQuery = jQuery || require(jquery_path);
-
+  jQuery = jQuery || wrequire('jQuery', 'jquery');
   if (!jQuery) throw new Error('jQuery not loaded');
 
   // create a HTTP request

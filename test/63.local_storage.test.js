@@ -5,18 +5,16 @@ var fs = require('fs');
 var KagoDB = require('../index');
 var crud_tests = require('./lib/crud_tests');
 
-var localStorage = {};
+var localStorage;
 
 describe('Local Storage (emulation)', function() {
 
   var opts1 = {
-    storage: 'local_storage',
-    local_storage: localStorage
+    storage: 'local_storage'
   };
   var opts2 = {
     storage: 'local_storage',
-    namespace: 'test',
-    local_storage: localStorage
+    namespace: 'test'
   };
 
   describe('CRUD without namespace', function() {
@@ -45,10 +43,14 @@ describe('Local Storage (emulation)', function() {
     var path2B = opts2.namespace + ':' + encodeURIComponent(idB);
 
     var collection1 = new KagoDB(opts1);
+    collection1.find();
+    localStorage = collection1.memory_store();
     write_to_erase(collection1, idA, path1A);
     write_to_erase(collection1, idB, path1B);
 
     var collection2 = new KagoDB(opts2);
+    collection2.find();
+    localStorage = collection2.memory_store();
     write_to_erase(collection2, idA, path2A);
     write_to_erase(collection2, idB, path2B);
   });

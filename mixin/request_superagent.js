@@ -1,5 +1,7 @@
 /*! request_superagent.js */
 
+var wrequire = require('wrequire');
+
 module.exports = function() {
   var mixin = {
     request: request
@@ -12,10 +14,7 @@ function request(opts, callback) {
   var method = opts.method || 'GET';
   var url = opts.url;
   var superagent = this.get('superagent');
-
-  // var superagent_path = 'superagent';
-  // request = request || require(superagent_path);
-
+  superagent = superagent || wrequire('superagent', 'superagent');
   if (!superagent) throw new Error('superagent not loaded');
 
   // create a HTTP request
