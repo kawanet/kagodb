@@ -68,7 +68,8 @@ describe('Cursor', function() {
     });
 
     it('find().toArray()', function(done) {
-      collection.find().toArray(function(err, list) {
+      var cursor = collection.find();
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         done();
@@ -76,34 +77,58 @@ describe('Cursor', function() {
     });
 
     it('find().offset(2)', function(done) {
-      collection.find().offset(2).toArray(function(err, list) {
+      var cursor = collection.find().offset(2);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length - 2, 'offset 2 length');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
     it('find().offset(1000)', function(done) {
-      collection.find().offset(1000).toArray(function(err, list) {
+      var cursor = collection.find().offset(1000);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, 0, 'offset 1000 length');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
     it('find().limit(2)', function(done) {
-      collection.find().limit(2).toArray(function(err, list) {
+      var cursor = collection.find().limit(2);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, 2, 'limit 2 length');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
     it('find().limit(1000)', function(done) {
-      collection.find().limit(1000).toArray(function(err, list) {
+      var cursor = collection.find().limit(1000);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'limit 1000 length');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -111,12 +136,18 @@ describe('Cursor', function() {
       var sort = {
         string: 1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAR', 'BAR/BAZ/FOO/QUX #0');
         assert.equal(list[3].string, 'QUX', 'BAR/BAZ/FOO/QUX #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -124,12 +155,18 @@ describe('Cursor', function() {
       var sort = {
         string: -1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'QUX', 'QUX/FOO/BAZ/BAR #0');
         assert.equal(list[3].string, 'BAR', 'QUX/FOO/BAZ/BAR #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -137,12 +174,18 @@ describe('Cursor', function() {
       var sort = {
         decimal: 1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAR', 'BAR/FOO/QUX/BAZ #0');
         assert.equal(list[3].string, 'BAZ', 'BAR/FOO/QUX/BAZ #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -150,12 +193,18 @@ describe('Cursor', function() {
       var sort = {
         decimal: -1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ/QUX/FOO/BAR #0');
         assert.equal(list[3].string, 'BAR', 'BAZ/QUX/FOO/BAR #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -163,11 +212,17 @@ describe('Cursor', function() {
       var sort = {
         numeric: 1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ/---/---/--- #0');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -177,14 +232,20 @@ describe('Cursor', function() {
         decimal: 1,
         string: 1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ-BAR-FOO-QUX #0');
         assert.equal(list[1].string, 'BAR', 'BAZ-BAR-FOO-QUX #1');
         assert.equal(list[2].string, 'FOO', 'BAZ-BAR-FOO-QUX #2');
         assert.equal(list[3].string, 'QUX', 'BAZ-BAR-FOO-QUX #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -194,14 +255,20 @@ describe('Cursor', function() {
         decimal: -1,
         string: -1
       };
-      collection.find().sort(sort).toArray(function(err, list) {
+      var cursor = collection.find().sort(sort);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'QUX', 'QUX-FOO-BAR-BAZ #0');
         assert.equal(list[1].string, 'FOO', 'QUX-FOO-BAR-BAZ #1');
         assert.equal(list[2].string, 'BAR', 'QUX-FOO-BAR-BAZ #2');
         assert.equal(list[3].string, 'BAZ', 'QUX-FOO-BAR-BAZ #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -209,12 +276,18 @@ describe('Cursor', function() {
       var order = function(a, b) {
         return a.decimal - b.decimal;
       };
-      collection.find().sort(order).toArray(function(err, list) {
+      var cursor = collection.find().sort(order);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAR', 'BAR/FOO/QUX/BAZ #0');
         assert.equal(list[3].string, 'BAZ', 'BAR/FOO/QUX/BAZ #3');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -222,11 +295,17 @@ describe('Cursor', function() {
       var order = function(a, b) {
         return a.numeric - b.numeric;
       };
-      collection.find().sort(order).toArray(function(err, list) {
+      var cursor = collection.find().sort(order);
+      cursor.toArray(function(err, list) {
         assert(!err, err);
         assert.equal(list.length, index.length, 'find length');
         assert.equal(list[0].string, 'BAZ', 'BAZ/---/---/--- #0');
-        done();
+
+        cursor.count(function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -235,7 +314,12 @@ describe('Cursor', function() {
       collection.find(cond).toArray(function(err, list) {
         assert(!err, 'find() error: ' + err);
         assert.equal(list.length, index.length, 'found');
-        done();
+
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -266,11 +350,16 @@ describe('Cursor', function() {
         assert.equal(list.length, 1, 'FOO count');
         assert.equal(list[0].string, 'FOO', 'FOO string');
 
-        collection.findOne(cond, function(err, item) {
-          assert(!err, 'findOne() error: ' + err);
-          assert(item, 'found');
-          assert.equal(item.string, 'FOO', 'FOO string findOne');
-          done();
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+
+          collection.findOne(cond, function(err, item) {
+            assert(!err, 'findOne() error: ' + err);
+            assert(item, 'found');
+            assert.equal(item.string, 'FOO', 'FOO string findOne');
+            done();
+          });
         });
       });
     });
@@ -285,11 +374,16 @@ describe('Cursor', function() {
         assert.equal(list[0].decimal, 123, '123 decimal 0');
         assert.equal(list[1].decimal, 123, '123 decimal 1');
 
-        collection.findOne(cond, function(err, item) {
-          assert(!err, 'findOne() error: ' + err);
-          assert(item, 'found');
-          assert.equal(item.decimal, 123, '123 decimal findOne');
-          done();
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+
+          collection.findOne(cond, function(err, item) {
+            assert(!err, 'findOne() error: ' + err);
+            assert(item, 'found');
+            assert.equal(item.decimal, 123, '123 decimal findOne');
+            done();
+          });
         });
       });
     });
@@ -305,11 +399,16 @@ describe('Cursor', function() {
         assert.equal(list[1].numeric, 45.67, '45.67 numeric 1');
         assert.equal(list[2].numeric, 45.67, '45.67 numeric 2');
 
-        collection.findOne(cond, function(err, item) {
-          assert(!err, 'findOne() error: ' + err);
-          assert(item, 'found');
-          assert.equal(item.numeric, 45.67, '45.67 numeric findOne');
-          done();
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+
+          collection.findOne(cond, function(err, item) {
+            assert(!err, 'findOne() error: ' + err);
+            assert(item, 'found');
+            assert.equal(item.numeric, 45.67, '45.67 numeric findOne');
+            done();
+          });
         });
       });
     });
@@ -327,7 +426,12 @@ describe('Cursor', function() {
         assert.equal(list.length, 2, 'count');
         assert.equal(list[0].string, 'FOO', 'string FOO-QUX');
         assert.equal(list[1].string, 'QUX', 'string FOO-QUX');
-        done();
+
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -341,7 +445,12 @@ describe('Cursor', function() {
         assert(!err, 'find() error: ' + err);
         assert.equal(list.length, 1, 'count');
         assert.equal(list[0].string, 'BAZ', 'string');
-        done();
+
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
       });
     });
 
@@ -354,11 +463,16 @@ describe('Cursor', function() {
         assert.equal(list.length, 1, 'FOO count');
         assert.equal(list[0].string, 'FOO', 'FOO string');
 
-        collection.findOne(cond, function(err, item) {
-          assert(!err, 'findOne() error: ' + err);
-          assert(item, 'found');
-          assert.equal(item.string, 'FOO', 'FOO string findOne');
-          done();
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+
+          collection.findOne(cond, function(err, item) {
+            assert(!err, 'findOne() error: ' + err);
+            assert(item, 'found');
+            assert.equal(item.string, 'FOO', 'FOO string findOne');
+            done();
+          });
         });
       });
     });

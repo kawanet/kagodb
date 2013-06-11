@@ -18,7 +18,7 @@ function Cursor(collection, condition, projection) {
   this.filters = {};
 }
 
-/** This invokes a callback function with an index for all items.
+/** This invokes a callback function with an index for all items of the collection whether a condition is given or not.
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
@@ -62,12 +62,12 @@ Cursor.prototype.toArray = function(callback) {
   var offset = self.filters.offset || 0;
   var limit = self.filters.limit || 0;
   var last = (offset >= 0 && limit >= 1) ? offset + limit : 0;
-
   if (self._values) {
     done(self._values); // cache
   } else {
     self.index(function(err, list) {
       var buf = [];
+      var cnt = 0;
       if (err) {
         callback(err);
         return;
@@ -95,32 +95,32 @@ Cursor.prototype.toArray = function(callback) {
         }
 
         // no more items
-        if (!list.length) {
+        if (cnt >= list.length) {
           done(buf);
           return;
         }
 
         // read next item
-        var id = list.shift();
+        var id = list[cnt++];
         self.collection.read(id, each);
       }
     });
   }
 
   function done(buf) {
+    self._values = buf; // cache
     if (sort) {
       buf = buf.sort(sort);
     }
     if (offset) {
-      buf = buf.splice(offset);
+      buf = [].concat(buf).splice(offset);
     }
     if (limit) {
-      buf = buf.splice(0, limit);
+      buf = [].concat(buf).splice(0, limit);
     }
     if (self.projection) {
       buf = buf.map(self.projection);
     }
-    self._values = buf; // cache
     callback(null, buf);
   }
 
@@ -138,7 +138,8 @@ Cursor.prototype.toArray = function(callback) {
 
 Cursor.prototype.count = function(callback) {
   callback = callback || NOP;
-  this.index(function(err, list) {
+  var getlist = (this.condition || this.filters.limit || this.filters.offset) ? this.toArray : this.index;
+  getlist.call(this, function(err, list) {
     if (err) {
       callback(err);
     } else {
