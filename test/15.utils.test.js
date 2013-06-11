@@ -6,13 +6,17 @@ var KagoDB = require('../index');
 
 describe('utils tests:', function() {
   utils_test('direct utils', _utils);
-  var iutils = KagoDB().utils;
-  utils_test('utils via instance', iutils);
+  // var iutils = KagoDB().utils;
+  // utils_test('utils via instance', iutils);
+  var butils = KagoDB.bundle.utils || {};
+  utils_test('utils via bundle', butils);
 });
 
 function utils_test(name, utils) {
   describe(name, function() {
+
     it('utils.inherits', function(done) {
+      assert('function' == typeof utils.inherits, 'utils shoud provide inherits() function');
 
       function Parent() {}
       Parent.prototype.foo = function() {};
@@ -37,9 +41,12 @@ function utils_test(name, utils) {
     });
 
     it('utils.eachSeries', function(done) {
+      assert('function' == typeof utils.eachSeries, 'utils shoud provide eachSeries() function');
+
       var count = 0;
       var total = 0;
       var array1 = [1, 2, 3, 4, 5];
+
       utils.eachSeries(array1, iterator, function(err) {
         assert(!err, 'here should not have an error');
         assert.equal(count, array1.length, 'iterator should be called correctly');
@@ -66,6 +73,8 @@ function utils_test(name, utils) {
     });
 
     it('utils.extend', function(done) {
+      assert('function' == typeof utils.extend, 'utils shoud provide extend() function');
+
       var source = {};
       var dest = {};
       source.foo = 'FOO';
@@ -85,6 +94,8 @@ function utils_test(name, utils) {
     });
 
     it('utils.clone', function(done) {
+      assert('function' == typeof utils.clone, 'utils shoud provide clone() function');
+
       var source = {};
       source.foo = 'FOO';
       var dest = utils.clone(source);
