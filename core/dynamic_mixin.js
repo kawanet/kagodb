@@ -4,13 +4,13 @@
  * This mixin load a mixin when methods has been called.
  * @class DynamicMixin
  * @mixin
- * @param {Object} opts - options
+ * @param {Object} name - settings key
  * @return {Function} mixin function
  */
 
 var intercept_mixin = require('../core/intercept_mixin');
 
-module.exports = function(opts) {
+module.exports = function(name) {
   return mixin;
 
   function mixin() {
@@ -20,46 +20,33 @@ module.exports = function(opts) {
   function wrapper(key, func) {
     return function() {
       // load a mixin
-      var mixin = dynamic_loader.call(this, opts) || {};
+      var mixin = dynamic_loader.call(this, name) || {};
       func = mixin[key] || func;
       return func.apply(this, arguments);
     };
   }
 };
 
-function dynamic_loader(opts) {
-  var _layer = '_' + opts.layer;
-  var mixin = this[_layer];
+function dynamic_loader(name) {
+  var _name = '_' + name;
+  var mixin = this[_name];
 
   // already loaded
   if (mixin) {
     return mixin;
   }
 
-  mixin = this.get(opts.layer);
+  mixin = this.get(name);
   if (!mixin) {
-    throw new Error(opts.layer + ' not specified');
+    throw new Error(name + ' not specified');
   }
 
-  var name = mixin + '';
+  var str = mixin + '';
   if ('function' != typeof mixin) {
-    var preloaded = {};
-    if (opts.preload) {
-      preloaded = this.get(opts.preload) || {};
-    }
-    if (preloaded[name]) {
-      mixin = preloaded[name];
-    } else if (name.search(/^\w[\w\-\.]*$/) < 0) {
-      throw new Error('invalid ' + opts.layer + ' name: ' + name);
-    } else if (opts.basepath) {
-      try {
-        mixin = require(opts.basepath + '/' + name);
-      } catch (err) {
-        throw new Error(opts.layer + ' require failed: ' + err);
-      }
-    }
+    var preloaded = this.bundle || {};
+    mixin = preloaded[str];
     if (!mixin) {
-      throw new Error('invalid ' + opts.layer + ' class: ' + name);
+      throw new Error('invalid ' + name + ' class: ' + str);
     }
   }
 
@@ -75,6 +62,6 @@ function dynamic_loader(opts) {
     }
   }
 
-  this[_layer] = mixin;
+  this[_name] = mixin;
   return mixin;
 }

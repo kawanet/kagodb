@@ -1,15 +1,12 @@
 /*! browser.js */
 
 var Common = require('./common');
-
-var preload = {
-  'memory': require('../storage/memory'),
-  'http_jquery': require('../storage/http_jquery'),
-  'http_superagent': require('../storage/http_superagent'),
-  'local_storage': require('../storage/local_storage')
-};
-
 var KagoDB = Common.inherit();
-KagoDB.set('storage_preload', preload);
+
+KagoDB.bundle.utils = require('../core/utils');
+KagoDB.bundle.memory = require('../storage/memory');
+KagoDB.bundle.http_jquery = require('../storage/http_jquery');
+KagoDB.bundle.http_superagent = require('../storage/http_superagent');
+KagoDB.bundle.local_storage = require('../storage/local_storage');
 
 module.exports = KagoDB;

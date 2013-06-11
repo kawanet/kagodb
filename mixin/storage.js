@@ -7,12 +7,6 @@
 
 var dynamic_mixin = require('../core/dynamic_mixin');
 
-var opts = {
-  layer: 'storage',
-  basepath: '../storage',
-  preload: 'storage_preload'
-};
-
 module.exports = function() {
   return mixin;
 
@@ -22,7 +16,7 @@ module.exports = function() {
     this.erase = this.erase || erase;
     this.exist = this.exist || exist;
     this.index = this.index || index;
-    return dynamic_mixin.call(this, opts);
+    return dynamic_mixin.call(this, 'storage');
   }
 };
 
