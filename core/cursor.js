@@ -104,6 +104,18 @@ Cursor.prototype.toArray = function(callback) {
   return this;
 };
 
+Cursor.prototype.each = function(callback) {
+  var self = this;
+  callback = callback || NOP;
+
+  this.nextObject(iterator);
+
+  function iterator(err, item) {
+    callback(err, item);
+    if (!err && item) self.nextObject(iterator);
+  }
+}
+
 /** This invokes a callback function with the number of items found
  * @param {Function} callback - function(err, count) {}
  * @returns {Cursor} instance itself for method chaining
