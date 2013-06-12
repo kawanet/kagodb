@@ -47,7 +47,7 @@ exports.parser = function(projection) {
   // more properties
   return function(item) {
     var out = {};
-    for(var key in projection) {
+    for (var key in projection) {
       if (projection[key]) {
         out[key] = item[key];
       }

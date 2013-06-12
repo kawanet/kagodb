@@ -1,8 +1,6 @@
 /*! find.js */
 
 var Cursor = require('../core/cursor');
-var Condition = require('../core/condition');
-var Projection = require('../core/projection');
 
 /** This mixin provides find(), findOne() and count() methods.
  * @class FindMixin
@@ -64,25 +62,7 @@ module.exports = function() {
  */
 
 function find(condition, projection) {
-  // parse condition
-  var condParser = this.get('condition_parser') || Condition.parser;
-  if ('function' != typeof condParser) {
-    throw new Error('invalid condition parser: ' + condParser);
-  }
-  var parserFunc = condParser(condition);
-
-  var projParser = this.get('projection_parser') || Projection.parser;
-  if ('function' != typeof projParser) {
-    throw new Error('invalid projection parser: ' + projParser);
-  }
-  var projFunc = projParser(projection);
-
-  // create a cursor
-  var cursorClass = this.get('cursor') || Cursor;
-  if ('function' != typeof cursorClass) {
-    throw new Error('invalid cursor class: ' + cursorClass);
-  }
-  return new cursorClass(this, parserFunc, projFunc);
+  return new Cursor(this, condition, projection);
 }
 
 /** This invokes a callback function with an item found under specified condition.

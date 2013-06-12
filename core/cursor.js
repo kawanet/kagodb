@@ -1,6 +1,8 @@
 /*! cursor.js */
 
 var utils = require('./utils');
+var ConditionParser = require('../core/condition');
+var ProjectionParser = require('../core/projection');
 
 module.exports = Cursor;
 
@@ -30,10 +32,16 @@ function Cursor(collection, condition, projection) {
   this.source = new Source(this.collection);
   this._source = this.source;
   if (condition) {
-    this.source = new Condition(this.source, condition);
+    condition = ConditionParser.parser(condition);
+    if (condition) {
+      this.source = new Condition(this.source, condition);
+    }
   }
   if (projection) {
-    this.source = new Projection(this.source, projection);
+    projection = ProjectionParser.parser(projection);
+    if (projection) {
+      this.source = new Projection(this.source, projection);
+    }
   }
 }
 
@@ -178,7 +186,7 @@ Source.prototype._nextObject = function(callback) {
   if (!this.list.length) return callback(); // EOF
   var id = this.list.shift();
   this.collection.read(id, callback);
-}
+};
 
 Source.prototype.rewind = function(callback) {
   delete this.nextObject;
@@ -374,7 +382,7 @@ function toArray(source, callback) {
 
     source.nextObject(iterator);
   }
-};
+}
 
 function through(callback) {
   if (callback) callback();

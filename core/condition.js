@@ -15,7 +15,7 @@
  * @param {Object} [condition] - query parameters
  */
 
-exports.parser = function (condition) {
+exports.parser = function(condition) {
   // function type
   if ('function' == typeof condition) {
     return condition;
