@@ -11,11 +11,13 @@ var model = require('../mixin/model');
 var noop = require('../mixin/noop');
 var update = require('../mixin/update');
 var remove = require('../mixin/remove');
+var insert = require('../mixin/insert');
 
 var KagoDB = Base.inherit();
 
 KagoDB.mixin(noop());
 KagoDB.mixin(find());
+KagoDB.mixin(insert());
 KagoDB.mixin(update());
 KagoDB.mixin(remove());
 KagoDB.mixin(storage());
