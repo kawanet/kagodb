@@ -172,7 +172,6 @@ function WebapiMethods() {}
 
 WebapiMethods.prototype.read = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
   var id = req.param('id');
 
   // id must be specified
@@ -203,53 +202,32 @@ WebapiMethods.prototype.read = function(req, res, next) {
 
 WebapiMethods.prototype.write = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
   var id = req.param('id');
-  var content = req.param('content');
 
   // id must be specified
   if (!id) {
     return next();
   }
 
-  // content refers body when PUT
-  if (!content && req.method.toLowerCase() == 'put') {
-    content = req.body;
-  }
-
-  // parse content body
-  content = kagoapi.parse(content);
-
-  // validate parameter
-  if (!content || 'object' !== typeof content) {
-    collection.emit('warn', 'write: invalid content -', content);
-    return res.send(400); // Bad Request
-  }
-  if (content instanceof Error) {
-    collection.emit('warn', 'write: content parse failed -', content);
-    return res.send(400); // Bad Request
-  }
-  if (!Object.keys(content).length) {
-    collection.emit('warn', 'write: empty content -', content);
-    return res.send(400); // Bad Request
-  }
-
-  // run
-  collection.emit('webapi', 'write', id, content);
-  collection.write(id, content, function(err) {
-    if (err) {
-      collection.emit('warn', 'write: write failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      success: true
-    });
+  parse_content(req, res, function(content) {
+    collection.emit('webapi', 'write', id, content);
+    collection.write(id, content, response);
   });
+
+  function response(err) {
+    if (err) {
+      collection.emit('warn', err);
+      return res.send(500); // Internal Server Error
+    } else {
+      return res.send({
+        success: true
+      });
+    }
+  }
 };
 
 WebapiMethods.prototype.erase = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
   var id = req.param('id');
 
   // id must be specified
@@ -259,20 +237,22 @@ WebapiMethods.prototype.erase = function(req, res, next) {
 
   // run
   collection.emit('webapi', 'erase', id);
-  collection.erase(id, function(err) {
+  collection.erase(id, response);
+
+  function response(err) {
     if (err) {
-      collection.emit('warn', 'erase: erase failed -', err);
+      collection.emit('warn', err);
       return res.send(500); // Internal Server Error
+    } else {
+      return res.send({
+        success: true
+      });
     }
-    return res.send({
-      success: true
-    });
-  });
+  }
 };
 
 WebapiMethods.prototype.exist = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
   var id = req.param('id');
 
   // id must be specified
@@ -282,7 +262,9 @@ WebapiMethods.prototype.exist = function(req, res, next) {
 
   // run
   collection.emit('webapi', 'exist', id);
-  collection.exist(id, function(err, exist) {
+  collection.exist(id, response);
+
+  function response(err, exist) {
     if (err) {
       collection.emit('warn', 'exist: exist failed -', err);
       return res.send(500); // Internal Server Error
@@ -290,16 +272,17 @@ WebapiMethods.prototype.exist = function(req, res, next) {
     return res.send({
       exist: !! exist
     });
-  });
+  }
 };
 
 WebapiMethods.prototype.index = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
 
   // run
   collection.emit('webapi', 'index:');
-  collection.index(function(err, list) {
+  collection.index(response);
+
+  function response(err, list) {
     if (err) {
       collection.emit('warn', 'index: index failed -', err);
       return res.send(500); // Internal Server Error
@@ -307,74 +290,47 @@ WebapiMethods.prototype.index = function(req, res, next) {
     return res.send({
       index: list
     });
-  });
+  }
 };
 
 WebapiMethods.prototype.find = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var condition = req.param('condition');
-  var projection = req.param('projection');
-  var sort = req.param('sort');
   var offset = req.param('offset');
   var limit = req.param('limit');
   var cursor;
 
-  // translate query parameters
-  condition = kagoapi.parse(condition);
-  projection = kagoapi.parse(projection);
-  sort = kagoapi.parse(sort);
-  offset = offset - 0;
-  limit = limit - 0;
+  parse_condition(req, res, function(condition) {
+    parse_projection(req, res, function(projection) {
+      parse_sort(req, res, function(sort) {
+        cursor = collection.find(condition, projection);
+        if (sort) cursor.sort(sort);
+        if (limit) cursor.limit(limit);
+        if (offset) cursor.offset(offset);
+        cursor.toArray(response);
+      });
+    });
+  });
 
-  // validate parameters
-  if (condition instanceof Error) {
-    collection.emit('warn', 'find: condition parse failed -', condition);
-    return res.send(400); // Bad Request
-  }
-  if (projection instanceof Error) {
-    collection.emit('warn', 'find: projection parse failed -', projection);
-    return res.send(400); // Bad Request
-  }
-  if (sort instanceof Error) {
-    collection.emit('warn', 'find: sort parse failed -', sort);
-    return res.send(400); // Bad Request
-  }
-
-  // run
-  collection.emit('webapi', 'find', condition, projection, sort, offset, limit);
-  cursor = collection.find(condition, projection);
-  if (sort) cursor.sort(sort);
-  if (limit) cursor.limit(limit);
-  if (offset) cursor.offset(offset);
-  cursor.toArray(function(err, list) {
+  function response(err, list) {
     if (err) {
-      collection.emit('warn', 'find: toArray ailed -', err);
+      collection.emit('warn', 'find: toArray failed -', err);
       return res.send(500); // Internal Server Error
     }
     return res.send({
       data: list
     });
-  });
+  }
 };
 
 WebapiMethods.prototype.count = function(req, res, next) {
   var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var condition = req.param('condition');
 
-  // translate query parameter
-  condition = kagoapi.parse(condition);
+  parse_condition(req, res, function(condition) {
+    collection.emit('webapi', 'count', condition);
+    collection.count(condition, response);
+  });
 
-  // validate parameter
-  if (condition instanceof Error) {
-    collection.emit('warn', 'count: condition parse failed -', content);
-    return res.send(400); // Bad Request
-  }
-
-  // run
-  collection.emit('webapi', 'count', condition);
-  collection.count(condition, function(err, count) {
+  function response(err, count) {
     if (err) {
       collection.emit('warn', 'count: count failed -', err);
       return res.send(500); // Internal Server Error
@@ -382,5 +338,207 @@ WebapiMethods.prototype.count = function(req, res, next) {
     return res.send({
       count: count
     });
-  });
+  }
 };
+
+WebapiMethods.prototype.insert = function(req, res, next) {
+  var collection = req.kagodb;
+
+  parse_content(req, res, function(content) {
+    collection.emit('webapi', 'insert', content);
+    collection.insert(content, response);
+  });
+
+  function response(err) {
+    if (err) {
+      collection.emit('warn', err);
+      return res.send(500); // Internal Server Error
+    } else {
+      return res.send({
+        success: true
+      });
+    }
+  }
+};
+
+WebapiMethods.prototype.save = function(req, res, next) {
+  var collection = req.kagodb;
+
+  parse_content(req, res, function(content) {
+    collection.emit('webapi', 'save', content);
+    collection.save(content, response);
+  });
+
+  function response(err) {
+    if (err) {
+      collection.emit('warn', err);
+      return res.send(500); // Internal Server Error
+    } else {
+      return res.send({
+        success: true
+      });
+    }
+  }
+};
+
+WebapiMethods.prototype.update = function(req, res, next) {
+  var collection = req.kagodb;
+
+  parse_condition(req, res, function(condition) {
+    parse_update(req, res, function(update) {
+      parse_options(req, res, function(options) {
+        collection.emit('webapi', 'update', condition, update, options);
+        collection.update(condition, update, options, response);
+      });
+    });
+  });
+
+  function response(err) {
+    if (err) {
+      collection.emit('warn', err);
+      return res.send(500); // Internal Server Error
+    } else {
+      return res.send({
+        success: true
+      });
+    }
+  }
+};
+
+WebapiMethods.prototype.remove = function(req, res, next) {
+  var collection = req.kagodb;
+
+  parse_condition(req, res, function(condition) {
+    parse_options(req, res, function(options) {
+      var justOne = options && !options.multi;
+      collection.emit('webapi', 'remove', condition, justOne);
+      collection.remove(condition, justOne, response);
+    });
+  });
+
+  function response(err) {
+    if (err) {
+      collection.emit('warn', err);
+      return res.send(500); // Internal Server Error
+    } else {
+      return res.send({
+        success: true
+      });
+    }
+  }
+};
+
+function parse_sort(req, res, next) {
+  var collection = req.kagodb;
+  var kagoapi = req.kagoapi;
+  var sort = req.param('sort');
+
+  // translate query parameters
+  sort = kagoapi.parse(sort);
+
+  // validate parameters
+  if (sort instanceof Error) {
+    collection.emit('warn', 'sort parse failed -', sort);
+    return res.send(400); // Bad Request
+  }
+
+  next(sort);
+}
+
+function parse_update(req, res, next) {
+  var collection = req.kagodb;
+  var kagoapi = req.kagoapi;
+  var update = req.param('update');
+
+  // translate query parameters
+  update = kagoapi.parse(update);
+
+  // validate parameters
+  if (update instanceof Error) {
+    collection.emit('warn', 'update parse failed -', update);
+    return res.send(400); // Bad Request
+  }
+
+  next(update);
+}
+
+function parse_projection(req, res, next) {
+  var collection = req.kagodb;
+  var kagoapi = req.kagoapi;
+  var projection = req.param('projection');
+
+  // translate query parameters
+  projection = kagoapi.parse(projection);
+
+  // validate parameters
+  if (projection instanceof Error) {
+    collection.emit('warn', 'projection parse failed -', projection);
+    return res.send(400); // Bad Request
+  }
+
+  next(projection);
+}
+
+function parse_options(req, res, next) {
+  var collection = req.kagodb;
+  var kagoapi = req.kagoapi;
+  var options = req.param('options');
+
+  // translate query parameters
+  options = kagoapi.parse(options);
+
+  // validate parameters
+  if (options instanceof Error) {
+    collection.emit('warn', 'options parse failed -', options);
+    return res.send(400); // Bad Request
+  }
+
+  next(options);
+}
+
+function parse_condition(req, res, next) {
+  var collection = req.kagodb;
+  var kagoapi = req.kagoapi;
+  var condition = req.param('condition');
+
+  // translate query parameters
+  condition = kagoapi.parse(condition);
+
+  // validate parameters
+  if (condition instanceof Error) {
+    collection.emit('warn', 'condition parse failed -', condition);
+    return res.send(400); // Bad Request
+  }
+
+  next(condition);
+}
+
+function parse_content(req, res, next) {
+  var collection = req.kagodb;
+  var kagoapi = req.kagoapi;
+  var content = req.param('content');
+
+  // content refers body when PUT
+  if (!content && req.method.toLowerCase() == 'put') {
+    content = req.body;
+  }
+
+  // translate query parameters
+  content = kagoapi.parse(content);
+
+  // validate parameter
+  if (!content || 'object' !== typeof content) {
+    collection.emit('warn', 'invalid content -', content);
+    return res.send(400); // Bad Request
+  }
+  if (content instanceof Error) {
+    collection.emit('warn', 'content parse failed -', content);
+    return res.send(400); // Bad Request
+  }
+  if (!Object.keys(content).length) {
+    collection.emit('warn', 'empty content -', content);
+    return res.send(400); // Bad Request
+  }
+
+  next(content);
+}

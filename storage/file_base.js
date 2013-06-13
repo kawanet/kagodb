@@ -51,9 +51,9 @@ function file_suffix() {
 }
 
 function read(id, callback) {
-  callback = callback || NOP;
   var path = this.escape(id);
   var self = this;
+  callback = callback || NOP;
   fs.readFile(path, 'utf8', function(err, content) {
     if (err) {
       callback(err);
@@ -67,6 +67,7 @@ function read(id, callback) {
 
 function write(id, item, callback) {
   var path = this.escape(id);
+  callback = callback || NOP;
   this.encode(item, function(err, encoded) {
     if (err) {
       callback(err);
@@ -80,6 +81,7 @@ function write(id, item, callback) {
 
 function erase(id, callback) {
   var path = this.escape(id);
+  callback = callback || NOP;
   fs.unlink(path, function(err) {
     callback(err);
   });
@@ -87,15 +89,16 @@ function erase(id, callback) {
 
 function exist(id, callback) {
   var path = this.escape(id);
+  callback = callback || NOP;
   fs.stat(path, function(err, stat) {
     callback(null, !! stat);
   });
 }
 
 function index(callback) {
-  callback = callback || NOP;
   var folder = this.file_folder();
   var unescape = this.unescape.bind(this);
+  callback = callback || NOP;
   fs.readdir(folder, function(err, list) {
     if (err) {
       callback(err);
