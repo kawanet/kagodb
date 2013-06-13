@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "main": "public/js/kagodb.min.js",
   "ignore": [
       "**/.*",
