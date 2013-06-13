@@ -1,9 +1,9 @@
 /*! getset.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 
-describe('get() and set() tests:', function() {
+describe('Settings:', function() {
   getset_test();
 });
 

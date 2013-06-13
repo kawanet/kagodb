@@ -1,7 +1,7 @@
 /*! mixin.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 
 // object-style mixin
 var mixin1 = {
@@ -20,7 +20,7 @@ var mixin3 = function() {
   };
 };
 
-describe('mixin() tests:', function() {
+describe('Mixin:', function() {
   mixin_test();
 });
 

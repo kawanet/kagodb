@@ -1,10 +1,10 @@
-/*! cursor.test.js */
+/*! find.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 var async = require('async');
 
-describe('Cursor', function() {
+describe('Find:', function() {
   var collection;
   var opts = {
     storage: 'memory'

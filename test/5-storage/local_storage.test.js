@@ -2,12 +2,12 @@
 
 var assert = require('chai').assert;
 var fs = require('fs');
-var KagoDB = require('../index');
-var crud_tests = require('./lib/crud_tests');
+var KagoDB = require('../../index');
+var crud_tests = require('../testlib/crud_tests');
 
 var localStorage;
 
-describe('Local Storage (emulation)', function() {
+describe('Local Storage: (emulation)', function() {
 
   var opts1 = {
     storage: 'local_storage'

@@ -1,16 +1,16 @@
 /*! pkey.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 var async = require('async');
-var pkey = require('../mixin/pkey');
+var pkey = KagoDB.bundle.pkey;
 
 var Kago0 = KagoDB.inherit();
 var Kago1 = KagoDB.inherit();
 var Kago2 = KagoDB.inherit();
 Kago2.mixin(pkey('_id2'));
 
-describe('Primary key', function() {
+describe('Primary Key Mixin:', function() {
   var collection;
   var opts = {
     storage: 'memory',

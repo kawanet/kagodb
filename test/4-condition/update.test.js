@@ -1,10 +1,10 @@
 /*! update.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 var async = require('async');
 
-describe('Update', function() {
+describe('Update:', function() {
   var collection;
   var opts = {
     storage: 'memory',

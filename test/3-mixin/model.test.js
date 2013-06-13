@@ -1,9 +1,9 @@
 /*! model.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 var async = require('async');
-var model = require('../mixin/model');
+var model = KagoDB.bundle.model;
 
 var Kago0 = KagoDB.inherit();
 var Kago1 = KagoDB.inherit();
@@ -16,7 +16,7 @@ Item1.prototype.foo = 'FOO';
 function Item2() {}
 Item2.prototype.bar = 'BAR';
 
-describe('Model class', function() {
+describe('Model Mixin:', function() {
   var collection;
   var opts = {
     storage: 'memory',

@@ -1,10 +1,10 @@
-/*! http_superagent.test.js */
+/*! http_jquery.test.js */
 
-var KagoDB = require('../bundle/browser');
-var crud_tests = require('./lib/crud_tests');
-var http_tests = require('./lib/http_tests');
+var KagoDB = require('../../index');
+var crud_tests = require('../testlib/crud_tests');
+var http_tests = require('../testlib/http_tests');
 
-describe('HTTP tests via superagent', function() {
+describe('HTTP Storage: (jQuery)', function() {
   var endpoint = process.env.TEST_ENDPOINT;
 
   describe('$TEST_ENDPOINT', function() {
@@ -17,7 +17,7 @@ describe('HTTP tests via superagent', function() {
   if (!endpoint) return;
 
   var opts = {
-    storage: 'http_superagent',
+    storage: 'http_jquery',
     endpoint: endpoint
   };
 

@@ -1,10 +1,10 @@
 /*! remove.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 var async = require('async');
 
-describe('Remove', function() {
+describe('Remove:', function() {
   var opts = {
     storage: 'memory',
     primary_key: '_id'

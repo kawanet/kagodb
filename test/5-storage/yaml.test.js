@@ -2,10 +2,10 @@
 
 var assert = require('chai').assert;
 var fs = require('fs');
-var KagoDB = require('../index');
-var crud_tests = require('./lib/crud_tests');
+var KagoDB = require('../../index');
+var crud_tests = require('../testlib/crud_tests');
 
-describe('YAML Storage', function() {
+describe('YAML Storage:', function() {
   var opts = {
     storage: 'yaml',
     path: './data'

@@ -1,10 +1,10 @@
 /*! deny.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
-var deny = require('../mixin/deny');
+var KagoDB = require('../../index');
+var deny = KagoDB.bundle.deny;
 
-describe('Deny', function() {
+describe('Deny Mixin:', function() {
   var MyKago = KagoDB.inherit();
 
   var opts1 = {

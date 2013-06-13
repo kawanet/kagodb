@@ -2,10 +2,10 @@
 
 var assert = require('chai').assert;
 var fs = require('fs');
-var KagoDB = require('../index');
-var crud_tests = require('./lib/crud_tests');
+var KagoDB = require('../../index');
+var crud_tests = require('../testlib/crud_tests');
 
-describe('JSON Storage', function() {
+describe('JSON Storage:', function() {
   var opts = {
     storage: 'json',
     path: './data',

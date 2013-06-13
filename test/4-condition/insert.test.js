@@ -1,10 +1,10 @@
 /*! insert.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 var async = require('async');
 
-describe('Insert', function() {
+describe('Insert:', function() {
   var opts1 = {
     storage: 'memory',
     primary_key: '_id'

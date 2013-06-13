@@ -1,9 +1,9 @@
 /*! bundle.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 
-describe('Bundle', function() {
+describe('Bundle:', function() {
   var Parent = KagoDB.inherit();
   Parent.bundle.foo = foo;
 

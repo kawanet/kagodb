@@ -1,10 +1,10 @@
 /*! utils.test.js */
 
 var assert = require('chai').assert;
-var _utils = require('../core/utils');
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
+var _utils = KagoDB.bundle.utils;
 
-describe('utils tests:', function() {
+describe('Utils:', function() {
   utils_test('direct utils', _utils);
   // var iutils = KagoDB().utils;
   // utils_test('utils via instance', iutils);

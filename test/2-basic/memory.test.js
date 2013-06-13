@@ -1,10 +1,10 @@
 /*! memory.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
-var crud_tests = require('./lib/crud_tests');
+var KagoDB = require('../../index');
+var crud_tests = require('../testlib/crud_tests');
 
-describe('Memory Storage', function() {
+describe('Memory Storage:', function() {
 
   describe('CRUD without namespace', function() {
     var opts = {

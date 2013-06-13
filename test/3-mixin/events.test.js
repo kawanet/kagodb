@@ -1,9 +1,9 @@
 /*! events.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 
-describe('Event tests:', function() {
+describe('Events Mixin:', function() {
   events_test();
 });
 

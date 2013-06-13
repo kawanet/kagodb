@@ -1,11 +1,11 @@
 /*! inherit.test.js */
 
 var assert = require('chai').assert;
-var _base = require('../core/base');
-var _default = require('../index');
-var _browser = require('../index');
+var _base = require('../../core/base');
+var _default = require('../../bundle/default');
+var _browser = require('../../bundle/browser');
 
-describe('inherit() tests:', function() {
+describe('Inherit:', function() {
   inherit_test('base', _base);
   inherit_test('default', _default);
   inherit_test('browser', _browser);

@@ -1,9 +1,9 @@
 /*! system.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 
-describe('System', function() {
+describe('System:', function() {
   describe('via bundle', function() {
     system_tests(KagoDB.bundle.system);
   });

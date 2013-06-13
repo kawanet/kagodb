@@ -1,9 +1,9 @@
 /*! noop.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../index');
+var KagoDB = require('../../index');
 
-describe('Noop', function() {
+describe('Noop Mixin:', function() {
   var opts = {
     storage: 'memory'
   };

@@ -1,13 +1,14 @@
 /*! objectid.test.js */
 
 var assert = require('chai').assert;
-var ObjectID = require('../core/objectid');
+var KagoDB = require('../../index');
+var ObjectID = KagoDB.bundle.objectid;
 
 ObjectID.prototype.__defineGetter__('generationTime', ObjectID.prototype.getGenerationTime);
 ObjectID.prototype.__defineSetter__('generationTime', ObjectID.prototype.setGenerationTime);
 ObjectID.prototype.__defineGetter__('id', ObjectID.prototype.toOctets);
 
-var tests = require('./kangodb/objectid_test');
+var tests = require('./mongodb/objectid_test');
 
 var pkg = {
   ObjectID: ObjectID
@@ -18,7 +19,7 @@ config.getMongoPackage = function() {
   return pkg;
 };
 
-describe('ObjectID', function() {
+describe('MongoDB Tests: (ObjectID)', function() {
   Object.keys(tests).forEach(function(key) {
     var func = tests[key];
     it(key, function(done) {
