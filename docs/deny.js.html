@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Source: mixin/deny.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,71 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Source: mixin/deny.js</h1>
     
     
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! deny.js */
 
+/**
+ * This mixin specifies methods which are not allowed.
+ *
+ * @class deny
+ * @mixin
+ * @example
+ * var MyKago = KagoDB.inherit();
+ * var deny = KagoDB.bundle.deny;
+ * MyKago.mixin(deny({write:-1}));
+ *
+ * var collection = MyKago();
+ * collection.write(); // => 'Error: method denied: write'
+ */
 
-    <h3> </h3>
+module.exports = function(methods, error) {
+  var mixin = {};
 
+  for (var method in methods) {
+    mixin[method] = genfunc(method, methods[method]);
+  }
 
+  return mixin;
 
-
-
-
-
-
-
-    
-
-
-
-
-
+  function genfunc(method, col) {
+    var err = error || new Error('method denied: ' + method);
+    var func;
+    col = parseInt(col, 10);
+    if (col >= 0) {
+      func = function() {
+        var callback = arguments[col];
+        if ('function' === typeof callback) {
+          callback(err);
+        } else {
+          throw err;
+        }
+      };
+    } else if (col &lt; 0) {
+      func = function() {
+        var callback = arguments[arguments.length + col];
+        if ('function' === typeof callback) {
+          callback(err);
+        } else {
+          throw err;
+        }
+      };
+    } else {
+      func = function() {
+        throw err;
+      };
+    }
+    return func;
+  }
+};</code></pre>
+        </article>
+    </section>
 
 
 

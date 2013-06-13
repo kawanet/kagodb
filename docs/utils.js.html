@@ -27,17 +27,32 @@
         <article>
             <pre class="prettyprint source"><code>/*! utils.js */
 
-/** Utilities
- * @class Utils
+/**
+ * This module exports utility functions.
+ *
+ * @module utils
  */
 
 /**
  * It imports super class's instance methods to the child class inherited.
- * @method Utils.inherits
+ *
  * @param {Function} [child] - constructor for child class
  * @param {Function} [parent] - super class
- * @returns {Function} child class
+ * @return {Function} child class
  * @see http://nodejs.org/api/util.html#util_util_inherits_constructor_superconstructor
+ * @example
+ * var utils = KagoDB.bundle.utils;
+ *
+ * function ParentClass() {}
+ * ParentClass.prototype.foo = function() {
+ *   console.log('bar');
+ * };
+ *
+ * function ChildClass() {}
+ * utils.inherits(ChildClass, ParentClass);
+ *
+ * var child = new ChildClass();
+ * child.foo(); // => 'bar'
  */
 
 exports.inherits = function(child, parent) {
@@ -54,14 +69,29 @@ exports.inherits = function(child, parent) {
   return child;
 };
 
-/** It applies an iterator function to each item in an array in series.
+/**
+ * It applies an iterator function to each item in an array in series.
  * The next iterator is only called once the current one has completed processing.
  * This means the iterator functions will complete in order.
- * @method Utils.eachSeries
+ *
  * @param {Array} arr - an array to iterate over
  * @param {Function} iterator - function(item, next) {}
  * @param {Function} [callback] - function(err) {}
  * @see https://github.com/caolan/async#eachseriesarr-iterator-callback
+ * @example
+ * var utils = KagoDB.bundle.utils;
+ * var arr = ['foo', 'bar', 'baz'];
+ *
+ * utils.eachSeries(arr, iterator, end);
+ *
+ * function iterator(item, next) {
+ *    console.log(item); // do some thing
+ *    next();
+ * }
+ *
+ * function end(err){
+ *   console.error(err);
+ * }
  */
 
 exports.eachSeries = function(arr, iterator, callback) {
@@ -82,6 +112,93 @@ exports.eachSeries = function(arr, iterator, callback) {
   each();
 };
 
+/**
+ * It copies all of the properties in the source objects over to the destination object.
+ *
+ * @param {Object} dest - destination object
+ * @param {Object} source - source object
+ * @return {Object} destination object
+ * @see http://underscorejs.org/#extend
+ * @example
+ * var utils = KagoDB.bundle.utils;
+ *
+ * var dest = {name : 'moe'};
+ * var source = {age : 50};
+ * utils.extend(dest, source);
+ * console.log(dest); // => {name : 'moe', age : 50}
+ */
+
+exports.extend = function(dest, source) {
+  source = source || {};
+  for (var key in source) {
+    dest[key] = source[key];
+  }
+  return dest;
+};
+
+/**
+ * It creates a shallow-copied clone of the object.
+ * Any nested objects or arrays will be copied by reference, not duplicated.
+ *
+ * @param {Object} source - source object
+ * @return {Object} cloned object
+ * @see http://underscorejs.org/#clone
+ * @example
+ * var utils = KagoDB.bundle.utils;
+ *
+ * var source = {name : 'moe'};
+ * var clone = utils.extend(source);
+ * console.log(clone); // => {name : 'moe'}
+ */
+
+exports.clone = function(source) {
+  var object = {};
+  for (var key in source) {
+    object[key] = source[key];
+  }
+  return object;
+};
+
+/**
+ * This makes an item as the model class's instance.
+ *
+ * @param {Object} item - target item
+ * @param {Function} model - model class (constructor)
+ * @return {Object} blessed item
+ * @example
+ * var utils = KagoDB.bundle.utils;
+ *
+ * function Item() {}
+ * Item.prototype.NAME = function() {
+ *   return this.name.toUpperCase();
+ * };
+ *
+ * var item = {name : 'ken'};
+ * item = utils.bless(item, Item);
+ * console.log(item.name, item.NAME()); // => ken KEN
+ */
+
+exports.bless = function(item, model) {
+  if (model && 'object' == typeof item) {
+    if (item.__proto__) {
+      // overwrite item's __proto__ when available (faster)
+      item.__proto__ = model.prototype;
+    } else {
+      // copy properties in a new object per default (slower)
+      var tmp = new model();
+      for (var key in item) {
+        if (item.hasOwnProperty(key)) tmp[key] = item[key];
+      }
+      item = tmp;
+    }
+    return item;
+  }
+};
+
+/**
+ * @ignore
+ */
+
 function NOP() {}</code></pre>
         </article>
     </section>
@@ -92,13 +209,13 @@ function NOP() {}</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:46:10 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

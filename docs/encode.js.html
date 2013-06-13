@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: mixin/encode.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: mixin/encode.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! encode.js */
+
+module.exports = function() {
+  var mixin = {};
+  mixin.decode = decode;
+  mixin.encode = encode;
+  mixin.escape = encodeURIComponent;
+  mixin.unescape = decodeURIComponent;
+  return mixin;
+};
+
+/** This unserializes a string as an item object.
+ * Override this method when you need another serialized representation other than JSON.
+ * @method KagoDB.prototype.decode
+ * @param {String} source - source string
+ * @param {Function} callback - function(err, item) {}
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * var xml2js = require('xml2js');
+ * var MyKago = KagoDB.inherit();
+ * MyKago.prototype.decode = function(source, callback) {
+ *     xml2js.parseString(source, callback);
+ * };
+ * var collection = new MyKago();
+ */
+
+function decode(source, callback) {
+  var item;
+  try {
+    item = JSON.parse(source);
+  } catch (err) {
+    callback(err);
+    return;
+  }
+  callback(null, item);
+}
+
+/** This serialize an item object as a serialized string.
+ * Override this method when you need another serialized representation other than JSON.
+ * @method KagoDB.prototype.encode
+ * @param {Object} item - source item
+ * @param {Function} callback - function(err, str) {}
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * var js2xml = require('js2xml');
+ * var MyKago = KagoDB.inherit();
+ * MyKago.prototype.decode = function(source, callback) {
+ *   var js2xml = new Js2Xml('item', person);
+ *   var str = js2xml.toString();
+ *   callback(null, str);
+ * };
+ * var collection = new MyKago();
+ */
+
+function encode(item, callback) {
+  var encoded;
+  var replacer = this.get('json_replacer');
+  var spaces = this.get('json_spaces');
+  try {
+    encoded = JSON.stringify(item, replacer, spaces);
+  } catch (err) {
+    callback(err);
+  }
+  callback(null, encoded);
+}
+
+/** This escapes a special characters in the item ID string.
+ * It uses encodeURIComponent function per default.
+ * Override this method when you need another escape representation other than URI (percent) encoding.
+ * @method KagoDB.prototype.escape
+ * @param {String} source - unescaped string
+ * @returns {String} escaped string
+ * @example
+ * var MyKago = KagoDB.inherit();
+ * MyKago.prototype.escape = function(source) {
+ *     return source.replace(/\W/g, '_');
+ * };
+ * var collection = new MyKago();
+ */
+
+/** This unescapes a special characters in the item ID string
+ * It uses decodeURIComponent function per default.
+ * Override this method when you need another escape representation other than URI (percent) encoding.
+ * @method KagoDB.prototype.unescape
+ * @param {String} source - escaped string
+ * @returns {String} unescaped string
+ * @example
+ * var MyKago = KagoDB.inherit();
+ * MyKago.prototype.unescape = function(source) {
+ *     return source.replace(/^prefix-/, ''); // remove a prefix
+ * };
+ * var collection = new MyKago();
+ */</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>

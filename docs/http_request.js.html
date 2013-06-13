@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Source: storage/http_request.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,54 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Source: storage/http_request.js</h1>
     
     
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! http_request.js */
 
+/**
+ * This mixin implements a remote
+ * [storage]{@linkcode storage}
+ * feature which performs Ajax requests to a KagoDB
+ * [webapi]{@linkcode KagoDB#webapi}
+ * server via
+ * [request]{@link https://npmjs.org/package/request} module.
+ *
+ * @class http_request
+ * @mixin
+ * @see https://npmjs.org/package/request
+ * @example
+ * var opts = {
+ *   storage: 'http_request',
+ *   endpoint: 'http://localhost:3000/data/'
+ * };
+ *
+ * var collection = new KagoDB(opts);
+ *
+ * collection.read('foo', function(err, item){
+ *   // http://localhost:3000/data/foo
+ * });
+ */
 
-    <h3> </h3>
+var http_base = require('../storage/http_base');
+var request = require('../mixin/request');
+var utils = require('../core/utils');
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports = function() {
+  var http_mixin = http_base.call(this);
+  var request_mixin = request.call(this);
+  var mixin = {};
+  utils.extend(mixin, http_mixin);
+  utils.extend(mixin, request_mixin);
+  return mixin;
+};</code></pre>
+        </article>
+    </section>
 
 
 

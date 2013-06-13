@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: storage/memory.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: storage/memory.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! memory.js */
+
+/**
+ * This mixin implements a volatile
+ * [storage]{@linkcode storage}
+ * feature which stores items on memory.
+ * Use namespace to share the storage across KagoDB instances in the same process.
+ *
+ * @class memory
+ * @mixin
+ * @example
+ * var opts = {
+ *   storage: 'memory',
+ *   namespace: 'myspace'
+ * };
+ *
+ * var collection = new KagoDB(opts);
+ *
+ * collection.read('foo', function(err, item){
+ *   console.log(item);
+ * });
+ */
+
+module.exports = function() {
+  var mixin = {};
+  mixin.read = read;
+  mixin.write = write;
+  mixin.erase = erase;
+  mixin.exist = exist;
+  mixin.index = index;
+  mixin.memory_store = memory_store;
+  return mixin;
+};
+
+function read(id, callback) {
+  callback = callback || NOP;
+  var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
+  if (store.hasOwnProperty(id) && this.decode) {
+    var item = store[id];
+    if (serial > 0) {
+      this.decode(item, callback);
+    } else {
+      callback(null, item);
+    }
+  } else {
+    var err = new Error('Item not found');
+    callback(err, null);
+  }
+}
+
+function write(id, item, callback) {
+  callback = callback || NOP;
+  var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
+  if (serial > 0 && this.encode) {
+    this.encode(item, function(err, item) {
+      if (!err) {
+        store[id] = item;
+      }
+      callback(err);
+    });
+  } else {
+    store[id] = item;
+    callback();
+  }
+}
+
+function erase(id, callback) {
+  callback = callback || NOP;
+  var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
+  if (store.hasOwnProperty(id)) {
+    delete store[id];
+    callback();
+  } else {
+    var err = new Error('Item not found');
+    callback(err);
+  }
+}
+
+function exist(id, callback) {
+  callback = callback || NOP;
+  var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  if (serial > 0 && this.escape) {
+    id = this.escape(id);
+  }
+  var exists = store.hasOwnProperty(id);
+  callback(null, exists);
+}
+
+function index(callback) {
+  callback = callback || NOP;
+  var store = this._memory_store || (this._memory_store = this.memory_store());
+  var serial = this._memory_serialize || (this._memory_serialize = this.get('memory_serialize') ? 1 : -1);
+  var list = Object.keys(store);
+  if (serial > 0 && this.unescape) {
+    var unescape = this.unescape.bind(this);
+    list = list.map(unescape);
+    list = list.filter(function(id) {
+      return !(id instanceof Error);
+    });
+  }
+  callback(null, list);
+}
+
+var SharedStore = {};
+
+function memory_store() {
+  var ns = this.get('namespace');
+  var object;
+  if (ns) {
+    // memory shared in a process
+    object = SharedStore[ns] || (SharedStore[ns] = {});
+  } else {
+    // volatile memory available only in a instance
+    object = {};
+  }
+  return object;
+}
+
+function NOP() {}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>

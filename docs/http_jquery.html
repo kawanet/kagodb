@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Mixin: http_jquery</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,119 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Mixin: http_jquery</h1>
     
     
 
 
+
+<section>
+    
+<header>
+    <h2>
+    http_jquery
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description">This mixin implements a remote
+<a href="storage.html"><code>storage</code></a>
+feature which performs Ajax requests to a KagoDB
+<a href="KagoDB.html#webapi"><code>webapi</code></a>
+server via
+<a href="http://jquery.com">jQuery</a>
+library.
+On web browser environments, jQuery library must be loaded before loading KagoDB.</div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
     
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="http_jquery.js.html">storage/http_jquery.js</a>, line 3
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://jquery.com">http://jquery.com</a></li>
+        
+            <li><a href="https://npmjs.org/package/jquery">https://npmjs.org/package/jquery</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
 
+        
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>var opts = {
+  storage: 'http_jquery',
+  endpoint: 'http://localhost:3000/data/'
+};
 
+var collection = new KagoDB(opts);
 
+collection.read('foo', function(err, item){
+  // item =>  http://localhost:3000/data/foo
+});</code></pre>
 
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</article>
 
+</section>  
 
 
 

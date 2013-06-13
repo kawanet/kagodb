@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Source: storage/json.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,50 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Source: storage/json.js</h1>
     
     
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! json.js */
 
+/**
+ * This mixin implements a file-based
+ * [storage]{@linkcode storage}
+ * feature which stores items as JSON files.
+ *
+ * @class json
+ * @mixin
+ * @see http://www.ietf.org/rfc/rfc4627.txt
+ * @example
+ * var opts = {
+ *   storage: 'json',
+ *   path: __dirname + '/data'
+ * };
+ *
+ * var collection = new KagoDB(opts);
+ *
+ * collection.read('foo', function(err, item){
+ *   // ./data/foo.json
+ * });
+ */
 
-    <h3> </h3>
+var file_base = require('../storage/file_base');
 
+module.exports = function() {
+  var mixin = file_base.call(this);
+  mixin.file_suffix = file_suffix;
+  return mixin;
+};
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
+function file_suffix() {
+  return this.get('suffix') || '.json';
+}</code></pre>
+        </article>
+    </section>
 
 
 

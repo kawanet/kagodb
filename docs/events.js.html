@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: mixin/events.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: mixin/events.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! events.js */
+
+/** This mixin provides
+ * [on()]{@linkcode KagoDB#on},
+ * [once()]{@linkcode KagoDB#once},
+ * [off()]{@linkcode KagoDB#off} and
+ * [emit()]{@linkcode KagoDB#emit} methods to fire and receive events.
+ *
+ * @class events
+ * @mixin
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.on('hello', function(data) {
+ *   console.log('Hello,', data);
+ * });
+ *
+ * collection.emit('hello', 'world!'); // => 'hello, world!'
+ */
+
+module.exports = function() {
+  var mixin = {};
+  mixin.on = on;
+  mixin.off = off;
+  mixin.once = once;
+  mixin.emit = emit;
+  return mixin;
+};
+
+/**
+ * This adds a listener to the end of the listeners array for the specified event.
+ *
+ * @method KagoDB.prototype.on
+ * @param {String} event - event name
+ * @param {Function} listener - listner function
+ * @see http://nodejs.org/api/events.html#events_emitter_on_event_listener
+ */
+
+function on(event, listener) {
+  var ev = this._events || (this._events = {});
+  var array = ev[event] || (ev[event] = []);
+  array.push(listener);
+}
+
+/**
+ * This removes listeners.
+ *
+ * @method KagoDB.prototype.off
+ * @param {String} [event] - event name
+ * @param {Function} [listener] - listner function
+ */
+
+function off(event, listener) {
+  var ev = this._events;
+  var array;
+  if (!ev) {
+    // no events registered
+    return;
+  } else if (!event) {
+    // remove all events
+    delete this._events;
+    return;
+  }
+
+  array = ev[event];
+  if (!array) {
+    // no listener registered on this event
+    return;
+  } else if (!listener) {
+    // remove all listeners on this event
+    delete ev[event];
+    return;
+  }
+
+  // remove the specified listener on this event
+  ev[event] = array.filter(function(test) {
+    return listener != test;
+  });
+}
+
+/**
+ * This adds a one time listener for the event.
+ * This listener is invoked only the next time the event is fired, after which it is removed.
+ *
+ * @method KagoDB.prototype.once
+ * @param {String} event - event name
+ * @param {Function} listener - listner function
+ * @see http://nodejs.org/api/events.html#events_emitter_once_event_listener
+ */
+
+function once(event, listener) {
+  var self = this;
+  var wrap = function() {
+    if (wrap.done) return;
+    self.off(event, listener);
+    listener.apply(this, arguments);
+    wrap.done = true;
+  };
+  this.on(event, wrap);
+}
+
+/**
+ * This fires an event with the supplied arguments. It executes each of the listeners in order.
+ *
+ * @method KagoDB.prototype.emit
+ * @param {String} event - event name
+ * @param args... - multiple arguments allowed.
+ * @see http://nodejs.org/api/events.html#events_emitter_emit_event_arg1_arg2
+ */
+
+function emit(event) {
+  var self = this;
+  var ev = this._events;
+  var array, args;
+  if (!ev) {
+    // no events registered
+    return;
+  }
+
+  array = ev[event];
+  if (!array) {
+    // no listener registered on this event
+    return;
+  }
+
+  args = Array.prototype.slice.call(arguments);
+  args.shift();
+  array.forEach(function(listener) {
+    listener.apply(self, args);
+  });
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>

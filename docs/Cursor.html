@@ -47,7 +47,7 @@
     
     
     <div class="description">
-        Please create a Cursor instance via find() method instead of calling the constructor directly.
+        This is a Cursor instance constructor. find() and other some methods use this internally.
     </div>
     
 
@@ -120,6 +120,9 @@
             <td class="type">
             
                 
+<span class="param-type">Object</span>
+|
+
 <span class="param-type">Function</span>
 
 
@@ -140,7 +143,7 @@
             
             
             
-            <td class="description last">test function</td>
+            <td class="description last">query parameters or function</td>
         </tr>
 	
 	
@@ -153,6 +156,9 @@
             <td class="type">
             
                 
+<span class="param-type">Object</span>
+|
+
 <span class="param-type">Function</span>
 
 
@@ -173,7 +179,7 @@
             
             
             
-            <td class="description last">map function</td>
+            <td class="description last">mapping parameters or function</td>
         </tr>
 	
 	
@@ -204,7 +210,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 7
+        <a href="cursor.js.html">core/cursor.js</a>, line 52
     </li></ul></dd>
     
     
@@ -335,7 +341,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 139
+        <a href="cursor.js.html">core/cursor.js</a>, line 187
     </li></ul></dd>
     
     
@@ -388,7 +394,7 @@
         
             
 <dt>
-    <h4 class="name" id="index"><span class="type-signature"></span>index<span class="signature">(callback)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
+    <h4 class="name" id="each"><span class="type-signature"></span>each<span class="signature">(callback)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
     
     
 </dt>
@@ -396,7 +402,155 @@
     
     
     <div class="description">
-        This invokes a callback function with an index for all items.
+        This invokes a callback function with each items found.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">function(err, item) {}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="cursor.js.html">core/cursor.js</a>, line 164
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    instance itself for method chaining
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Cursor.html">Cursor</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>collection.find().each(function(err, item) {
+  if (err) {
+    console.error(err);
+  } else if (!item) {
+    // EOF
+  } else {
+    console.error(item);
+  }
+});</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="index"><span class="type-signature">&lt;private> </span>index<span class="signature">(callback)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This invokes a callback function with an index for all items of the collection whether a condition is given or not.
     </div>
     
 
@@ -477,7 +631,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 26
+        <a href="cursor.js.html">core/cursor.js</a>, line 89
     </li></ul></dd>
     
     
@@ -612,7 +766,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 199
+        <a href="cursor.js.html">core/cursor.js</a>, line 242
     </li></ul></dd>
     
     
@@ -656,6 +810,149 @@
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>collection.find().limit(100).toArray();</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="nextObject"><span class="type-signature"></span>nextObject<span class="signature">(callback)</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This returns the next object at the cursor.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">function(err, item) {}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="cursor.js.html">core/cursor.js</a>, line 11
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    instance itself for method chaining
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Cursor.html">Cursor</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>var cursor = collection.find();
+cursor.nextObject(function(err, item){
+  console.log(item);
+});</code></pre>
 
     
 </dd>
@@ -752,7 +1049,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 187
+        <a href="cursor.js.html">core/cursor.js</a>, line 228
     </li></ul></dd>
     
     
@@ -796,6 +1093,105 @@
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>collection.find().offset(100).toArray();</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="rewind"><span class="type-signature"></span>rewind<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Cursor.html">Cursor</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This resets the cursor position to the original state.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="cursor.js.html">core/cursor.js</a>, line 29
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    instance itself for method chaining
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Cursor.html">Cursor</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>var cursor = collection.find();
+cursor.nextObject(function(err, item){
+  console.log(item); // first item
+  cursor.rewind();
+  cursor.nextObject(function(err, item){
+    console.log(item); // first item again
+  });
+});</code></pre>
 
     
 </dd>
@@ -895,7 +1291,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 159
+        <a href="cursor.js.html">core/cursor.js</a>, line 214
     </li></ul></dd>
     
     
@@ -938,8 +1334,12 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>collection.find().sort(function(a,b){return a.price - b.price;}).toArray();
-collection.find().sort({price: 1, stock: -1}).toArray();</code></pre>
+    <pre class="prettyprint"><code>collection.find().sort(function(a, b){
+  return a.price - b.price || b.stock - a.stock;
+}).toArray();
+
+var sort = {price: 1, stock: -1});
+collection.find().sort(sort).toArray(); // same order</code></pre>
 
     
 </dd>
@@ -1036,7 +1436,7 @@ collection.find().sort({price: 1, stock: -1}).toArray();</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="cursor.js.html">core/cursor.js</a>, line 50
+        <a href="cursor.js.html">core/cursor.js</a>, line 126
     </li></ul></dd>
     
     
@@ -1080,9 +1480,13 @@ collection.find().sort({price: 1, stock: -1}).toArray();</code></pre>
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>collection.find().toArray(function(err, list) {
-  list.forEach(function(item) {
-    console.log(item);
-  });
+  if (err) {
+    console.error(err);
+  } else {
+    list.forEach(function(item) {
+      console.log(item);
+    });
+  }
 });</code></pre>
 
     
@@ -1104,13 +1508,13 @@ collection.find().sort({price: 1, stock: -1}).toArray();</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:46:10 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

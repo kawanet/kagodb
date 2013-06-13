@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Source: mixin/noop.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,49 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Source: mixin/noop.js</h1>
     
     
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! noop.js */
 
+/**
+ * This mixin provides
+ * [noop()]{@linkcode KagoDB#noop}
+ * method which does no operation.
+ *
+ * @class noop
+ * @mixin
+ * @example
+ * var collection = new KagoDB({storage: 'json'});
+ *
+ * collection.noop(); // does nothing
+ */
 
-    <h3> </h3>
+/**
+ * This does no operation per default.
+ *
+ * @method KagoDB.prototype.noop
+ * @returns {KagoDB} itself for method chaining
+ * @example
+ * var collection = new KagoDB({storage: 'json'});
+ *
+ * collection.noop().noop().noop().noop(); // does nothing four times
+ */
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports = function(default_pkey) {
+  return {
+    noop: function() {
+      return this;
+    }
+  };
+};</code></pre>
+        </article>
+    </section>
 
 
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Source: core/system.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,38 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Source: core/system.js</h1>
     
     
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! system.js */
 
+/**
+ * The module exports version() function.
+ *
+ * @module system
+ */
 
-    <h3> </h3>
+/**
+ * This returns a version string of KagoDB library.
+ *
+ * @returns {String} version string. e.g. "kagodb 0.2.1"
+ * @example
+ * var version = KagoDB.bundle.system.version();
+ */
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+exports.version = function() {
+  var pkg = require('../package.json');
+  var name = pkg.name;
+  var ver = pkg.version;
+  return name + ' ' + ver;
+};</code></pre>
+        </article>
+    </section>
 
 
 

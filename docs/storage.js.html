@@ -27,124 +27,126 @@
         <article>
             <pre class="prettyprint source"><code>/*! storage.js */
 
-var StorageBase = '../storage';
-
-/** This mixin provides storage() method as well as low-level CRUD methods: write(), read(), erase(), exist(), index().
- * @class StorageMixin
+/**
+ * This mixin provides a dynamic storage dispatching mechanism.
+ *
+ * @class storage
  * @mixin
  */
 
+var dynamic_mixin = require('../mixin/dynamic_mixin');
+
 module.exports = function() {
-  this.read = read;
-  this.write = write;
-  this.erase = erase;
-  this.exist = exist;
-  this.index = index;
-  this.storage = storage;
+  return mixin;
+
+  function mixin() {
+    this.read = this.read || read;
+    this.write = this.write || write;
+    this.erase = this.erase || erase;
+    this.exist = this.exist || exist;
+    this.index = this.index || index;
+    return dynamic_mixin.call(this, 'storage');
+  }
 };
 
-/** This reads an item.
- * @method StorageMixin.prototype.read
+/**
+ * This reads an item.
+ *
+ * @method KagoDB.prototype.read
  * @param {String} id - item ID
  * @param {Function} callback - function(err, item) {}
- * @returns collection instance itself for method chaining
+ * @returns {KagoDB} collection instance itself for method chaining
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.read('foo', function(err, item) {
+ *   console.log(item);
+ * });
  */
 
 function read(id, callback) {
-  this.storage().read(id, callback);
-  return this;
+  throw new Error('method not implemented: read');
 }
 
-/** This writes an item.
- * @method StorageMixin.prototype.write
+/**
+ * This writes an item.
+ *
+ * @method KagoDB.prototype.write
  * @param {String} id - item ID
  * @param {Object} item - item content
  * @param {Function} callback - function(err) {}
- * @returns collection instance itself for method chaining
+ * @returns {KagoDB} collection instance itself for method chaining
+ * @example
+ * var collection = new KagoDB();
+ *
+ * var item = {
+ *   name: 'FOO',
+ * };
+ * collection.write('foo', item, function(err) {
+ *   console.log(err || 'no error');
+ * });
  */
 
 function write(id, item, callback) {
-  this.storage().write(id, item, callback);
-  return this;
+  throw new Error('method not implemented: write');
 }
 
-/** This erases an item.
- * @method StorageMixin.prototype.erase
+/**
+ * This erases an item.
+ *
+ * @method KagoDB.prototype.erase
  * @param {String} id - item ID
  * @param {Function} callback - function(err) {}
- * @returns collection instance itself for method chaining
+ * @returns {KagoDB} collection instance itself for method chaining
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.erase('foo', function(err) {
+ *   console.log(err || 'no error');
+ * });
  */
 
 function erase(id, callback) {
-  this.storage().erase(id, callback);
-  return this;
+  throw new Error('method not implemented: erase');
 }
 
-/** This tests an item existance.
- * @method StorageMixin.prototype.exist
+/**
+ * This tests an item existance.
+ *
+ * @method KagoDB.prototype.exist
  * @param {String} id - item ID
  * @param {Function} callback - function(err, exist) {}
- * @returns collection instance itself for method chaining
+ * @returns {KagoDB} collection instance itself for method chaining
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.exist('foo', function(err, exist) {
+ *   console.log(exist ? 'exists' : 'not exist');
+ * });
  */
 
 function exist(id, callback) {
-  this.storage().exist(id, callback);
-  return this;
+  throw new Error('method not implemented: exist');
 }
 
-/** This lists all item IDs in array.
- * @method StorageMixin.prototype.erase
+/**
+ * This lists all item IDs in array.
+ *
+ * @method KagoDB.prototype.index
  * @param {String} id - item ID
  * @param {Function} callback - function(err, list) {}
- * @returns collection instance itself for method chaining
+ * @returns {KagoDB} collection instance itself for method chaining
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.index(function(err, list) {
+ *   console.log(list.length + ' items found');
+ * });
  */
 
 function index(callback) {
-  this.storage().index(callback);
-  return this;
-}
-
-/** This gets or sets a storage engine.
- * @method StorageMixin.prototype.storage
- * @param {Function|String} [store] - storage class or storage name
- * @returns storage instance
- */
-
-function storage(store) {
-  // erase store instance cache
-  if (store) {
-    this._store = null;
-  }
-  if (!this._store) {
-    store = store || this.get('storage');
-    if (!store) {
-      throw new Error('storage not specified');
-    }
-    if ('function' != typeof store) {
-      store += '';
-      var preload = this.get('storage-preload') || {};
-      if (preload[store]) {
-        store = preload[store];
-      } else if (store.search(/^[\w\-\.]+$/) &lt; 0) {
-        throw new Error('invalid store name: ' + store);
-      } else {
-        var path = StorageBase + '/' + store;
-        try {
-          store = require(path);
-        } catch (err) {
-          throw new Error('storage class failed: ' + err);
-        }
-        if (!store) {
-          throw new Error('storage class invalid: ' + store);
-        }
-      }
-    }
-    // cache the last store instance
-    this._store = new store(this.options);
-  }
-  return this._store;
-}
-</code></pre>
+  throw new Error('method not implemented: index');
+}</code></pre>
         </article>
     </section>
 
@@ -154,13 +156,13 @@ function storage(store) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:46:10 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

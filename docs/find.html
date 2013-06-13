@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Mixin: find</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,114 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Mixin: find</h1>
     
     
 
 
+
+<section>
+    
+<header>
+    <h2>
+    find
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description">This mixin provides
+<a href="KagoDB.html#find"><code>find()</code></a>,
+<a href="KagoDB.html#findOne"><code>findOne()</code></a> and
+<a href="KagoDB.html#count"><code>count()</code></a> methods.</div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
     
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="find.js.html">mixin/find.js</a>, line 5
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
+        
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>var collection = new KagoDB();
 
+// all items
+collection.find().toArray(function(err, list) {
+  list.forEach(function(item) {
+    console.log(item.name, item.price);
+  });
+});
 
+// first item
+collection.findOne({ name: 'Apple' }, function(err, item) {
+  console.log(item.name, item.price);
+});
 
+// count item
+collection.count({ category: 'fruit' }, function(err, count) {
+  console.log(count);
+});</code></pre>
 
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 

@@ -31,12 +31,15 @@ var utils = require('./utils');
 
 function inherit(parent) {
 
-  /** KagoDB class constructor.
+  /**
+   * KagoDB class constructor.
+   *
    * @class KagoDB
    * @param {Object} options - option parameters for the instance
    * @returns {KagoDB} an instance
    * @example
    * var collection = new KagoDB(options);
+   *
    * var collection2 = KagoDB(options); // same as above
    */
 
@@ -44,75 +47,105 @@ function inherit(parent) {
 
   function child(options) {
     if (!(this instanceof child)) return new child(options);
-    this.set(child.options);
+    this.set(child.settings);
     this.set(options);
   }
 
   utils.inherits(child, parent);
 
-  child.options = copy(parent.options);
+  child.settings = utils.clone(parent.settings);
 
-  /** This loads a mixin class which will export instance methods.
+  /**
+   * This is a shortcut to access modules bundled.
+   *
+   * @member {Object} KagoDB.bundle
+   * @example
+   * var utils = KagoDB.bundle.utils;
+   */
+
+  /** This is a shortcut to access modules bundled.
+   * @member {Object} KagoDB.prototype.bundle
+   * @example
+   * var collection = new KagoDB(opts);
+   *
+   * var utils = collection.bundle.utils;
+   */
+
+  child.prototype.bundle = child.bundle = utils.clone(parent.bundle || {});
+
+  /**
+   * This applies a mixin object which exports instance methods.
+   *
    * @method KagoDB.mixin
-   * @param {Function} mixin - mixin class which has exporter() class method
+   * @param {Object|Function} mixin - mixin object or mixin function which returns mixin object
    * @returns this class itself for method chaining
    * @example
-   * var MyMixin = require('mymixin');
-   * var KagoDB = require('kagodb');
    * var MyKago = KagoDB.inherit();
+   *
+   * var MyMixin = {
+   *   mymethod: function() {}
+   * };
    * MyKago.use(MyMixin);
+   *
    * var collection = new MyKago();
    */
   child.mixin = function(mixin) {
-    mixin.call(child.prototype);
+    _mixin(child.prototype, mixin);
     return child;
   };
 
-  /** This builds an instance as same as new KagoDB(). It would be good for method chaining.
-   * @method KagoDB.build
-   * @param {Object} options - option parameters
-   * @returns {KagoDB} an instance
-   * @example
-   * var collection = KagoDB.build(options);
-   */
-  child.build = function(options) {
-    return new child(options);
-  };
-
-  /** This generates a sub class which inherits KagoDB class or its descendant.
+  /**
+   * This generates a sub class which inherits KagoDB class or its descendant.
+   *
    * @method KagoDB.inherit
    * @returns a sub class
    * @example
    * var MyKago = KagoDB.inherit();
+   *
+   * MyKago.mixin(somemixin()); // load some mixin
+   * MyKago.set('foo', 'bar');  // define default value
+   *
    * var collection = new MyKago();
    */
   child.inherit = function() {
     return inherit(child);
   };
 
-  /** This gets a default parameter value for the class.
+  /**
+   * This gets a default parameter value for the class.
+   *
    * @method KagoDB.get
    * @param {String} key - parameter name
    * @returns parameter value
    * @example
-   * var path = KagoDB.get('path');
+   * var MyKago = KagoDB.inherit();
+   *
+   * MyKago.set('foo', 'bar');
+   * var foo1 = MyKago.get('foo'); // => bar
+   *
+   * var collection = new MyKago();
+   * var foo2 = collection.get('foo'); // => bar
    */
   child.get = function(key) {
-    var opts = child.options || (child.options = {});
+    var opts = child.settings || (child.settings = {});
     return opts[key];
   };
 
-  /** This sets a default parameter value for the class.
+  /**
+   * This sets a default parameter value for the class.
+   *
    * @method KagoDB.set
    * @param {String|Object} key - parameter name or a parameters object
    * @param {any} [val] - new value
    * @returns this class itself for method chaining
    * @example
-   * KagoDB.set('path', 'data');
-   * KagoDB.set({'storage': 'yaml'});
+   * var MyKago = KagoDB.inherit();
+   *
+   * MyKago.set('path', 'data');
+   * MyKago.set({'storage': 'yaml'});
    */
   child.set = function(key, val) {
-    var opts = child.options || (child.options = {});
+    var opts = child.settings || (child.settings = {});
     opts[key] = val;
     return child;
   };
@@ -120,55 +153,74 @@ function inherit(parent) {
   return child;
 }
 
-function copy(parent) {
-  var object = {};
-  for (var key in parent) {
-    object[key] = parent[key];
-  }
-  return object;
-}
-
 function KagoDB() {}
 
-/** This gets a parameter value for the instance parameters.
+/**
+ * This gets a parameter value for the instance parameters.
+ *
  * @method KagoDB.prototype.get
  * @param {String} key - parameter name
  * @returns parameter value
  * @example
  * var collection = new KagoDB({path: 'data'});
+ *
  * var path = collection.get('path');
  */
 KagoDB.prototype.get = function(key) {
-  var opts = this.options || (this.options = {});
+  var opts = this.settings || (this.settings = {});
   return opts[key];
 };
 
-/** This sets a parameter value for the instance parameters.
+/**
+ * This sets a parameter value for the instance parameters.
+ *
  * @method KagoDB.prototype.set
  * @param {String|Object} key - parameter name or a parameters object
  * @param {any} [val] - new parameter value
- * @returns this instance itself for method chaining
+ * @returns {KagoDB} this instance itself for method chaining
  * @example
  * var collection = new KagoDB();
+ *
  * collection.set('path', 'data');
  * collection.set({'storage': 'yaml'});
  */
 KagoDB.prototype.set = function(key, val) {
-  var opts = this.options || (this.options = {});
+  var opts = this.settings || (this.settings = {});
   var len = arguments.length;
   if (len == 2 && key) {
     opts[key] = val;
-  } else if (len == 1 && key) {
+  } else if (len == 1 && 'object' == typeof key) {
     var args = key;
     for (key in args) {
       opts[key] = args[key];
     }
+  } else if (len > 1 || 'undefined' != typeof key) {
+    throw new Error('invalid set(' + key + ', ' + val + ')');
   }
   return this;
 };
 
-module.exports = inherit(KagoDB);
-</code></pre>
+KagoDB.prototype.mixin = function(mixin) {
+  _mixin(this, mixin);
+  return this;
+};
+
+function _mixin(target, mixin) {
+  if ('function' == typeof mixin) {
+    mixin = mixin.call(target);
+    if (mixin) {
+      _mixin(target, mixin);
+    }
+  } else if ('object' == typeof mixin) {
+    for (var key in mixin) {
+      target[key] = mixin[key];
+    }
+  } else {
+    throw new Error('invalid mixin(' + mixin + ')');
+  }
+}
+
+module.exports = inherit(KagoDB);</code></pre>
         </article>
     </section>
 
@@ -178,13 +230,13 @@ module.exports = inherit(KagoDB);
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:46:10 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

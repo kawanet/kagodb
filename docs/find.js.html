@@ -28,27 +28,55 @@
             <pre class="prettyprint source"><code>/*! find.js */
 
 var Cursor = require('../core/cursor');
-var Condition = require('../core/condition');
-var Projection = require('../core/projection');
 
-/** This mixin provides find(), findOne() and count() methods.
- * @class FindMixin
+/**
+ * This mixin provides
+ * [find()]{@linkcode KagoDB#find},
+ * [findOne()]{@linkcode KagoDB#findOne} and
+ * [count()]{@linkcode KagoDB#count} methods.
+ *
+ * @class find
  * @mixin
+ * @example
+ * var collection = new KagoDB();
+ *
+ * // all items
+ * collection.find().toArray(function(err, list) {
+ *   list.forEach(function(item) {
+ *     console.log(item.name, item.price);
+ *   });
+ * });
+ *
+ * // first item
+ * collection.findOne({ name: 'Apple' }, function(err, item) {
+ *   console.log(item.name, item.price);
+ * });
+ *
+ * // count item
+ * collection.count({ category: 'fruit' }, function(err, count) {
+ *   console.log(count);
+ * });
  */
 
 module.exports = function() {
-  this.find = find;
-  this.findOne = findOne;
-  this.count = count;
+  var mixin = {};
+  mixin.find = find;
+  mixin.findOne = findOne;
+  mixin.count = count;
+  return mixin;
 };
 
-/** This creates a cursor object with condition given as a test function or query parameters.
+/**
+ * This creates a cursor object with condition given as a test function or query parameters.
  * Null condition will find all items in the collection
- * @method FindMixin.prototype.find
+ *
+ * @method KagoDB.prototype.find
  * @param {Function|Object} condition - test function or query parameters
  * @param {Function|Object} projection - map function or output properties
  * @returns {Cursor} cursor instance
  * @example
+ * var collection = new KagoDB();
+ *
  * // all items
  * collection.find().toArray(function(err, list) {
  *   list.forEach(function(item) {
@@ -68,7 +96,7 @@ module.exports = function() {
  *
  * // condition using query parameters
  * var cond = {
- *   name: "Apple"
+ *   name: 'Apple'
  * };
  * collection.find(cond).toArray(function(err, list) {
  *   list.forEach(function(item) {
@@ -89,29 +117,13 @@ module.exports = function() {
  */
 
 function find(condition, projection) {
-  // parse condition
-  var condParser = this.get('condition-parser') || Condition.parser;
-  if ('function' != typeof condParser) {
-    throw new Error('invalid condition parser: ' + condParser);
-  }
-  var parserFunc = condParser(condition);
-
-  var projParser = this.get('projection-parser') || Projection.parser;
-  if ('function' != typeof projParser) {
-    throw new Error('invalid projection parser: ' + projParser);
-  }
-  var projFunc = projParser(projection);
-
-  // create a cursor
-  var cursorClass = this.get('cursor') || Cursor;
-  if ('function' != typeof cursorClass) {
-    throw new Error('invalid cursor class: ' + cursorClass);
-  }
-  return new cursorClass(this, parserFunc, projFunc);
+  return new Cursor(this, condition, projection);
 }
 
-/** This invokes a callback function with an item found under specified condition.
- * @method FindMixin.prototype.findOne
+/**
+ * This invokes a callback function with an item found under specified condition.
+ *
+ * @method KagoDB.prototype.findOne
  * @param condition - same as find() method
  * @param {Function} callback - function(err, item) {}
  * @returns {KagoDB} collection instance itself for method chaining
@@ -136,8 +148,10 @@ function findOne(condition, callback) {
   return this;
 }
 
-/** This counts number of items matched with condition.
- * @method FindMixin.prototype.count
+/**
+ * This counts number of items matched with condition.
+ *
+ * @method KagoDB.prototype.count
  * @param condition - same as find() method
  * @param {Function} callback - function(err, cursor) {}
  * @returns {KagoDB} collection instance itself for method chaining
@@ -164,13 +178,13 @@ function NOP() {}</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Condition.html">Condition</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="FindMixin.html">FindMixin</a></li><li><a href="StorageMixin.html">StorageMixin</a></li><li><a href="WebapiMixin.html">WebapiMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parser">parser</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jun 01 2013 23:46:10 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>
