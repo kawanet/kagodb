@@ -28,7 +28,7 @@
  * collection.hello(); // => 'world!'
  */
 
-var intercept_mixin = require('../core/intercept_mixin');
+var intercept_mixin = require('../mixin/intercept_mixin');
 
 module.exports = function(name) {
   return mixin;

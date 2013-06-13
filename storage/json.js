@@ -1,7 +1,9 @@
 /*! json.js */
 
 /**
- * This mixin provides a file-based storage feature which stores items as JSON files.
+ * This mixin implements a file-based
+ * [storage]{@linkcode storage}
+ * feature which stores items as JSON files.
  *
  * @class json
  * @mixin
@@ -19,7 +21,7 @@
  * });
  */
 
-var file_base = require('../core/file_base');
+var file_base = require('../storage/file_base');
 
 module.exports = function() {
   var mixin = file_base.call(this);

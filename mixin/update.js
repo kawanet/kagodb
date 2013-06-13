@@ -3,10 +3,27 @@
 var update_op = require('../core/update_op');
 
 /**
- * This mixin provides update() methods.
+ * This mixin provides
+ * [update()]{@linkcode KagoDB#update} and
+ * [findAndModify()]{@linkcode KagoDB#findAndModify}
+ * methods.
  *
  * @class update
  * @mixin
+ * @example
+ * var collection = new KagoDB(opts);
+ *
+ * var query = {
+ *   name: 'apple'
+ * };
+ * var update = {
+ *   $inc: {
+ *     stock: -1
+ *   }
+ * };
+ * collection.update(query, update, null, function(err){
+ *   console.log(err);
+ * });
  */
 
 module.exports = function() {

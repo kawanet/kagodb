@@ -7,6 +7,8 @@ var utils = require('../core/utils');
  * [model()]{@linkcode KagoDB#model} method as well as model class feature which overrides
  * [read()]{@linkcode KagoDB#read} method to bless an item with the specified model class.
  *
+ * This mixin must be loaded after [storage]{@linkcode storage} mixin or other storage-type mixins.
+ *
  * @class model
  * @mixin
  * @example

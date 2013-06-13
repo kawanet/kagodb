@@ -1,6 +1,6 @@
 /*! webapi.js */
 
-var express = require('express');
+var express; // = require('express'); // lazy load
 
 /**
  * This mixin provides [webapi()]{@linkcode KagoDB#webapi} method which gives a RESTful Web API feature for {@link http://expressjs.com Express.js}.
@@ -68,6 +68,7 @@ function webapi() {
     app.run(req, res, next);
   };
 
+  express = express || require('express'); // lazy load
   api.bodyParser = express.bodyParser;
 
   api.prepare = function() {

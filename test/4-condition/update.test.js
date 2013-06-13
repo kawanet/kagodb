@@ -31,7 +31,7 @@ describe('Update:', function() {
 
 function unset_tests(collection) {
   var options = {
-    multiple: true
+    multi: true
   };
 
   it('update() $unset', function(done) {
@@ -243,7 +243,7 @@ function set_tests(collection, prefix, updater) {
       test: prefix + 3
     };
     var opts = {
-      multiple: true
+      multi: true
     };
     collection.update(query, updater(set), opts, function(err) {
       assert(!err, 'update should success: ' + err);

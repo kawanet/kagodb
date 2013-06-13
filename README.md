@@ -54,7 +54,7 @@ npm install git://github.com/kawanet/kagodb.git
 
 ## Links
 
-- Sources on GitHub - https://github.com/kawanet/kagodb
+- Sources on GitHub - http://kawanet.github.io/kagodb/docs/KagoDB.html
 - JavaScript API Documentation - http://kawanet.github.io/kagodb/docs/
 
 ## Authors

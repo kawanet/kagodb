@@ -1,10 +1,9 @@
 /*! file_base.js */
 
 var fs = require('fs');
-var encode = require('./encode');
 
 module.exports = function() {
-  var mixin = encode.call(this);
+  var mixin = {};
   mixin.read = read;
   mixin.write = write;
   mixin.erase = erase;

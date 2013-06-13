@@ -1,8 +1,17 @@
 /*! http_superagent.js */
 
 /**
- * This mixin provides a remote storage feature which performs Ajax requests to a KagoDB webapi server via superagent module.
- * This would be useful to test your webapi using supertest as supertest contains superagent.
+ * This mixin implements a remote
+ * [storage]{@linkcode storage}
+ * feature which performs Ajax requests to a KagoDB
+ * [webapi]{@linkcode KagoDB#webapi}
+ * server via
+ * [superagent]{@link https://npmjs.org/package/superagent} module.
+ *
+ * This would be also useful when testing your webapi using
+ * [supertest]{@link https://npmjs.org/package/supertest} module,
+ * as it contains superagent.
+ *
  * Web browser build of superagent is also available.
  *
  * @class http_superagent
@@ -49,7 +58,7 @@
  * });
  */
 
-var http_base = require('../core/http_base');
+var http_base = require('../storage/http_base');
 var request_superagent = require('../mixin/request_superagent');
 var utils = require('../core/utils');
 

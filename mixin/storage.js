@@ -7,7 +7,7 @@
  * @mixin
  */
 
-var dynamic_mixin = require('../core/dynamic_mixin');
+var dynamic_mixin = require('../mixin/dynamic_mixin');
 
 module.exports = function() {
   return mixin;

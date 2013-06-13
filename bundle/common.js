@@ -10,10 +10,12 @@ var noop = require('../mixin/noop');
 var update = require('../mixin/update');
 var remove = require('../mixin/remove');
 var insert = require('../mixin/insert');
+var encode = require('../mixin/encode');
 
 var KagoDB = Base.inherit();
 
 KagoDB.mixin(noop());
+KagoDB.mixin(encode());
 KagoDB.mixin(find());
 KagoDB.mixin(insert());
 KagoDB.mixin(update());

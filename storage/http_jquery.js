@@ -1,8 +1,14 @@
 /*! http_jquery.js */
 
 /**
- * This mixin provides a remote storage feature which performs Ajax requests to a KagoDB webapi server via jQuery library.
- * On web browser environment, jQuery library must be loaded before loading KagoDB.
+ * This mixin implements a remote
+ * [storage]{@linkcode storage}
+ * feature which performs Ajax requests to a KagoDB
+ * [webapi]{@linkcode KagoDB#webapi}
+ * server via
+ * [jQuery]{@link http://jquery.com}
+ * library.
+ * On web browser environments, jQuery library must be loaded before loading KagoDB.
  *
  * @class http_jquery
  * @mixin
@@ -21,7 +27,7 @@
  * });
  */
 
-var http_base = require('../core/http_base');
+var http_base = require('../storage/http_base');
 var request_jquery = require('../mixin/request_jquery');
 var utils = require('../core/utils');
 

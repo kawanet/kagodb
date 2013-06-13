@@ -9,6 +9,18 @@ var wrequire = require('wrequire');
  * @class request_superagent
  * @mixin
  * @see https://github.com/visionmedia/superagent
+ * @example
+ * var MyKago = KagoDB.inherit();
+ * MyKago.mixin(KagoDB.bundle.request_superagent());
+ * var collection = new MyKago();
+ *
+ * var options = {
+ *   method: 'GET',
+ *   url: 'http://graph.facebook.com/4',
+ * };
+ * collection.request(options, function(err, body) {
+ *   console.log(body); // JSON
+ * });
  */
 
 module.exports = function() {

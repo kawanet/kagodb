@@ -1,7 +1,9 @@
 /*! memory.js */
 
 /**
- * This mixin provides a volatile storage feature which stores items on memory.
+ * This mixin implements a volatile
+ * [storage]{@linkcode storage}
+ * feature which stores items on memory.
  * Use namespace to share the storage across KagoDB instances in the same process.
  *
  * @class memory
@@ -19,10 +21,8 @@
  * });
  */
 
-var encode = require('../core/encode');
-
 module.exports = function() {
-  var mixin = encode.call(this);
+  var mixin = {};
   mixin.read = read;
   mixin.write = write;
   mixin.erase = erase;

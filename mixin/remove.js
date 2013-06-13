@@ -1,10 +1,18 @@
 /*! remove.js */
 
 /**
- * This mixin provides remove() methods.
+ * This mixin provides
+ * [remove()]{@linkcode KagoDB#remove}
+ * method.
  *
  * @class remove
  * @mixin
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.remove({name: 'john'}, true, function(err){
+ *   console.log(err);
+ * });
  */
 
 module.exports = function() {

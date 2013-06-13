@@ -1,7 +1,9 @@
 /*! yaml.js */
 
 /**
- * This mixin provides a file-based storage feature which stores items as YAML files.
+ * This mixin implements a file-based
+ * [storage]{@linkcode storage}
+ * feature which stores items as YAML files.
  *
  * @class yaml
  * @mixin
@@ -19,8 +21,8 @@
  * });
  */
 
-var jsyaml = require('js-yaml');
-var file_base = require('../core/file_base');
+var jsyaml; // = require('js-yaml'); // lazy load
+var file_base = require('../storage/file_base');
 
 module.exports = function() {
   var mixin = file_base.call(this);
@@ -37,6 +39,7 @@ function file_suffix() {
 function decode(source, callback) {
   var item;
   try {
+    jsyaml = jsyaml || require('js-yaml'); // lazy load
     item = jsyaml.load(source);
   } catch (err) {
     callback(err);
@@ -48,6 +51,7 @@ function decode(source, callback) {
 function encode(item, callback) {
   var encoded;
   try {
+    jsyaml = jsyaml || require('js-yaml'); // lazy load
     encoded = jsyaml.dump(item);
   } catch (err) {
     callback(err);

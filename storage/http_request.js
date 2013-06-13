@@ -1,7 +1,12 @@
 /*! http_request.js */
 
 /**
- * This mixin provides a remote storage feature which performs Ajax requests to a KagoDB webapi server via request module.
+ * This mixin implements a remote
+ * [storage]{@linkcode storage}
+ * feature which performs Ajax requests to a KagoDB
+ * [webapi]{@linkcode KagoDB#webapi}
+ * server via
+ * [request]{@link https://npmjs.org/package/request} module.
  *
  * @class http_request
  * @mixin
@@ -19,7 +24,7 @@
  * });
  */
 
-var http_base = require('../core/http_base');
+var http_base = require('../storage/http_base');
 var request = require('../mixin/request');
 var utils = require('../core/utils');
 

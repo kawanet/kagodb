@@ -1,10 +1,9 @@
 /*! http_base.js */
 
-var encode = require('./encode');
 var utils = require('../core/utils');
 
 module.exports = function() {
-  var mixin = encode.call(this);
+  var mixin = {};
   mixin.read = read;
   mixin.write = write;
   mixin.erase = erase;

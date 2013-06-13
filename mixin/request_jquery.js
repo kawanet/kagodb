@@ -9,6 +9,19 @@ var wrequire = require('wrequire');
  * @class request_jquery
  * @mixin
  * @see http://jquery.com
+ * @see https://npmjs.org/package/jquery
+ * @example
+ * var MyKago = KagoDB.inherit();
+ * MyKago.mixin(KagoDB.bundle.request_jquery());
+ * var collection = new MyKago();
+ *
+ * var options = {
+ *   method: 'GET',
+ *   url: 'http://graph.facebook.com/4',
+ * };
+ * collection.request(options, function(err, body) {
+ *   console.log(body); // JSON
+ * });
  */
 
 module.exports = function() {

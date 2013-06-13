@@ -33,7 +33,7 @@ function inherit(parent) {
    *
    * @member {Object} KagoDB.bundle
    * @example
-   * var Utils = KagoDB.bundle.utils;
+   * var utils = KagoDB.bundle.utils;
    */
 
   /** This is a shortcut to access modules bundled.
@@ -41,7 +41,7 @@ function inherit(parent) {
    * @example
    * var collection = new KagoDB(opts);
    *
-   * var Utils = collection.bundle.utils;
+   * var utils = collection.bundle.utils;
    */
 
   child.prototype.bundle = child.bundle = utils.clone(parent.bundle || {});

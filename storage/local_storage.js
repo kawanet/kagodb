@@ -1,7 +1,9 @@
 /*! local_storage.js */
 
 /**
- * This mixin provides a persistence storage feature which stores items on web browser's localStorage.
+ * This mixin implements a persistence
+ * [storage]{@linkcode storage}
+ * feature which stores items on web browser's localStorage.
  * On environments which do not support localStorage, such as node.js, this simulates a localStorage but it's volatile.
  *
  * @class local_storage

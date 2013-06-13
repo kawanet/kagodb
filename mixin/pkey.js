@@ -1,10 +1,34 @@
 /*! pkey.js */
 
 /**
- * This mixin provides pkey() and overrides read() and write() method to install a primary key feature.
+ * This mixin provides
+ * [pkey()]{@linkcode KagoDB#pkey} and overrides
+ * [read()]{@linkcode KagoDB#read} and
+ * [write()]{@linkcode KagoDB#write}
+ * method to install a primary key feature.
+ *
+ * This mixin must be loaded after [storage]{@linkcode storage} mixin or other storage-type mixins.
  *
  * @class pkey
  * @mixin
+ * @example
+ * var opts = {
+ *   storage: 'memory',
+ *   primary_key: 'name'
+ * };
+ * var collection = new KagoDB(opts);
+ *
+ * var john = {
+ *   name: 'Jonathan',
+ *   nickname: 'john'
+ * };
+ * collection.save(john);
+ * collection.write('Jonathan', john); // does same as above
+ *
+ * var mike = {
+ *   nickname: 'mike'
+ * };
+ * collection.write('Michael', mike); // name: 'Michael' will be added
  */
 
 module.exports = function(default_pkey) {

@@ -1,10 +1,16 @@
 /*! noop.js */
 
 /**
- * This mixin provides noop() method which does no operation.
+ * This mixin provides
+ * [noop()]{@linkcode KagoDB#noop}
+ * method which does no operation.
  *
  * @class noop
  * @mixin
+ * @example
+ * var collection = new KagoDB({storage: 'json'});
+ *
+ * collection.noop(); // does nothing
  */
 
 /**
@@ -14,6 +20,7 @@
  * @returns {KagoDB} itself for method chaining
  * @example
  * var collection = new KagoDB({storage: 'json'});
+ *
  * collection.noop().noop().noop().noop(); // does nothing four times
  */
 
