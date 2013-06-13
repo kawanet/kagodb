@@ -28,8 +28,7 @@ function remove(condition, justOne, callback) {
 function getRemover(self, onerase, callback) {
   var pkey = self.pkey();
   if (!pkey) {
-    error('primary key not defined', callback);
-    return;
+    throw new Error('primary key not defined');
   }
 
   callback = callback || NOP;
@@ -40,18 +39,6 @@ function getRemover(self, onerase, callback) {
     var id = item[pkey];
     self.erase(id, onerase);
   };
-}
-
-function error(err, callback) {
-  callback = callback || NOP;
-  if ('string' === typeof err) {
-    err = new Error(err);
-  }
-  if (callback === NOP) {
-    throw err;
-  } else {
-    callback(err);
-  }
 }
 
 function NOP() {}

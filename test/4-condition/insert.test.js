@@ -15,6 +15,11 @@ describe('Insert:', function() {
     primary_key: 'string'
   };
 
+  var opts3 = {
+    storage: 'memory',
+    primary_key: 'decimal'
+  };
+
   var data = {
     foo: {
       string: "FOO",
@@ -38,13 +43,13 @@ describe('Insert:', function() {
     }
   };
 
-  describe('single item:', function() {
+  describe('single item without ID:', function() {
     var collection = new KagoDB(opts1);
     insertSingle(collection, data);
     tests(collection, '_id', 24);
   });
 
-  describe('multiple items:', function() {
+  describe('multiple items without ID:', function() {
     var collection = new KagoDB(opts1);
     insertMultiple(collection, data);
     tests(collection, '_id', 24);
@@ -54,6 +59,18 @@ describe('Insert:', function() {
     var collection = new KagoDB(opts2);
     insertMultiple(collection, data);
     tests(collection, 'string', 3);
+  });
+
+  describe('multiple items with duplicated IDs:', function() {
+    var collection = new KagoDB(opts3);
+    insertMultiple(collection, data, true);
+    it('count', function(done) {
+      collection.count({}, function(err, count) {
+        assert(!err, 'count should success: ' + err);
+        assert.equal(count, 0, 'no items should be insrted');
+        done();
+      });
+    });
   });
 });
 
@@ -67,13 +84,13 @@ function insertSingle(collection, data) {
     }
 
     function end(err) {
-      assert(!err, err);
+      assert(!err, 'insert should success: ' + err);
       done();
     }
   });
 }
 
-function insertMultiple(collection, data) {
+function insertMultiple(collection, data, flag) {
   it('insert', function(done) {
     var array = [];
     for (var id in data) {
@@ -83,7 +100,11 @@ function insertMultiple(collection, data) {
     collection.insert(array, end);
 
     function end(err) {
-      assert(!err, 'insert should success: ' + err);
+      if (flag) {
+        assert(err, 'insert should fail');
+      } else {
+        assert(!err, 'insert should success: ' + err);
+      }
       done();
     }
   });
@@ -98,7 +119,7 @@ function tests(collection, pkey, len) {
     });
   });
 
-  it('ID length', function(done) {
+  it('ID length ' + len, function(done) {
     collection.find().each(function(err, item) {
       assert(!err, 'find().each() should success: ' + err);
       if (!item) return done(); // EOF

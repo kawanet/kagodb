@@ -43,8 +43,7 @@ function getUpdater(self, update, onwrite, callback) {
   callback = callback || NOP;
 
   if (!pkey) {
-    error('primary key not defined', callback);
-    return;
+    throw new Error('primary key not defined');
   }
 
   return function(err, item) {
@@ -54,18 +53,6 @@ function getUpdater(self, update, onwrite, callback) {
     item = update(item);
     self.write(id, item, onwrite);
   };
-}
-
-function error(err, callback) {
-  callback = callback || NOP;
-  if ('string' === typeof err) {
-    err = new Error(err);
-  }
-  if (callback === NOP) {
-    throw err;
-  } else {
-    callback(err);
-  }
 }
 
 function through(item) {
