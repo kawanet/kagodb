@@ -6,7 +6,7 @@
  * @mixin
  * @example
  * var MyKago = KagoDB.inherit();
- * var deny = require('kagodb/mixin/deny');
+ * var deny = KagoDB.bundle.deny;
  * MyKago.mixin(deny({write:-1}));
  */
 
