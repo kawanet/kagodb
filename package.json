@@ -1,7 +1,22 @@
 {
   "name": "kagodb",
-  "version": "0.2.16",
-  "repository": "https://github.com/kawanet/kagodb.git",
+  "version": "0.2.17",
+  "homepage": "https://github.com/kawanet/kagodb",
+  "description": "Kago Database Engine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kawanet/kagodb.git"
+  },
+  "main": "index.js",
+  "keywords": [
+      "api",
+      "database",
+      "db",
+      "json",
+      "mongodb",
+      "memory",
+      "yaml"
+  ],
   "dependencies": {
     "express": "*",
     "js-yaml": "*",
