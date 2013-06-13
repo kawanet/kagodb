@@ -1,12 +1,12 @@
-/* projection.js */
+/* projection_op.js */
 
-/** Projection parser.
- * @class Projection
+/** Projection operator parser.
+ * @class ProjectionOp
  */
 
 /**
- * This generates a map function from an object given.
- * @method Projection.parser
+ * This generates a projection function from an operator object.
+ * @method ProjectionOp.parser
  * @param {Function} projection - output properties
  * @returns {Function} map function generated
  */

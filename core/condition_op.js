@@ -1,18 +1,14 @@
-/* condition.js */
+/* condition_op.js */
 
-/** Condition parser.
- * @class Condition
+/** Condition operator parser.
+ * @class ConditionOp
  */
 
 /**
- * This parses a condition object given as an object.
- * @method Condition.parser
+ * This generates a condition function from an operator object.
+ * @method ConditionOp.parser
  * @param {Function} condition - query parameters
  * @returns {Function} test function generated
- */
-
-/** This creates a cursor object with query parameters.
- * @param {Object} [condition] - query parameters
  */
 
 exports.parser = function(condition) {

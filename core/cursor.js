@@ -1,8 +1,8 @@
 /*! cursor.js */
 
 var utils = require('./utils');
-var ConditionParser = require('../core/condition');
-var ProjectionParser = require('../core/projection');
+var ConditionParser = require('../core/condition_op');
+var ProjectionParser = require('../core/projection_op');
 
 module.exports = Cursor;
 
