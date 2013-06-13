@@ -30,7 +30,8 @@ module.exports = function() {
 
 function webapi() {
   var collection = this;
-  var version = collection.version();
+  var System = collection.bundle.system;
+  var version = System.version();
 
   var api = function(req, res, next) {
     var app = new MiniApp();
