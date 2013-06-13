@@ -4,6 +4,7 @@
  * This provides an update operator parser. update() method uses this internally.
  *
  * @module update_op
+ * @see http://docs.mongodb.org/manual/reference/operator/#update-operators
  */
 
 /**
@@ -38,6 +39,7 @@ exports.parser = function(update) {
     $unset: 1,
     $rename: 1,
     $push: 1,
+    $pull: 1,
     $inc: 1
   };
 
@@ -49,7 +51,7 @@ exports.parser = function(update) {
 
   // update function
   return function(item) {
-    var key, val;
+    var key, val, old;
 
     // through when empty
     if (!item) return item;
@@ -80,16 +82,35 @@ exports.parser = function(update) {
     // Adds an item to an array.
     if (update.$push) {
       for (key in update.$push) {
-        val = item[key];
-        if (val instanceof Array) {
+        old = item[key];
+        if (old instanceof Array) {
           // ok
-        } else if ('undefined' == typeof val) {
+        } else if ('undefined' == typeof old) {
           item[key] = [];
         } else {
-          item[key] = [val];
+          item[key] = [old];
         }
         val = update.$push[key];
         item[key].push(val);
+      }
+    }
+
+    // Removes items from an array that match a query statement.
+    if (update.$pull) {
+      for (key in update.$pull) {
+        val = update.$pull[key];
+        old = item[key];
+        if (old instanceof Array) {
+          var tmp = [];
+          var len = old.length;
+          for(var i=0; i<len; i++) {
+            var test = old[i];
+            if (val != test) tmp.push(test);
+          }
+          item[key] = tmp;
+        } else if (val == old) {
+          item[key] = []; // empty array
+        }
       }
     }
 

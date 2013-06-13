@@ -106,6 +106,44 @@ function unset_tests(collection) {
     });
   });
 
+  it('update() $pull', function(done) {
+    var save = {
+      _id: 'pull',
+      foo: ['FOO'],
+      bar: ['FOO', 'FOO', 'BAR', 'BAR', 'QUX', 'QUX'],
+      qux: 'QUX'
+    };
+    var query = {
+      _id: 'pull'
+    };
+    var update = {
+      $pull: {
+        foo: 'FOO',
+        bar: 'BAR',
+        qux: 'QUX',
+        quz: 'QUZ'
+      }
+    };
+    collection.save(save, function(err) {
+      assert(!err, 'save should success: ' + err);
+      collection.update(query, update, options, function(err) {
+        assert(!err, 'update should success: ' + err);
+        collection.findOne(query, function(err, item) {
+          assert(!err, 'findOne should success: ' + err);
+          assert(item.foo instanceof Array, '$pull should manage an array A');
+          assert(item.bar instanceof Array, '$pull should manage an array B');
+          assert(item.qux instanceof Array, '$pull should manage a value');
+          assert(!item.quz, '$pull should manage an empty value');
+          assert.equal(item.foo.length, 0, '$pull should pull a value from an array A');
+          assert.equal(item.bar.length, 4, '$pull should pull a value from an array B');
+          assert.equal(item.qux.length, 0, '$pull should pull a value from an array upgraded');
+          assert.equal(item.bar.join('-'), 'FOO-FOO-QUX-QUX', '$pull should not change the order of an array items');
+          done();
+        });
+      });
+    });
+  });
+
   it('update() $inc', function(done) {
     var query = {
       string: 'QUX'
