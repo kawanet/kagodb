@@ -2,9 +2,27 @@
 
 var utils = require('../core/utils');
 
-/** This mixin provides model() method in addition to overriding read() method to install a primary key feature.
- * @class ModelClassMixin
+/**
+ * This mixin provides
+ * [model()]{@linkcode KagoDB#model} method as well as model class feature which overrides
+ * [read()]{@linkcode KagoDB#read} method to bless an item with the specified model class.
+ *
+ * @class model
  * @mixin
+ * @example
+ * function Item() {} // model class
+ *
+ * var opts = {
+ *   storage: 'memory',
+ *   model: Item
+ * };
+ * var collection = new KagoDB(opts);
+ *
+ * collection.write('foo', {}, function(err) {
+ *   collection.read('foo', function(err, item){
+ *     console.log(item instanceof Item); // => true
+ *   })
+ * });
  */
 
 module.exports = function(default_model) {
@@ -13,17 +31,22 @@ module.exports = function(default_model) {
   function mixin() {
     var _read = this.read || no_read;
 
-    /** This gets or sets a primary key. Use this interface to change a primary key after a session started.
-     * @method PkeyMixin.prototype.model
-     * @param {String} model - primary key to set
-     * @returns {String} primary key
+    /** This gets or sets a model class.
+     *
+     * @method KagoDB.prototype.model
+     * @param {String} model - model class to set
+     * @returns {String} model class
      * @example
-     * var KagoDB = require('KagoDB');
-     * var Item = require('./model/item');
+     * function Item() {} // model class
+     *
      * var collection = new KagoDB();
-     * collection.model(Item); // => Item
-     * collection.model(); // => Item
-     * collection.get('model'); // => Item
+     * collection.model(Item); // => setter
+     * collection.model(); // => getter
+     * collection.get('model'); // => getter
+     *
+     * collection.read(id, function(err, item){
+     *   console.log(item instanceof Item); // => true
+     * })
      */
 
     this.model = function(model) {

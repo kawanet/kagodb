@@ -2,6 +2,15 @@
 
 var wrequire = require('wrequire');
 
+/**
+ * This mixin provides request() method whish works with superagent.
+ * This would be useful when you run tests using supertest.
+ *
+ * @class request_superagent
+ * @mixin
+ * @see https://github.com/visionmedia/superagent
+ */
+
 module.exports = function() {
   var mixin = {
     request: request

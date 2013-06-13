@@ -2,12 +2,16 @@
 
 /**
  * This mixin specifies methods which are not allowed.
- * @class DenyMixin
+ *
+ * @class deny
  * @mixin
  * @example
  * var MyKago = KagoDB.inherit();
  * var deny = KagoDB.bundle.deny;
  * MyKago.mixin(deny({write:-1}));
+ *
+ * var collection = MyKago();
+ * collection.write(); // => 'Error: method denied: write'
  */
 
 module.exports = function(methods, error) {

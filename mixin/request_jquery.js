@@ -2,6 +2,15 @@
 
 var wrequire = require('wrequire');
 
+/**
+ * This mixin provides request() method whish works with jQuery.
+ * This would be useful when you do Ajax on web browsers.
+ *
+ * @class request_jquery
+ * @mixin
+ * @see http://jquery.com
+ */
+
 module.exports = function() {
   var mixin = {
     request: request

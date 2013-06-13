@@ -1,7 +1,9 @@
 /*! pkey.js */
 
-/** This mixin provides pkey() method in addition to overriding read() and write() method to install a primary key feature.
- * @class PkeyMixin
+/**
+ * This mixin provides pkey() and overrides read() and write() method to install a primary key feature.
+ *
+ * @class pkey
  * @mixin
  */
 
@@ -12,12 +14,13 @@ module.exports = function(default_pkey) {
     var _read = this.read || no_read;
     var _write = this.write || no_write;
 
-    /** This gets or sets a primary key. Use this interface to change a primary key after a session started.
-     * @method PkeyMixin.prototype.pkey
+    /**
+     * This gets or sets a primary key. Use this interface to change a primary key after a session started.
+     *
+     * @method KagoDB.prototype.pkey
      * @param {String} pkey - primary key to set
      * @returns {String} primary key
      * @example
-     * var KagoDB = require('KagoDB');
      * var collection = new KagoDB();
      * collection.pkey('_id'); // => '_id'
      * collection.pkey(); // => '_id'

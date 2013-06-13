@@ -8,10 +8,39 @@ module.exports = Cursor;
 
 function Proto() {}
 
+/**
+ * This returns the next object at the cursor.
+ *
+ * @method Cursor.prototype.nextObject
+ * @param {Function} callback - function(err, item) {}
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * var cursor = collection.find();
+ * cursor.nextObject(function(err, item){
+ *   console.log(item);
+ * });
+ */
+
 Proto.prototype.nextObject = function(callback) {
   if (!this.source) throw new Error('no source');
   this.source.nextObject(callback);
 };
+
+/**
+ * This resets the cursor position to the original state.
+ *
+ * @method Cursor.prototype.rewind
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * var cursor = collection.find();
+ * cursor.nextObject(function(err, item){
+ *   console.log(item); // first item
+ *   cursor.rewind();
+ *   cursor.nextObject(function(err, item){
+ *     console.log(item); // first item again
+ *   });
+ * });
+ */
 
 Proto.prototype.rewind = function() {
   if (!this.source) throw new Error('no source');
@@ -20,11 +49,13 @@ Proto.prototype.rewind = function() {
   return this;
 };
 
-/** Please create a Cursor instance via find() method instead of calling the constructor directly.
+/**
+ * This is a Cursor instance constructor. find() and other some methods use this internally.
+ *
  * @class Cursor
  * @param {KagoDB} collection - source collection
- * @param {Function} [condition] - test function
- * @param {Function} [projection] - map function
+ * @param {Object|Function} [condition] - query parameters or function
+ * @param {Object|Function} [projection] - mapping parameters or function
  */
 
 function Cursor(collection, condition, projection) {
@@ -47,7 +78,10 @@ function Cursor(collection, condition, projection) {
 
 utils.inherits(Cursor, Proto);
 
-/** This invokes a callback function with an index for all items of the collection whether a condition is given or not.
+/**
+ * This invokes a callback function with an index for all items of the collection whether a condition is given or not.
+ *
+ * @private
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  */
@@ -72,14 +106,20 @@ Cursor.prototype.index = function(callback) {
   return this;
 };
 
-/** This invokes a callback function with a list of items found.
+/**
+ * This invokes a callback function with a list of items found.
+ *
  * @param {Function} callback - function(err, list) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
  * collection.find().toArray(function(err, list) {
- *   list.forEach(function(item) {
- *     console.log(item);
- *   });
+ *   if (err) {
+ *     console.error(err);
+ *   } else {
+ *     list.forEach(function(item) {
+ *       console.log(item);
+ *     });
+ *   }
  * });
  */
 
@@ -104,6 +144,23 @@ Cursor.prototype.toArray = function(callback) {
   return this;
 };
 
+/**
+ * This invokes a callback function with each items found.
+ *
+ * @param {Function} callback - function(err, item) {}
+ * @returns {Cursor} instance itself for method chaining
+ * @example
+ * collection.find().each(function(err, item) {
+ *   if (err) {
+ *     console.error(err);
+ *   } else if (!item) {
+ *     // EOF
+ *   } else {
+ *     console.error(item);
+ *   }
+ * });
+ */
+
 Cursor.prototype.each = function(callback) {
   var self = this;
   callback = callback || NOP;
@@ -116,7 +173,9 @@ Cursor.prototype.each = function(callback) {
   }
 };
 
-/** This invokes a callback function with the number of items found
+/**
+ * This invokes a callback function with the number of items found
+ *
  * @param {Function} callback - function(err, count) {}
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -138,12 +197,18 @@ Cursor.prototype.count = function(callback) {
   return this;
 };
 
-/** This specifies a sort parameters
+/**
+ * This specifies a sort parameters
+ *
  * @param {Function|Object} order - sort function or parameters
  * @returns {Cursor} instance itself for method chaining
  * @example
- * collection.find().sort(function(a,b){return a.price - b.price;}).toArray();
- * collection.find().sort({price: 1, stock: -1}).toArray();
+ * collection.find().sort(function(a, b){
+ *   return a.price - b.price || b.stock - a.stock;
+ * }).toArray();
+ *
+ * var sort = {price: 1, stock: -1});
+ * collection.find().sort(sort).toArray(); // same order
  */
 
 Cursor.prototype.sort = function(order) {
@@ -151,7 +216,9 @@ Cursor.prototype.sort = function(order) {
   return this;
 };
 
-/** This specifies a offset parameters
+/**
+ * This specifies a offset parameters
+ *
  * @param {Number} offset - offset parameter
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -163,7 +230,9 @@ Cursor.prototype.offset = function(offset) {
   return this;
 };
 
-/** This specifies a limit parameters
+/**
+ * This specifies a limit parameters
+ *
  * @param {Number} limit - limit parameter
  * @returns {Cursor} instance itself for method chaining
  * @example
@@ -192,6 +261,8 @@ Source.prototype.nextObject = function(callback) {
     self.nextObject = self._nextObject;
     self.nextObject(callback);
   });
+
+  return this;
 };
 
 Source.prototype._nextObject = function(callback) {

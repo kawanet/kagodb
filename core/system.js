@@ -1,13 +1,17 @@
 /*! system.js */
 
-/** The System class provides system information.
- * @class System
+/**
+ * The module exports version() function.
+ *
+ * @module system
  */
 
-/** This returns a version string of KagoDB library.
- * @method System.version
+/**
+ * This returns a version string of KagoDB library.
+ *
  * @returns {String} version string. e.g. "kagodb 0.2.1"
  * @example
+ * var version = KagoDB.bundle.system.version();
  */
 
 exports.version = function() {

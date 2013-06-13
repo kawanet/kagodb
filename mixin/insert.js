@@ -3,9 +3,29 @@
 var utils = require('../core/utils');
 var ObjectId = require('../core/objectid');
 
-/** This mixin provides insert() and save() method.
- * @class InsertMixin
+/**
+ * This mixin provides
+ * [insert()]{@linkcode KagoDB#insert} and
+ * [save()]{@linkcode KagoDB#save} methods.
+ *
+ * @class insert
  * @mixin
+ * @example
+ * var opts = {
+ *   storage: 'memory',
+ *   primary_key: '_id' // primary key like MongoDB does
+ * };
+ * var collection = new KagoDB(opts);
+ *
+ * var items = [
+ *   { name: 'Apple' },
+ *   { name: 'Orange' },
+ *   { name: 'Grape' }
+ * };
+ *
+ * collection.insert(items, function(err) {
+ *   console.log(err || 'no error'); // bulk insert
+ * });
  */
 
 module.exports = function() {
@@ -14,6 +34,30 @@ module.exports = function() {
   mixin.save = save;
   return mixin;
 };
+
+/**
+ * This inserts an item to the collection.
+ * This requires a primary key defined.
+ *
+ * @method KagoDB.prototype.insert
+ * @param {Object|Array} item - an item or an array of items
+ * @param {Function} [callback] - function(err) {}
+ * @return {KagoDB} for chaining
+ * @example
+ * var opts = {
+ *   storage: 'memory',
+ *   primary_key: '_id' // primary key like MongoDB does
+ * };
+ * var collection = new KagoDB(opts);
+ *
+ * var item = {
+ *   name: 'Apple'
+ * };
+ *
+ * collection.insert(item, function(err) {
+ *   console.log(err || 'no error');
+ * });
+ */
 
 function insert(item, callback) {
   var self = this;
@@ -60,6 +104,32 @@ function insert(item, callback) {
     self.write(id, item, next);
   }
 }
+
+/**
+ * This inserts or updates an item to the collection.
+ * This requires a primary key defined.
+ *
+ * @method KagoDB.prototype.save
+ * @param {Object} item - an item
+ * @param {Function} [callback] - function(err) {}
+ * @return {KagoDB} for chaining
+ * @example
+ * var opts = {
+ *   storage: 'memory',
+ *   primary_key: 'name'
+ * };
+ * var collection = new KagoDB(opts);
+ *
+ * var item = {
+ *   name: 'Apple'
+ * };
+ *
+ * collection.save(item, function(err) {
+ *   collection.save(item, function(err) {
+ *     console.log(err || 'no error');
+ *   });
+ * });
+ */
 
 function save(item, callback) {
   var self = this;

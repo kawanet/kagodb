@@ -2,9 +2,24 @@
 
 var express = require('express');
 
-/** This mixin provides webapi() method which gives a RESTful Web API feature for {@link http://expressjs.com Express.js}.
- * @class WebapiMixin
+/**
+ * This mixin provides [webapi()]{@linkcode KagoDB#webapi} method which gives a RESTful Web API feature for {@link http://expressjs.com Express.js}.
+ *
+ * @class webapi
  * @mixin
+ * @example
+ * var express = require('express');
+ * var KagoDB = require('KagoDB');
+ *
+ * var opts = {
+ *   storage: 'json',
+ *   path: './data/'
+ * };
+ *
+ * var app = express();
+ * app.use(express.static(__dirname + '/public'));
+ * app.all('/data/:id?', KagoDB(opts).webapi());
+ * app.listen(3000);
  */
 
 module.exports = function() {
@@ -13,18 +28,23 @@ module.exports = function() {
   return mixin;
 };
 
-/** This generates a RESTful Web API function for {@link http://expressjs.com Express.js}.
- * @method WebapiMixin.prototype.webapi
+/**
+ * This generates a RESTful Web API function for {@link http://expressjs.com Express.js}.
+ *
+ * @method KagoDB.prototype.webapi
  * @returns {Function} a Web API function
  * @example
  * var express = require('express');
  * var KagoDB = require('KagoDB');
- * var app = express();
+ *
  * var opts = {
  *   storage: 'json',
  *   path: './data/'
  * };
- * app.all('/data/*', KagoDB(opts).webapi());
+ *
+ * var app = express();
+ * app.use(express.static(__dirname + '/public'));
+ * app.all('/data/:id?', KagoDB(opts).webapi());
  * app.listen(3000);
  */
 

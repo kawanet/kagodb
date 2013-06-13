@@ -1,13 +1,15 @@
 /* projection_op.js */
 
-/** Projection operator parser.
- * @class ProjectionOp
+/**
+ * This provides a projection operator parser. find() method uses this internally.
+ *
+ * @module projection_op
  */
 
 /**
  * This generates a projection function from an operator object.
- * @method ProjectionOp.parser
- * @param {Function} projection - output properties
+ *
+ * @param {Object|Function} projection - mapping parameters
  * @returns {Function} map function generated
  */
 

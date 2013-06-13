@@ -1,7 +1,9 @@
 /*! remove.js */
 
-/** This mixin provides remove() methods.
- * @class RemoveMixin
+/**
+ * This mixin provides remove() methods.
+ *
+ * @class remove
  * @mixin
  */
 
@@ -10,6 +12,21 @@ module.exports = function() {
   mixin.remove = remove;
   return mixin;
 };
+
+/**
+ * This removes item(s) which matches the specified query.
+ *
+ * @method KagoDB.prototype.remove
+ * @param {Object|Function} condition - query selector
+ * @param {Bool} [justOne] - true when remove multiple items at once
+ * @param {Function} [callback] - function(err) {}
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.remove({name: 'john'}, true, function(err){
+ *   console.log(err);
+ * });
+ */
 
 function remove(condition, justOne, callback) {
   var remover;

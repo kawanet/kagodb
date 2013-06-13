@@ -1,13 +1,15 @@
 /* condition_op.js */
 
-/** Condition operator parser.
- * @class ConditionOp
+/**
+ * This provides a condition operator parser. find() and other some methods use this internally.
+ *
+ * @module condition_op
  */
 
 /**
  * This generates a condition function from an operator object.
- * @method ConditionOp.parser
- * @param {Function} condition - query parameters
+ *
+ * @param {Object|Function} condition - query parameters
  * @returns {Function} test function generated
  */
 

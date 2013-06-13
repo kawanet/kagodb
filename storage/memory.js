@@ -1,5 +1,24 @@
 /*! memory.js */
 
+/**
+ * This mixin provides a volatile storage feature which stores items on memory.
+ * Use namespace to share the storage across KagoDB instances in the same process.
+ *
+ * @class memory
+ * @mixin
+ * @example
+ * var opts = {
+ *   storage: 'memory',
+ *   namespace: 'myspace'
+ * };
+ *
+ * var collection = new KagoDB(opts);
+ *
+ * collection.read('foo', function(err, item){
+ *   console.log(item);
+ * });
+ */
+
 var encode = require('../core/encode');
 
 module.exports = function() {

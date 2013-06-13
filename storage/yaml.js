@@ -1,5 +1,24 @@
 /*! yaml.js */
 
+/**
+ * This mixin provides a file-based storage feature which stores items as YAML files.
+ *
+ * @class yaml
+ * @mixin
+ * @see https://npmjs.org/package/js-yaml
+ * @example
+ * var opts = {
+ *   storage: 'yaml',
+ *   path: __dirname + '/data'
+ * };
+ *
+ * var collection = new KagoDB(opts);
+ *
+ * collection.read('foo', function(err, item){
+ *   // ./data/foo.yaml
+ * });
+ */
+
 var jsyaml = require('js-yaml');
 var file_base = require('../core/file_base');
 

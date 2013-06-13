@@ -1,11 +1,30 @@
 /*! intercept_mixin.js */
 
 /**
- * This mixin intercepts all methods any other than get() and set().
- * @class InterceptMixin
+ * This mixin installs interceptor function for any existant methods other than
+ * [get()]{@linkcode KagoDB#get} and
+ * [set()]{@linkcode KagoDB#set}.
+ *
+ * @class intercept_mixin
  * @mixin
- * @param {Function} wrapper - function(method, defaultFunction){}
- * @return {Function} mixin function
+ * @example
+ * function getWrapper(method, defaults) {
+ *   console.error('wrapping:', method);
+ *   return function() {
+ *     console.error('called:', method, arguments[0]);
+ *     defaults.apply(this, arguments);
+ *   };
+ * }
+ *
+ * var MyKago = KagoDB.inherit();
+ * var intercept_mixin = KagoDB.bundle.intercept_mixin;
+ * MyKago.mixin(intercept_mixin(getWrapper)); // => 'wrapping: read' etc.
+ *
+ * var opts = {
+ *   storage: 'memory'
+ * };
+ * var collection = new MyKago(opts);
+ * collection.read('foo'); // => 'called: read foo'
  */
 
 module.exports = function(wrapper) {

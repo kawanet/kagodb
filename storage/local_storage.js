@@ -1,5 +1,25 @@
 /*! local_storage.js */
 
+/**
+ * This mixin provides a persistence storage feature which stores items on web browser's localStorage.
+ * On environments which do not support localStorage, such as node.js, this simulates a localStorage but it's volatile.
+ *
+ * @class local_storage
+ * @mixin
+ * @see http://dev.w3.org/html5/webstorage/#the-localstorage-attribute
+ * @example
+ * var opts = {
+ *   storage: 'local_storage',
+ *   namespace: 'myspace'
+ * };
+ *
+ * var collection = new KagoDB(opts);
+ *
+ * collection.read('foo', function(err, item){
+ *   console.log(item);
+ * });
+ */
+
 var wrequire = require('wrequire');
 var memory = require('./memory');
 var localStorage = {};

@@ -1,11 +1,31 @@
 /*! dynamic_mixin.js */
 
 /**
- * This mixin load a mixin when methods has been called.
- * @class DynamicMixin
+ * This mixin provides a dynamic mixin loader which awakes at the first time when the methods called.
+ *
+ * @class dynamic_mixin
  * @mixin
- * @param {Object} name - settings key
- * @return {Function} mixin function
+ * @example
+ * var MyKago = KagoDB.inherit();
+ *
+ * var hello_mixin = {
+ *   hello: function() {
+ *     console.log('world!');
+ *   }
+ * };
+ *
+ * var dynamic_mixin = KagoDB.bundle.dynamic_mixin;
+ * MyKago.mixin(dynamic_mixin('keyname'));
+ * MyKago.bundle.hello_mixin = hello_mixin;
+ *
+ * var opts = {
+ *   storage: 'memory',
+ *   keyname: 'hello_mixin'
+ * };
+ *
+ * var collection = new MyKago(opts);
+ * collection.noop(); // abrakadabra
+ * collection.hello(); // => 'world!'
  */
 
 var intercept_mixin = require('../core/intercept_mixin');

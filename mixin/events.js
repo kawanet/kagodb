@@ -1,8 +1,21 @@
 /*! events.js */
 
-/** This mixin provides on(), once(), off() and emit() methods to fire and receive events.
- * @class EventsMixin
+/** This mixin provides
+ * [on()]{@linkcode KagoDB#on},
+ * [once()]{@linkcode KagoDB#once},
+ * [off()]{@linkcode KagoDB#off} and
+ * [emit()]{@linkcode KagoDB#emit} methods to fire and receive events.
+ *
+ * @class events
  * @mixin
+ * @example
+ * var collection = new KagoDB();
+ *
+ * collection.on('hello', function(data) {
+ *   console.log('Hello,', data);
+ * });
+ *
+ * collection.emit('hello', 'world!'); // => 'hello, world!'
  */
 
 module.exports = function() {
@@ -14,8 +27,10 @@ module.exports = function() {
   return mixin;
 };
 
-/** This adds a listener to the end of the listeners array for the specified event.
- * @method EventsMixin.prototype.on
+/**
+ * This adds a listener to the end of the listeners array for the specified event.
+ *
+ * @method KagoDB.prototype.on
  * @param {String} event - event name
  * @param {Function} listener - listner function
  * @see http://nodejs.org/api/events.html#events_emitter_on_event_listener
@@ -27,8 +42,10 @@ function on(event, listener) {
   array.push(listener);
 }
 
-/** This removes listeners.
- * @method EventsMixin.prototype.off
+/**
+ * This removes listeners.
+ *
+ * @method KagoDB.prototype.off
  * @param {String} [event] - event name
  * @param {Function} [listener] - listner function
  */
@@ -61,9 +78,11 @@ function off(event, listener) {
   });
 }
 
-/** This adds a one time listener for the event.
+/**
+ * This adds a one time listener for the event.
  * This listener is invoked only the next time the event is fired, after which it is removed.
- * @method EventsMixin.prototype.once
+ *
+ * @method KagoDB.prototype.once
  * @param {String} event - event name
  * @param {Function} listener - listner function
  * @see http://nodejs.org/api/events.html#events_emitter_once_event_listener
@@ -80,8 +99,10 @@ function once(event, listener) {
   this.on(event, wrap);
 }
 
-/** This fires an event with the supplied arguments. It executes each of the listeners in order.
- * @method EventsMixin.prototype.emit
+/**
+ * This fires an event with the supplied arguments. It executes each of the listeners in order.
+ *
+ * @method KagoDB.prototype.emit
  * @param {String} event - event name
  * @param args... - multiple arguments allowed.
  * @see http://nodejs.org/api/events.html#events_emitter_emit_event_arg1_arg2

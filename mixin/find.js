@@ -2,9 +2,33 @@
 
 var Cursor = require('../core/cursor');
 
-/** This mixin provides find(), findOne() and count() methods.
- * @class FindMixin
+/**
+ * This mixin provides
+ * [find()]{@linkcode KagoDB#find},
+ * [findOne()]{@linkcode KagoDB#findOne} and
+ * [count()]{@linkcode KagoDB#count} methods.
+ *
+ * @class find
  * @mixin
+ * @example
+ * var collection = new KagoDB();
+ *
+ * // all items
+ * collection.find().toArray(function(err, list) {
+ *   list.forEach(function(item) {
+ *     console.log(item.name, item.price);
+ *   });
+ * });
+ *
+ * // first item
+ * collection.findOne({ name: 'Apple' }, function(err, item) {
+ *   console.log(item.name, item.price);
+ * });
+ *
+ * // count item
+ * collection.count({ category: 'fruit' }, function(err, count) {
+ *   console.log(count);
+ * });
  */
 
 module.exports = function() {
@@ -15,13 +39,17 @@ module.exports = function() {
   return mixin;
 };
 
-/** This creates a cursor object with condition given as a test function or query parameters.
+/**
+ * This creates a cursor object with condition given as a test function or query parameters.
  * Null condition will find all items in the collection
- * @method FindMixin.prototype.find
+ *
+ * @method KagoDB.prototype.find
  * @param {Function|Object} condition - test function or query parameters
  * @param {Function|Object} projection - map function or output properties
  * @returns {Cursor} cursor instance
  * @example
+ * var collection = new KagoDB();
+ *
  * // all items
  * collection.find().toArray(function(err, list) {
  *   list.forEach(function(item) {
@@ -41,7 +69,7 @@ module.exports = function() {
  *
  * // condition using query parameters
  * var cond = {
- *   name: "Apple"
+ *   name: 'Apple'
  * };
  * collection.find(cond).toArray(function(err, list) {
  *   list.forEach(function(item) {
@@ -65,8 +93,10 @@ function find(condition, projection) {
   return new Cursor(this, condition, projection);
 }
 
-/** This invokes a callback function with an item found under specified condition.
- * @method FindMixin.prototype.findOne
+/**
+ * This invokes a callback function with an item found under specified condition.
+ *
+ * @method KagoDB.prototype.findOne
  * @param condition - same as find() method
  * @param {Function} callback - function(err, item) {}
  * @returns {KagoDB} collection instance itself for method chaining
@@ -91,8 +121,10 @@ function findOne(condition, callback) {
   return this;
 }
 
-/** This counts number of items matched with condition.
- * @method FindMixin.prototype.count
+/**
+ * This counts number of items matched with condition.
+ *
+ * @method KagoDB.prototype.count
  * @param condition - same as find() method
  * @param {Function} callback - function(err, cursor) {}
  * @returns {KagoDB} collection instance itself for method chaining

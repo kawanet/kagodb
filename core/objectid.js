@@ -1,7 +1,14 @@
 /*! objectid.js */
 
 /**
+ * This generates MongoDB-style ObjectID.
+ *
  * @class ObjectID
+ * @see http://docs.mongodb.org/manual/reference/object-id/
+ * @example
+ * var ObjectID = KagoDB.bundle.objectid;
+ *
+ * var id = new ObjectID(); // => such as '51b96d2a845cca7213000002'
  */
 
 module.exports = ObjectID;
