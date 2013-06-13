@@ -114,7 +114,7 @@ Cursor.prototype.each = function(callback) {
     callback(err, item);
     if (!err && item) self.nextObject(iterator);
   }
-}
+};
 
 /** This invokes a callback function with the number of items found
  * @param {Function} callback - function(err, count) {}

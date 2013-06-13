@@ -4,9 +4,6 @@ var assert = require('chai').assert;
 var KagoDB = require('../index');
 var async = require('async');
 
-KagoDB = KagoDB.inherit();
-KagoDB.mixin(require('../mixin/update'));
-
 describe('Update', function() {
   var collection;
   var opts = {
@@ -16,30 +13,163 @@ describe('Update', function() {
 
   collection = new KagoDB(opts);
 
+  describe('$set via function:', function() {
+    prepare(collection);
+    set_tests(collection, 'via-function-', updater);
+  });
+
+  describe('$set via object:', function() {
+    prepare(collection);
+    set_tests(collection, 'via-object-', onlyset);
+  });
+
+  describe('more update operators', function() {
+    prepare(collection);
+    unset_tests(collection);
+  });
+});
+
+function unset_tests(collection) {
+  var options = {
+    multiple: true
+  };
+
+  it('update() $unset', function(done) {
+    var query = {
+      string: 'FOO'
+    };
+    var update = {
+      $unset: {
+        decimal: ""
+      }
+    };
+    collection.update(query, update, options, function(err) {
+      assert(!err, 'update should success: ' + err);
+      collection.findOne(query, function(err, item) {
+        assert(!err, 'findOne should success: ' + err);
+        assert(!item.decimal, '$unset should remove a field');
+        done();
+      });
+    });
+  });
+
+  it('update() $rename', function(done) {
+    var query = {
+      string: 'BAR'
+    };
+    var update = {
+      $rename: {
+        numeric: 'number'
+      }
+    };
+    collection.findOne(query, function(err, item) {
+      var prev = item && item.numeric;
+      assert(!err, 'findOne should success: ' + err);
+      collection.update(query, update, options, function(err) {
+        assert(!err, 'update should success: ' + err);
+        collection.findOne(query, function(err, item) {
+          assert(!err, 'findOne should success: ' + err);
+          assert(!item.numeric, '$rename should rename a field from numeric');
+          assert.equal(item.number, prev, '$rename should rename a field to number');
+          done();
+        });
+      });
+    });
+  });
+
+  it('update() $push', function(done) {
+    var query = {
+      string: 'BAZ'
+    };
+    var update = {
+      $push: {
+        array: 1234,
+        empty: 3456,
+        decimal: 5678
+      }
+    };
+    collection.update(query, update, options, function(err) {
+      assert(!err, 'update should success: ' + err);
+      collection.findOne(query, function(err, item) {
+        assert(!err, 'findOne should success: ' + err);
+        assert(item.array instanceof Array, '$push should manage an array');
+        assert(item.empty instanceof Array, '$push should manage an empty array');
+        assert(item.decimal instanceof Array, '$push should manage a not-array');
+        assert.equal(item.array.length, 2, '$push should push a value to an array');
+        assert.equal(item.empty.length, 1, '$push should push a value to an empty array');
+        assert.equal(item.decimal.length, 2, '$push should push a value to an array upgraded');
+        assert.equal(item.array[1], 1234, '$push should push a value at the end of an array');
+        assert.equal(item.empty[0], 3456, '$push should push a value at the end of an empty array');
+        assert.equal(item.decimal[1], 5678, '$push should push a value at the end of an array upgraded');
+        done();
+      });
+    });
+  });
+
+  it('update() $inc', function(done) {
+    var query = {
+      string: 'QUX'
+    };
+    var update = {
+      $inc: {
+        decimal: 1,
+        empty: 1234
+      }
+    };
+    collection.update(query, update, options, function(err) {
+      assert(!err, 'update should success: ' + err);
+      collection.findOne(query, function(err, item) {
+        assert(!err, 'findOne should success: ' + err);
+        assert.equal(item.decimal, 123 + 1, '$inc should increment a field');
+        assert.equal(item.empty, 1234, '$inc should increment an empty field');
+        done();
+      });
+    });
+  });
+}
+
+function onlyset(set) {
+  return {
+    $set: set
+  };
+}
+
+function updater(set) {
+  return function(item) {
+    item.test = set.test;
+    return item;
+  };
+}
+
+function prepare(collection) {
   var data = {
     foo: {
       string: "FOO",
       decimal: 123,
-      numeric: 45.67
+      numeric: 45.67,
+      array: ['foofoo']
     },
     bar: {
       string: "BAR",
       decimal: 111,
-      numeric: 45.67
+      numeric: 45.67,
+      array: ['barbar']
     },
     baz: {
       string: "BAZ",
       decimal: 999,
-      numeric: 11.11
+      numeric: 11.11,
+      array: ['bazbaz']
     },
     qux: {
       string: "QUX",
       decimal: 123,
-      numeric: 45.67
+      numeric: 45.67,
+      array: ['quxqux']
     }
   };
 
-  it('write()', function(done) {
+  it('prepare', function(done) {
     var index = Object.keys(data);
     async.eachSeries(index, iterator, end);
 
@@ -52,25 +182,27 @@ describe('Update', function() {
       done();
     }
   });
+}
 
+function set_tests(collection, prefix, updater) {
   it('update() single item', function(done) {
     var query = {
       string: 'FOO'
     };
     var set = {
-      test: 1
+      test: prefix + 1
     };
     collection.update(query, updater(set), null, function(err) {
       assert(!err, 'update should success: ' + err);
       collection.count(set, function(err, count) {
         assert(!err, 'count should success: ' + err);
-        assert(count, 1, 'update should update one item');
+        assert.equal(count, 1, 'update should update one item');
         collection.findOne(set, function(err, item) {
           assert(!err, 'findOne should success: ' + err);
-          assert(item.string, query.string, 'update should update correctly');
+          assert.equal(item.string, query.string, 'update should update correctly');
           collection.count(query, function(err, count) {
             assert(!err, 'count should success: ' + err);
-            assert(count, 1, 'update should not update others');
+            assert.equal(count, 1, 'update should not update others');
             done();
           });
         });
@@ -83,19 +215,19 @@ describe('Update', function() {
       decimal: 123
     };
     var set = {
-      test: 2
+      test: prefix + 2
     };
     collection.update(query, updater(set), null, function(err) {
       assert(!err, 'update should success: ' + err);
       collection.count(set, function(err, count) {
         assert(!err, 'count should success: ' + err);
-        assert(count, 1, 'update should update one item');
+        assert.equal(count, 1, 'update should update one item');
         collection.findOne(set, function(err, item) {
           assert(!err, 'findOne should success: ' + err);
-          assert(item.decimal, query.decimal, 'update should update correctly');
+          assert.equal(item.decimal, query.decimal, 'update should update correctly');
           collection.count(query, function(err, count) {
             assert(!err, 'count should success: ' + err);
-            assert(count, 2, 'update should not update others');
+            assert.equal(count, 2, 'update should not update others');
             done();
           });
         });
@@ -108,7 +240,7 @@ describe('Update', function() {
       numeric: 45.67
     };
     var set = {
-      test: 3
+      test: prefix + 3
     };
     var opts = {
       multiple: true
@@ -117,13 +249,13 @@ describe('Update', function() {
       assert(!err, 'update should success: ' + err);
       collection.count(set, function(err, count) {
         assert(!err, 'count should success: ' + err);
-        assert(count, 1, 'update should update one item');
+        assert.equal(count, 3, 'update should update one item');
         collection.findOne(set, function(err, item) {
           assert(!err, 'findOne should success: ' + err);
-          assert(item.numeric, query.numeric, 'update should update correctly');
+          assert.equal(item.numeric, query.numeric, 'update should update correctly');
           collection.count(query, function(err, count) {
             assert(!err, 'count should success: ' + err);
-            assert(count, 3, 'update should not update others');
+            assert.equal(count, 3, 'update should not update others');
             done();
           });
         });
@@ -139,20 +271,20 @@ describe('Update', function() {
       decimal: 1 // 111-123-123
     };
     var set = {
-      test: 5
+      test: prefix + 5
     };
     collection.findAndModify(query, sort, updater(set), null, function(err) {
       assert(!err, 'findAndModify should success: ' + err);
       collection.count(set, function(err, count) {
         assert(!err, 'count should success: ' + err);
-        assert(count, 1, 'findAndModify should update one item');
+        assert.equal(count, 1, 'findAndModify should update one item');
         collection.findOne(set, function(err, item) {
           assert(!err, 'findOne should success: ' + err);
-          assert(item.decimal, 111, 'findAndModify should update first item sorted');
-          assert(item.numeric, query.numeric, 'findAndModify should update correctly');
+          assert.equal(item.decimal, 111, 'findAndModify should update first item sorted');
+          assert.equal(item.numeric, query.numeric, 'findAndModify should update correctly');
           collection.count(query, function(err, count) {
             assert(!err, 'count should success: ' + err);
-            assert(count, 3, 'findAndModify should not update others');
+            assert.equal(count, 3, 'findAndModify should not update others');
             done();
           });
         });
@@ -168,31 +300,24 @@ describe('Update', function() {
       string: -1 // QUX-FOO-BAR
     };
     var set = {
-      test: 5
+      test: prefix + 6
     };
     collection.findAndModify(query, sort, updater(set), null, function(err) {
       assert(!err, 'findAndModify should success: ' + err);
       collection.count(set, function(err, count) {
         assert(!err, 'count should success: ' + err);
-        assert(count, 1, 'findAndModify should update one item');
+        assert.equal(count, 1, 'findAndModify should update one item');
         collection.findOne(set, function(err, item) {
           assert(!err, 'findOne should success: ' + err);
-          assert(item.string, 'QUX', 'findAndModify should update first item sorted');
-          assert(item.numeric, query.numeric, 'findAndModify should update correctly');
+          assert.equal(item.string, 'QUX', 'findAndModify should update first item sorted');
+          assert.equal(item.numeric, query.numeric, 'findAndModify should update correctly');
           collection.count(query, function(err, count) {
             assert(!err, 'count should success: ' + err);
-            assert(count, 3, 'findAndModify should not update others');
+            assert.equal(count, 3, 'findAndModify should not update others');
             done();
           });
         });
       });
     });
   });
-
-  function updater(set) {
-    return function(item) {
-      item.test = set.test;
-      return item;
-    }
-  }
-});
+}
