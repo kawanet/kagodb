@@ -1,17 +1,10 @@
 /*! objectid.js */
 
-/** This mixin provides objectId() method.
- * @class ObjectIdMixin
- * @mixin
+/**
+ * @class ObjectID
  */
 
-var exports = module.exports = function() {
-  return {
-    objectId: ObjectID
-  };
-};
-
-exports.ObjectID = ObjectID;
+module.exports = ObjectID;
 
 function ObjectID(source) {
   if (!(this instanceof ObjectID)) return new ObjectID(source);
@@ -100,6 +93,7 @@ ObjectID.createFromHexString = function(source) {
 };
 
 // 12 octets == Latin-1 12 bytes != UTF-8 12 bytes
+
 function parseOctets(source) {
   var tmp = [];
   var len = source.length;

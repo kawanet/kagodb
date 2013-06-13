@@ -1,7 +1,7 @@
 /*! objectid.test.js */
 
 var assert = require('chai').assert;
-var ObjectID = require('../mixin/objectid').ObjectID;
+var ObjectID = require('../core/objectid');
 
 ObjectID.prototype.__defineGetter__('generationTime', ObjectID.prototype.getGenerationTime);
 ObjectID.prototype.__defineSetter__('generationTime', ObjectID.prototype.setGenerationTime);
