@@ -45,7 +45,7 @@ HCursor.prototype._toArray = function(callback) {
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   collection.request(opts, function(err, res) {
     if (err) {

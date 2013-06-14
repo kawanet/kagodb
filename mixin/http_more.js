@@ -1,11 +1,16 @@
 /*! http_more.js */
 
 var KagoDB = require('../core/base');
+var utils = require('../core/utils');
+var http_find = require('../mixin/http_find');
 
 module.exports = function() {
   var mixin = {};
 
-  // mixin.find = find;
+  // import method from http_find
+  utils.extend(mixin, http_find.call(this));
+
+  // other methods
   mixin.findOne = findOne;
   mixin.count = count;
   mixin.insert = insert;
@@ -21,11 +26,11 @@ function findOne(condition, callback) {
   var url = this.http_endpoint();
   var data = this.http_param();
   data.method = 'findOne';
-  data.condition = condition;
+  if (condition) data.condition = condition;
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser(null, callback));
 }
@@ -34,11 +39,11 @@ function count(condition, callback) {
   var url = this.http_endpoint();
   var data = this.http_param();
   data.method = 'count';
-  data.condition = condition;
+  if (condition) data.condition = condition;
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser('count', callback));
 }
@@ -51,7 +56,7 @@ function insert(item, callback) {
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser('success', callback));
 }
@@ -64,7 +69,7 @@ function save(item, callback) {
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser('success', callback));
 }
@@ -73,14 +78,14 @@ function remove(condition, justOne, callback) {
   var url = this.http_endpoint();
   var data = this.http_param();
   data.method = 'remove';
-  data.condition = condition;
+  if (condition) data.condition = condition;
   data.options = {
     multi: (justOne ? 0 : 1)
   };
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser('success', callback));
 }
@@ -89,13 +94,13 @@ function update(condition, _update, options, callback) {
   var url = this.http_endpoint();
   var data = this.http_param();
   data.method = 'update';
-  data.condition = condition;
+  if (condition) data.condition = condition;
   data.update = _update;
-  data.options = options;
+  if (options) data.options = options;
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser('success', callback));
 }
@@ -104,14 +109,14 @@ function findAndModify(condition, sort, update, options, callback) {
   var url = this.http_endpoint();
   var data = this.http_param();
   data.method = 'findAndModify';
-  data.condition = condition;
-  data.sort = sort;
+  if (condition) data.condition = condition;
+  if (sort) data.sort = sort;
   data.update = update;
-  data.options = options;
+  if (options) data.options = options;
   var opts = {
     method: 'POST',
     url: url,
-    form: data
+    json: data
   };
   this.request(opts, response_parser('success', callback));
 }
