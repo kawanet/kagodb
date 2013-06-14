@@ -118,7 +118,10 @@ exports.parser = function(update) {
     if (update.$inc) {
       for (key in update.$inc) {
         val = update.$inc[key];
-        item[key] = (parseFloat(item[key]) || 0) + val;
+        old = item[key];
+        val = parseFloat(val) || 0;
+        old = parseFloat(old) || 0;
+        item[key] = old + val;
       }
     }
     return item;

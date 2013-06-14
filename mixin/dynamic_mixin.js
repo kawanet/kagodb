@@ -30,35 +30,27 @@
 
 var intercept_mixin = require('../mixin/intercept_mixin');
 
-module.exports = function(name) {
+module.exports = function(routing) {
+  var _routing = '_' + routing + '_dynamic_mixin';
   return mixin;
 
   function mixin() {
     return intercept_mixin.call(this, wrapper);
   }
 
-  function wrapper(key, func) {
+  function wrapper(method, defaultFunction) {
     return function() {
-      // load a mixin
-      var mixin = dynamic_loader.call(this, name) || {};
-      func = mixin[key] || func;
+      var mixin = this[_routing] || (this[_routing] = dynamic_loader.call(this, routing) || {});
+      var func = mixin[method] || defaultFunction;
       return func.apply(this, arguments);
     };
   }
 };
 
-function dynamic_loader(name) {
-  var _name = '_' + name;
-  var mixin = this[_name];
-
-  // already loaded
-  if (mixin) {
-    return mixin;
-  }
-
-  mixin = this.get(name);
+function dynamic_loader(routing) {
+  var mixin = this.get(routing);
   if (!mixin) {
-    throw new Error(name + ' not specified');
+    throw new Error(routing + ' not specified');
   }
 
   var str = mixin + '';
@@ -66,7 +58,7 @@ function dynamic_loader(name) {
     var preloaded = this.bundle || {};
     mixin = preloaded[str];
     if (!mixin) {
-      throw new Error('invalid ' + name + ' class: ' + str);
+      throw new Error('invalid ' + routing + ' class: ' + str);
     }
   }
 
@@ -82,6 +74,5 @@ function dynamic_loader(name) {
     }
   }
 
-  this[_name] = mixin;
   return mixin;
 }

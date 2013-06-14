@@ -13,11 +13,6 @@ module.exports = function() {
   return mixin;
 
   function mixin() {
-    this.read = this.read || read;
-    this.write = this.write || write;
-    this.erase = this.erase || erase;
-    this.exist = this.exist || exist;
-    this.index = this.index || index;
     return dynamic_mixin.call(this, 'storage');
   }
 };
@@ -36,10 +31,6 @@ module.exports = function() {
  *   console.log(item);
  * });
  */
-
-function read(id, callback) {
-  throw new Error('method not implemented: read');
-}
 
 /**
  * This writes an item.
@@ -60,10 +51,6 @@ function read(id, callback) {
  * });
  */
 
-function write(id, item, callback) {
-  throw new Error('method not implemented: write');
-}
-
 /**
  * This erases an item.
  *
@@ -78,10 +65,6 @@ function write(id, item, callback) {
  *   console.log(err || 'no error');
  * });
  */
-
-function erase(id, callback) {
-  throw new Error('method not implemented: erase');
-}
 
 /**
  * This tests an item existance.
@@ -98,10 +81,6 @@ function erase(id, callback) {
  * });
  */
 
-function exist(id, callback) {
-  throw new Error('method not implemented: exist');
-}
-
 /**
  * This lists all item IDs in array.
  *
@@ -116,7 +95,3 @@ function exist(id, callback) {
  *   console.log(list.length + ' items found');
  * });
  */
-
-function index(callback) {
-  throw new Error('method not implemented: index');
-}

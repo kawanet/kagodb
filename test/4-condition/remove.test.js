@@ -1,10 +1,21 @@
 /*! remove.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../../index');
+var _KagoDB = require('../../index');
 var async = require('async');
 
-describe('Remove:', function() {
+module.exports = function(KagoDB) {
+  describe('Remove:', function() {
+    main_tests(KagoDB);
+  });
+};
+
+var MPE = module.parent && module.parent.exports || {};
+if (!MPE.DONT_RUN_TESTS_ON_REQUIRE) {
+  module.exports(_KagoDB);
+}
+
+function main_tests(KagoDB) {
   var opts = {
     storage: 'memory',
     primary_key: '_id'
@@ -21,7 +32,7 @@ describe('Remove:', function() {
     prepare(collection);
     remove_tests(collection, false);
   });
-});
+}
 
 function prepare(collection) {
   var data = {

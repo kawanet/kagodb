@@ -1,6 +1,7 @@
 /*! http_base.js */
 
 var utils = require('../core/utils');
+var http_more = require('../storage/http_more');
 
 module.exports = function() {
   var mixin = {};
@@ -16,6 +17,9 @@ module.exports = function() {
   mixin.request = request;
   mixin.http_endpoint = http_endpoint;
   mixin.http_param = http_param;
+
+  // import more methods
+  utils.extend(mixin, http_more.call(this));
 
   return mixin;
 };

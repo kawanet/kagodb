@@ -1,10 +1,21 @@
 /*! insert.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../../index');
+var _KagoDB = require('../../index');
 var async = require('async');
 
-describe('Save:', function() {
+module.exports = function(KagoDB) {
+  describe('Save:', function() {
+    main_tests(KagoDB);
+  });
+};
+
+var MPE = module.parent && module.parent.exports || {};
+if (!MPE.DONT_RUN_TESTS_ON_REQUIRE) {
+  module.exports(_KagoDB);
+}
+
+function main_tests(KagoDB) {
   var opts1 = {
     storage: 'memory',
     primary_key: '_id'
@@ -55,7 +66,7 @@ describe('Save:', function() {
     var collection = new KagoDB(opts3);
     save_tests(collection, data, 3);
   });
-});
+}
 
 function save_tests(collection, data, len) {
   var index = Object.keys(data);

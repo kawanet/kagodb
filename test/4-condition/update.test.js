@@ -1,10 +1,21 @@
 /*! update.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../../index');
+var _KagoDB = require('../../index');
 var async = require('async');
 
-describe('Update:', function() {
+module.exports = function(KagoDB) {
+  describe('Update:', function() {
+    main_tests(KagoDB);
+  });
+};
+
+var MPE = module.parent && module.parent.exports || {};
+if (!MPE.DONT_RUN_TESTS_ON_REQUIRE) {
+  module.exports(_KagoDB);
+}
+
+function main_tests(KagoDB) {
   var collection;
   var opts = {
     storage: 'memory',
@@ -13,10 +24,12 @@ describe('Update:', function() {
 
   collection = new KagoDB(opts);
 
-  describe('$set via function:', function() {
-    prepare(collection);
-    set_tests(collection, 'via-function-', updater);
-  });
+  if (collection.get('storage') == 'memory') {
+    describe('$set via function:', function() {
+      prepare(collection);
+      set_tests(collection, 'via-function-', updater);
+    });
+  }
 
   describe('$set via object:', function() {
     prepare(collection);
@@ -27,7 +40,7 @@ describe('Update:', function() {
     prepare(collection);
     unset_tests(collection);
   });
-});
+}
 
 function unset_tests(collection) {
   var options = {

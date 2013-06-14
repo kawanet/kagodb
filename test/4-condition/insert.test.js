@@ -1,10 +1,21 @@
 /*! insert.test.js */
 
 var assert = require('chai').assert;
-var KagoDB = require('../../index');
+var _KagoDB = require('../../index');
 var async = require('async');
 
-describe('Insert:', function() {
+module.exports = function(KagoDB) {
+  describe('Insert:', function() {
+    main_tests(KagoDB);
+  });
+};
+
+var MPE = module.parent && module.parent.exports || {};
+if (!MPE.DONT_RUN_TESTS_ON_REQUIRE) {
+  module.exports(_KagoDB);
+}
+
+function main_tests(KagoDB) {
   var opts1 = {
     storage: 'memory',
     primary_key: '_id'
@@ -72,7 +83,7 @@ describe('Insert:', function() {
       });
     });
   });
-});
+}
 
 function insertSingle(collection, data) {
   it('insert', function(done) {

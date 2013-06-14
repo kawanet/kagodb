@@ -168,34 +168,25 @@ MiniApp.prototype.run = function(req, res, next) {
   }
 };
 
+var success = {
+  success: true
+};
+
 function WebapiMethods() {}
 
 WebapiMethods.prototype.read = function(req, res, next) {
   var collection = req.kagodb;
   var id = req.param('id');
+  if (!id) return next(); // id must be specified
 
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // run
   collection.emit('webapi', 'read', id);
   collection.exist(id, function(err, exist) {
-    if (err) {
-      collection.emit('warn', 'read: exist failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    if (!exist) {
-      collection.emit('warn', 'read: item does not exist -', id);
-      return res.send(404); // Not Found
-    }
+    if (err) collection.emit('warn', 'exist failed:', err);
+    if (err) return res.send(500); // Internal Server Error
+    if (!exist) return res.send(404); // Not Found
     collection.read(id, function(err, item) {
-      if (err) {
-        collection.emit('warn', 'read: read failed -', err);
-        return res.send(500); // Internal Server Error
-      }
-      return res.send(item);
+      if (err) collection.emit('warn', 'read failed:', err);
+      res.send(err ? 500 : item);
     });
   });
 };
@@ -203,94 +194,55 @@ WebapiMethods.prototype.read = function(req, res, next) {
 WebapiMethods.prototype.write = function(req, res, next) {
   var collection = req.kagodb;
   var id = req.param('id');
-
-  // id must be specified
-  if (!id) {
-    return next();
-  }
+  if (!id) return next(); // id must be specified
 
   parse_content(req, res, function(content) {
     collection.emit('webapi', 'write', id, content);
-    collection.write(id, content, response);
+    collection.write(id, content, function(err) {
+      if (err) collection.emit('warn', 'write failed:', err);
+      res.send(err ? 500 : success);
+    });
   });
-
-  function response(err) {
-    if (err) {
-      collection.emit('warn', err);
-      return res.send(500); // Internal Server Error
-    } else {
-      return res.send({
-        success: true
-      });
-    }
-  }
 };
 
 WebapiMethods.prototype.erase = function(req, res, next) {
   var collection = req.kagodb;
   var id = req.param('id');
+  if (!id) return next(); // id must be specified
 
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // run
   collection.emit('webapi', 'erase', id);
-  collection.erase(id, response);
-
-  function response(err) {
-    if (err) {
-      collection.emit('warn', err);
-      return res.send(500); // Internal Server Error
-    } else {
-      return res.send({
-        success: true
-      });
-    }
-  }
+  collection.erase(id, function(err) {
+    if (err) collection.emit('warn', 'erase failed:', err);
+    res.send(err ? 500 : success);
+  });
 };
 
 WebapiMethods.prototype.exist = function(req, res, next) {
   var collection = req.kagodb;
   var id = req.param('id');
+  if (!id) return next(); // id must be specified
 
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // run
   collection.emit('webapi', 'exist', id);
-  collection.exist(id, response);
-
-  function response(err, exist) {
-    if (err) {
-      collection.emit('warn', 'exist: exist failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
+  collection.exist(id, function(err, exist) {
+    if (err) collection.emit('warn', 'exist failed:', err);
+    var success = {
       exist: !! exist
-    });
-  }
+    };
+    res.send(err ? 500 : success);
+  });
 };
 
 WebapiMethods.prototype.index = function(req, res, next) {
   var collection = req.kagodb;
 
-  // run
   collection.emit('webapi', 'index:');
-  collection.index(response);
-
-  function response(err, list) {
-    if (err) {
-      collection.emit('warn', 'index: index failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
+  collection.index(function(err, list) {
+    if (err) collection.emit('warn', 'index failed:', err);
+    var success = {
       index: list
-    });
-  }
+    };
+    res.send(err ? 500 : success);
+  });
 };
 
 WebapiMethods.prototype.find = function(req, res, next) {
@@ -304,22 +256,29 @@ WebapiMethods.prototype.find = function(req, res, next) {
       parse_sort(req, res, function(sort) {
         cursor = collection.find(condition, projection);
         if (sort) cursor.sort(sort);
-        if (limit) cursor.limit(limit);
         if (offset) cursor.offset(offset);
-        cursor.toArray(response);
+        if (limit) cursor.limit(limit);
+        cursor.toArray(function(err, list) {
+          if (err) collection.emit('warn', 'find failed:', err);
+          var success = {
+            data: list
+          };
+          res.send(err ? 500 : success);
+        });
       });
     });
   });
+};
 
-  function response(err, list) {
-    if (err) {
-      collection.emit('warn', 'find: toArray failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      data: list
+WebapiMethods.prototype.findOne = function(req, res, next) {
+  var collection = req.kagodb;
+
+  parse_condition(req, res, function(condition) {
+    collection.findOne(condition, function(err, item) {
+      if (err) collection.emit('warn', 'findOne failed:', err);
+      res.send(err ? 500 : item);
     });
-  }
+  });
 };
 
 WebapiMethods.prototype.count = function(req, res, next) {
@@ -327,18 +286,14 @@ WebapiMethods.prototype.count = function(req, res, next) {
 
   parse_condition(req, res, function(condition) {
     collection.emit('webapi', 'count', condition);
-    collection.count(condition, response);
-  });
-
-  function response(err, count) {
-    if (err) {
-      collection.emit('warn', 'count: count failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      count: count
+    collection.count(condition, function(err, count) {
+      if (err) collection.emit('warn', 'count failed:', err);
+      var success = {
+        count: count
+      };
+      res.send(err ? 500 : success);
     });
-  }
+  });
 };
 
 WebapiMethods.prototype.insert = function(req, res, next) {
@@ -346,19 +301,11 @@ WebapiMethods.prototype.insert = function(req, res, next) {
 
   parse_content(req, res, function(content) {
     collection.emit('webapi', 'insert', content);
-    collection.insert(content, response);
+    collection.insert(content, function(err) {
+      if (err) collection.emit('warn', 'insert failed:', err);
+      res.send(err ? 500 : success);
+    });
   });
-
-  function response(err) {
-    if (err) {
-      collection.emit('warn', err);
-      return res.send(500); // Internal Server Error
-    } else {
-      return res.send({
-        success: true
-      });
-    }
-  }
 };
 
 WebapiMethods.prototype.save = function(req, res, next) {
@@ -366,19 +313,11 @@ WebapiMethods.prototype.save = function(req, res, next) {
 
   parse_content(req, res, function(content) {
     collection.emit('webapi', 'save', content);
-    collection.save(content, response);
+    collection.save(content, function(err) {
+      if (err) collection.emit('warn', 'save failed:', err);
+      res.send(err ? 500 : success);
+    });
   });
-
-  function response(err) {
-    if (err) {
-      collection.emit('warn', err);
-      return res.send(500); // Internal Server Error
-    } else {
-      return res.send({
-        success: true
-      });
-    }
-  }
 };
 
 WebapiMethods.prototype.update = function(req, res, next) {
@@ -388,21 +327,31 @@ WebapiMethods.prototype.update = function(req, res, next) {
     parse_update(req, res, function(update) {
       parse_options(req, res, function(options) {
         collection.emit('webapi', 'update', condition, update, options);
-        collection.update(condition, update, options, response);
+        collection.update(condition, update, options, function(err) {
+          if (err) collection.emit('warn', 'update failed:', err);
+          res.send(err ? 500 : success);
+        });
       });
     });
   });
+};
 
-  function response(err) {
-    if (err) {
-      collection.emit('warn', err);
-      return res.send(500); // Internal Server Error
-    } else {
-      return res.send({
-        success: true
+WebapiMethods.prototype.findAndModify = function(req, res, next) {
+  var collection = req.kagodb;
+
+  parse_condition(req, res, function(condition) {
+    parse_sort(req, res, function(sort) {
+      parse_update(req, res, function(update) {
+        parse_options(req, res, function(options) {
+          collection.emit('webapi', 'findAndModify', condition, sort, update, options);
+          collection.findAndModify(condition, sort, update, options, function(err) {
+            if (err) collection.emit('warn', 'findAndModify failed:', err);
+            res.send(err ? 500 : success);
+          });
+        });
       });
-    }
-  }
+    });
+  });
 };
 
 WebapiMethods.prototype.remove = function(req, res, next) {
@@ -410,22 +359,15 @@ WebapiMethods.prototype.remove = function(req, res, next) {
 
   parse_condition(req, res, function(condition) {
     parse_options(req, res, function(options) {
-      var justOne = options && !options.multi;
-      collection.emit('webapi', 'remove', condition, justOne);
-      collection.remove(condition, justOne, response);
+      options = options || {};
+      var justOne = !options.multi || options.multi == '0';
+      collection.emit('webapi', 'remove', condition, justOne, options);
+      collection.remove(condition, justOne, function(err) {
+        if (err) collection.emit('warn', 'remove failed:', err);
+        res.send(err ? 500 : success);
+      });
     });
   });
-
-  function response(err) {
-    if (err) {
-      collection.emit('warn', err);
-      return res.send(500); // Internal Server Error
-    } else {
-      return res.send({
-        success: true
-      });
-    }
-  }
 };
 
 function parse_sort(req, res, next) {
@@ -438,7 +380,7 @@ function parse_sort(req, res, next) {
 
   // validate parameters
   if (sort instanceof Error) {
-    collection.emit('warn', 'sort parse failed -', sort);
+    collection.emit('warn', 'parse_sort failed:', sort);
     return res.send(400); // Bad Request
   }
 
@@ -455,7 +397,7 @@ function parse_update(req, res, next) {
 
   // validate parameters
   if (update instanceof Error) {
-    collection.emit('warn', 'update parse failed -', update);
+    collection.emit('warn', 'parse_update failed:', update);
     return res.send(400); // Bad Request
   }
 
@@ -472,7 +414,7 @@ function parse_projection(req, res, next) {
 
   // validate parameters
   if (projection instanceof Error) {
-    collection.emit('warn', 'projection parse failed -', projection);
+    collection.emit('warn', 'parse_projection failed:', projection);
     return res.send(400); // Bad Request
   }
 
@@ -489,7 +431,7 @@ function parse_options(req, res, next) {
 
   // validate parameters
   if (options instanceof Error) {
-    collection.emit('warn', 'options parse failed -', options);
+    collection.emit('warn', 'parse_options failed:', options);
     return res.send(400); // Bad Request
   }
 
@@ -506,7 +448,7 @@ function parse_condition(req, res, next) {
 
   // validate parameters
   if (condition instanceof Error) {
-    collection.emit('warn', 'condition parse failed -', condition);
+    collection.emit('warn', 'parse_condition failed:', condition);
     return res.send(400); // Bad Request
   }
 
@@ -528,15 +470,15 @@ function parse_content(req, res, next) {
 
   // validate parameter
   if (!content || 'object' !== typeof content) {
-    collection.emit('warn', 'invalid content -', content);
+    collection.emit('warn', 'parse_content failed: invalid content', content);
     return res.send(400); // Bad Request
   }
   if (content instanceof Error) {
-    collection.emit('warn', 'content parse failed -', content);
+    collection.emit('warn', 'parse_content failed:', content);
     return res.send(400); // Bad Request
   }
   if (!Object.keys(content).length) {
-    collection.emit('warn', 'empty content -', content);
+    collection.emit('warn', 'parse_content failed: empty content', content);
     return res.send(400); // Bad Request
   }
 
