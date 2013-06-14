@@ -4,19 +4,23 @@ var utils = require('../core/utils');
 
 module.exports = function() {
   var mixin = {};
+
+  // basic storage IO
   mixin.read = read;
   mixin.write = write;
   mixin.erase = erase;
   mixin.exist = exist;
   mixin.index = index;
+
+  // basic HTTP
   mixin.request = request;
   mixin.http_endpoint = http_endpoint;
   mixin.http_param = http_param;
+
   return mixin;
 };
 
 function read(id, callback) {
-  callback = callback || NOP;
   var url = this.http_endpoint() + id;
   var data = this.http_param();
   var opts = {
@@ -26,11 +30,10 @@ function read(id, callback) {
   if (Object.keys(data)) {
     opts.form = data;
   }
-  this.request(opts, callback);
+  this.request(opts, response_parser(null, callback));
 }
 
 function write(id, item, callback) {
-  callback = callback || NOP;
   var url = this.http_endpoint() + id;
   var data = this.http_param();
   data.method = 'write';
@@ -40,11 +43,10 @@ function write(id, item, callback) {
     url: url,
     json: data
   };
-  this.request(opts, callback);
+  this.request(opts, response_parser('success', callback));
 }
 
 function erase(id, callback) {
-  callback = callback || NOP;
   var url = this.http_endpoint() + id;
   var data = this.http_param();
   data.method = 'erase';
@@ -53,7 +55,7 @@ function erase(id, callback) {
     url: url,
     form: data
   };
-  this.request(opts, callback);
+  this.request(opts, response_parser('success', callback));
 }
 
 function exist(id, callback) {
@@ -66,11 +68,7 @@ function exist(id, callback) {
     url: url,
     form: data
   };
-  this.request(opts, function(err, res) {
-    res = res || {};
-    var flag = !! res.exist;
-    callback(err, flag);
-  });
+  this.request(opts, response_parser('exist', callback));
 }
 
 function index(callback) {
@@ -83,10 +81,22 @@ function index(callback) {
     url: url,
     form: data
   };
-  this.request(opts, function(err, res) {
-    res = res || {};
-    callback(err, res.index);
-  });
+  this.request(opts, response_parser('index', callback));
+}
+
+function response_parser(column, callback) {
+  if (!callback) return;
+  return function(err, res) {
+    if (err) {
+      callback(err);
+    } else if (!column) {
+      callback(null, res);
+    } else if ('object' != typeof res) {
+      callback();
+    } else {
+      callback(null, res[column]);
+    }
+  };
 }
 
 function http_param() {
