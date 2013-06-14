@@ -24,12 +24,13 @@ function main_tests(KagoDB) {
 
   collection = new KagoDB(opts);
 
-  if (collection.get('storage') == 'memory') {
-    describe('$set via function:', function() {
-      prepare(collection);
-      set_tests(collection, 'via-function-', updater);
-    });
-  }
+  var SKIP = (collection.get('storage') != 'memory') ? ' [SKIP]' : '';
+
+  describe('$set via function:' + SKIP, function() {
+    if (SKIP) return;
+    prepare(collection);
+    set_tests(collection, 'via-function-', updater);
+  });
 
   describe('$set via object:', function() {
     prepare(collection);

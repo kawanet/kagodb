@@ -21,6 +21,11 @@ function SuperTestKagoDB(opts) {
   };
 
   KagoDB.call(this, client_opts);
+
+  this.on('request', function(req) {
+    // console.error(req.method, req.url);
+    // console.error(req.data || req._data || req.form);
+  });
 }
 
 KagoDB.bundle.utils.inherits(SuperTestKagoDB, KagoDB);
@@ -28,6 +33,7 @@ KagoDB.bundle.utils.inherits(SuperTestKagoDB, KagoDB);
 exports.DONT_RUN_TESTS_ON_REQUIRE = true;
 
 describe('Supertest:', function() {
+  require('../4-condition/find.test')(SuperTestKagoDB);
   require('../4-condition/insert.test')(SuperTestKagoDB);
   require('../4-condition/save.test')(SuperTestKagoDB);
   require('../4-condition/update.test')(SuperTestKagoDB);
