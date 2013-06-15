@@ -1,7 +1,7 @@
 /*! inherit.test.js */
 
 var assert = require('chai').assert;
-var _base = require('../../core/base');
+var _base = require('../../lib/core/base');
 var _default = require('../../bundle/default');
 var _browser = require('../../bundle/browser');
 

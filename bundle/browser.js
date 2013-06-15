@@ -3,13 +3,14 @@
 var Common = require('./common');
 var KagoDB = Common.inherit();
 
-KagoDB.bundle.utils = require('../core/utils');
-KagoDB.bundle.objectid = require('../core/objectid');
-KagoDB.bundle.system = require('../core/system');
-KagoDB.bundle.deny = require('../mixin/deny');
-KagoDB.bundle.memory = require('../storage/memory');
-KagoDB.bundle.http_jquery = require('../storage/http_jquery');
-KagoDB.bundle.http_superagent = require('../storage/http_superagent');
-KagoDB.bundle.local_storage = require('../storage/local_storage');
+// bundle some mixins which could run on web browsers
+KagoDB.bundle.deny = require('../lib/mixin/deny');
+KagoDB.bundle.http_jquery = require('../lib/storage/http_jquery');
+KagoDB.bundle.http_superagent = require('../lib/storage/http_superagent');
+KagoDB.bundle.local_storage = require('../lib/storage/local_storage');
+KagoDB.bundle.memory = require('../lib/storage/memory');
+KagoDB.bundle.objectid = require('../lib/core/objectid');
+KagoDB.bundle.system = require('../lib/core/system');
+KagoDB.bundle.utils = require('../lib/core/utils');
 
 module.exports = KagoDB;

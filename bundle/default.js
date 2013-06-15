@@ -2,14 +2,17 @@
 
 var fs = require('fs');
 var Common = require('./common');
-var webapi = require('../mixin/webapi');
-
 var KagoDB = Common.inherit();
-KagoDB.mixin(webapi());
 
-bundle('../core');
-bundle('../storage');
-bundle('../mixin');
+// bundle all mixins per default
+bundle('../lib/core');
+bundle('../lib/mixin');
+bundle('../lib/op');
+bundle('../lib/query');
+bundle('../lib/storage');
+bundle('../lib/webapi');
+
+KagoDB.mixin(KagoDB.bundle.webapi());
 
 module.exports = KagoDB;
 
