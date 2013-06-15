@@ -18,19 +18,13 @@ describe('Local Storage: (emulation)', function() {
   };
 
   describe('CRUD without namespace', function() {
-    var kit = {};
-    beforeEach(function() {
-      kit.collection = new KagoDB(opts1);
-    });
-    crud_tests(kit);
+    var MyKago1 = KagoDB.inherit(opts1);
+    crud_tests(MyKago1);
   });
 
   describe('CRUD with namespace', function() {
-    var kit = {};
-    beforeEach(function() {
-      kit.collection = new KagoDB(opts2);
-    });
-    crud_tests(kit);
+    var MyKago2 = KagoDB.inherit(opts2);
+    crud_tests(MyKago2);
   });
 
   describe('Key existance', function() {

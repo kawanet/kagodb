@@ -32,7 +32,7 @@ KagoDB.bundle.utils.inherits(SuperTestKagoDB, KagoDB);
 
 exports.DONT_RUN_TESTS_ON_REQUIRE = true;
 
-describe('Supertest:', function() {
+describe('Supertest Queries:', function() {
   require('../4-query/find.test')(SuperTestKagoDB);
   require('../4-query/findAndModify.test')(SuperTestKagoDB);
   require('../4-query/insert.test')(SuperTestKagoDB);

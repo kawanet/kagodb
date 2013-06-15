@@ -22,16 +22,12 @@ describe('HTTP Storage: (superagent)', function() {
   };
 
   describe('CRUD', function() {
-    var kit = {};
-    beforeEach(function() {
-      kit.collection = new KagoDB(opts);
-    });
-    crud_tests(kit);
+    var MyKago = KagoDB.inherit(opts);
+    crud_tests(MyKago);
   });
 
   describe('Request', function() {
-    var kit = {};
-    kit.collection = new KagoDB(opts);
-    http_tests(kit);
+    var MyKago = KagoDB.inherit(opts);
+    http_tests(MyKago);
   });
 });

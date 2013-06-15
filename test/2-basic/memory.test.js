@@ -10,9 +10,8 @@ describe('Memory Storage:', function() {
     var opts = {
       storage: 'memory'
     };
-    var kit = {};
-    kit.collection = new KagoDB(opts);
-    crud_tests(kit);
+    var MyKago = KagoDB.inherit(opts);
+    crud_tests(MyKago);
   });
 
   describe('CRUD with namespace', function() {
@@ -20,11 +19,8 @@ describe('Memory Storage:', function() {
       storage: 'memory',
       namespace: 'foobar'
     };
-    var kit = {};
-    beforeEach(function() {
-      kit.collection = new KagoDB(opts);
-    });
-    crud_tests(kit);
+    var MyKago = KagoDB.inherit(opts);
+    crud_tests(MyKago);
   });
 
   describe('Serializer', function() {
@@ -32,10 +28,10 @@ describe('Memory Storage:', function() {
       storage: 'memory',
       memory_serialize: true
     };
-    var kit = {};
-    kit.collection = new KagoDB(opts);
-    crud_tests(kit);
+    var MyKago = KagoDB.inherit(opts);
+    crud_tests(MyKago);
 
+    var collection = new MyKago();
     var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
     var id = 'foo-' + date;
     var item = {
@@ -45,15 +41,15 @@ describe('Memory Storage:', function() {
     };
 
     it('value preservation', function(done) {
-      kit.collection.write(id, item, function(err) {
+      collection.write(id, item, function(err) {
         assert(!err, 'write should success');
         item.string = 'BAR';
-        kit.collection.read(id, function(err, item1) {
+        collection.read(id, function(err, item1) {
           assert(!err, 'read should success');
           assert.equal(item1.string, 'FOO', 'serialized value should be not changed');
           item1.string = 'BUZ';
           assert.equal(item.string, 'BAR', 'original value should be not changed');
-          kit.collection.read(id, function(err, item2) {
+          collection.read(id, function(err, item2) {
             assert(!err, 'read should success');
             assert.equal(item2.string, 'FOO', 'serialized value should be not changed still');
             assert.equal(item1.string, 'BUZ', 'previous value should be not changed still');

@@ -12,11 +12,8 @@ describe('YAML Storage:', function() {
   };
 
   describe('CRUD', function() {
-    var kit = {};
-    beforeEach(function() {
-      kit.collection = new KagoDB(opts);
-    });
-    crud_tests(kit);
+    var MyKago = KagoDB.inherit(opts);
+    crud_tests(MyKago);
   });
 
   describe('File existance', function() {

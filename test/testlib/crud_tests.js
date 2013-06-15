@@ -4,7 +4,9 @@ var assert = require('chai').assert;
 
 module.exports = crud_tests;
 
-function crud_tests(kit) {
+function crud_tests(KagoDB) {
+  var collection = new KagoDB();
+
   var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
   var id1 = 'foo-' + date;
   var id2 = 'bar-' + date;
@@ -15,17 +17,17 @@ function crud_tests(kit) {
   };
 
   it('write', function(done) {
-    kit.collection.write(id1, item, function(err) {
+    collection.write(id1, item, function(err) {
       assert(!err, 'write failed: ' + err);
       done();
     });
   });
 
   it('exist', function(done) {
-    kit.collection.exist(id1, function(err, res) {
+    collection.exist(id1, function(err, res) {
       assert(!err, 'exist failed: ' + err);
       assert(res, 'exist foo');
-      kit.collection.exist(id2, function(err, res) {
+      collection.exist(id2, function(err, res) {
         assert(!err, 'not-exist failed');
         assert(!res, 'not-exist bar');
         done();
@@ -34,7 +36,7 @@ function crud_tests(kit) {
   });
 
   it('read', function(done) {
-    kit.collection.read(id1, function(err, res) {
+    collection.read(id1, function(err, res) {
       assert(!err, 'read failed: ' + err);
       assert.isString(res.string, 'read string type');
       assert.isNumber(res.decimal, 'read decimal type');
@@ -42,7 +44,7 @@ function crud_tests(kit) {
       assert.equal(res.string, item.string, 'read string content');
       assert.equal(res.decimal, item.decimal, 'read decimal content');
       assert.equal(res.numeric, item.numeric, 'read numeric content');
-      kit.collection.read(id2, function(err, res) {
+      collection.read(id2, function(err, res) {
         assert(err, 'read error should be detected');
         done();
       });
@@ -50,13 +52,13 @@ function crud_tests(kit) {
   });
 
   it('index & find', function(done) {
-    kit.collection.index(function(err, list) {
+    collection.index(function(err, list) {
       assert(!err, 'index failed: ' + err);
       assert(list, 'index response');
       list = list || [];
       assert(list.length, 'index should return some');
 
-      kit.collection.find().toArray(function(err, res) {
+      collection.find().toArray(function(err, res) {
         assert(!err, 'find failed');
         assert(res, 'find response');
         res = res || [];
@@ -68,12 +70,12 @@ function crud_tests(kit) {
   });
 
   it('erase', function(done) {
-    kit.collection.erase(id1, function(err) {
+    collection.erase(id1, function(err) {
       assert(!err, 'erase failed: ' + err);
-      kit.collection.exist(id1, function(err, res) {
+      collection.exist(id1, function(err, res) {
         assert(!err, 'exist failed');
         assert(!res, 'not-exist foo');
-        kit.collection.erase(id2, function(err) {
+        collection.erase(id2, function(err) {
           assert(err, 'erase error should be detected');
           done();
         });
