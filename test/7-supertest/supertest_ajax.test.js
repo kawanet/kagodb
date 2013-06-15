@@ -1,24 +1,24 @@
-/*! http_superagent.test.js */
+/*! supertest_ajax.test.js */
 
 var KagoDB = require('../../index');
+var supertest = require('supertest');
 var crud_tests = require('../testlib/crud_tests');
 var http_tests = require('../testlib/http_tests');
+var express = require('express');
 
-describe('HTTP Storage: (superagent)', function() {
-  var endpoint = process.env.TEST_ENDPOINT;
+var app = express();
+var opts = {
+  storage: 'memory'
+};
+app.all('/memory/:id?', KagoDB(opts).webapi());
 
-  describe('$TEST_ENDPOINT', function() {
-    var name = endpoint || 'e.g. TEST_ENDPOINT=http://localhost:3000/memory/ grunt';
-    it(name, function(done) {
-      done();
-    });
-  });
-
-  if (!endpoint) return;
-
+describe('HTTP Storage: (supertest)', function() {
+  var endpoint = '/memory/';
+  var myagent = supertest(app);
   var opts = {
     storage: 'http_superagent',
-    endpoint: endpoint
+    endpoint: endpoint,
+    superagent: myagent
   };
 
   describe('CRUD', function() {
@@ -29,7 +29,7 @@ describe('HTTP Storage: (superagent)', function() {
     crud_tests(kit);
   });
 
-  describe('Events', function() {
+  describe('Request', function() {
     var kit = {};
     kit.collection = new KagoDB(opts);
     http_tests(kit);

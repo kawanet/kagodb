@@ -1,4 +1,4 @@
-/*! supertest_more.test.js */
+/*! supertest_query.test.js */
 
 var KagoDB = require('../../index');
 var supertest = require('supertest');
@@ -33,10 +33,10 @@ KagoDB.bundle.utils.inherits(SuperTestKagoDB, KagoDB);
 exports.DONT_RUN_TESTS_ON_REQUIRE = true;
 
 describe('Supertest:', function() {
-  require('../4-condition/find.test')(SuperTestKagoDB);
-  require('../4-condition/findAndModify.test')(SuperTestKagoDB);
-  require('../4-condition/insert.test')(SuperTestKagoDB);
-  require('../4-condition/remove.test')(SuperTestKagoDB);
-  require('../4-condition/save.test')(SuperTestKagoDB);
-  require('../4-condition/update.test')(SuperTestKagoDB);
+  require('../4-query/find.test')(SuperTestKagoDB);
+  require('../4-query/findAndModify.test')(SuperTestKagoDB);
+  require('../4-query/insert.test')(SuperTestKagoDB);
+  require('../4-query/remove.test')(SuperTestKagoDB);
+  require('../4-query/save.test')(SuperTestKagoDB);
+  require('../4-query/update.test')(SuperTestKagoDB);
 });

@@ -1,10 +1,10 @@
-/*! http_request.test.js */
+/*! http_jquery.test.js */
 
 var KagoDB = require('../../index');
 var crud_tests = require('../testlib/crud_tests');
 var http_tests = require('../testlib/http_tests');
 
-describe('HTTP Storage: (request)', function() {
+describe('HTTP Storage: (jQuery)', function() {
   var endpoint = process.env.TEST_ENDPOINT;
 
   describe('$TEST_ENDPOINT', function() {
@@ -17,7 +17,7 @@ describe('HTTP Storage: (request)', function() {
   if (!endpoint) return;
 
   var opts = {
-    storage: 'http_request',
+    storage: 'http_jquery',
     endpoint: endpoint
   };
 
@@ -29,7 +29,7 @@ describe('HTTP Storage: (request)', function() {
     crud_tests(kit);
   });
 
-  describe('Events', function() {
+  describe('Request', function() {
     var kit = {};
     kit.collection = new KagoDB(opts);
     http_tests(kit);
