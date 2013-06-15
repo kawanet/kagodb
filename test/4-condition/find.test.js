@@ -16,40 +16,39 @@ if (!MPE.DONT_RUN_TESTS_ON_REQUIRE) {
 }
 
 function main_tests(KagoDB) {
-  var collection;
   var opts = {
     storage: 'memory'
   };
+  var collection = new KagoDB(opts);
 
-  describe('find/count tests', function() {
-    collection = new KagoDB(opts);
+  var SKIP = (collection.get('storage') != 'memory') ? ' [SKIP]' : '';
 
-    var SKIP = (collection.get('storage') != 'memory') ? ' [SKIP]' : '';
+  var data = {
+    foo: {
+      string: "FOO",
+      decimal: 123,
+      numeric: 45.67
+    },
+    bar: {
+      string: "BAR",
+      decimal: 111,
+      numeric: 45.67
+    },
+    baz: {
+      string: "BAZ",
+      decimal: 999,
+      numeric: 11.11
+    },
+    qux: {
+      string: "QUX",
+      decimal: 123,
+      numeric: 45.67
+    }
+  };
 
-    var data = {
-      foo: {
-        string: "FOO",
-        decimal: 123,
-        numeric: 45.67
-      },
-      bar: {
-        string: "BAR",
-        decimal: 111,
-        numeric: 45.67
-      },
-      baz: {
-        string: "BAZ",
-        decimal: 999,
-        numeric: 11.11
-      },
-      qux: {
-        string: "QUX",
-        decimal: 123,
-        numeric: 45.67
-      }
-    };
+  var index = Object.keys(data);
 
-    var index = Object.keys(data);
+  describe('find/findOne/count:', function() {
 
     it('write()', function(done) {
       async.eachSeries(index, each, end);
@@ -64,18 +63,18 @@ function main_tests(KagoDB) {
       }
     });
 
-    it('find().count()', function(done) {
-      collection.find().count(function(err, count) {
-        assert(!err, 'find().count() should success: ' + err);
-        assert.equal(count, index.length, 'count should return correct number');
-        done();
-      });
-    });
-
     it('count()', function(done) {
       collection.count(null, function(err, count) {
         assert(!err, 'count() should success: ' + err);
         assert.equal(count, index.length, 'count number');
+        done();
+      });
+    });
+
+    it('find().count()', function(done) {
+      collection.find().count(function(err, count) {
+        assert(!err, 'find().count() should success: ' + err);
+        assert.equal(count, index.length, 'count should return correct number');
         done();
       });
     });
@@ -89,11 +88,25 @@ function main_tests(KagoDB) {
       });
     });
 
+    it('find({})', function(done) {
+      var cond = {};
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'toArray() should success: ' + err);
+        assert.equal(list.length, index.length, 'found');
+
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+          done();
+        });
+      });
+    });
+
     it('find().offset(2)', function(done) {
       var cursor = collection.find().offset(2);
       cursor.toArray(function(err, list) {
         assert(!err, 'toArray() should success: ' + err);
-        assert.equal(list.length, index.length - 2, 'offset 2 length');
+        assert.equal(list.length, 2, 'offset 2 length');
 
         cursor.count(function(err, count) {
           assert(!err, 'count() should success: ' + err);
@@ -145,6 +158,63 @@ function main_tests(KagoDB) {
       });
     });
 
+    it('find(null, {string:1})', function(done) {
+      var cond = null;
+      var proj = {
+        string: 1
+      };
+      collection.find(cond, proj).toArray(function(err, list) {
+        assert(!err, 'toArray() should success: ' + err);
+        assert.equal(list.length, index.length, 'found');
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i];
+          assert(item.string, 'string should exist');
+          assert(!item.decimal, 'decimal should not exist');
+          assert(!item.numeric, 'numeric should not exist');
+        }
+        done();
+      });
+    });
+
+    it('find(null, {decimal:1, numeric:1})', function(done) {
+      var cond = null;
+      var proj = {
+        decimal: 1,
+        numeric: 1
+      };
+      collection.find(cond, proj).toArray(function(err, list) {
+        assert(!err, 'toArray() should success: ' + err);
+        assert.equal(list.length, index.length, 'found');
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i];
+          assert(!item.string, 'string should not exist');
+          assert(item.decimal, 'decimal should exist');
+          assert(item.numeric, 'numeric should exist');
+        }
+        done();
+      });
+    });
+
+    it('findOne(null)', function(done) {
+      var cond = null;
+      collection.findOne(cond, function(err, item) {
+        assert(!err, 'findOne() should success: ' + err);
+        assert(item, 'found');
+        done();
+      });
+    });
+
+    it('findOne({})', function(done) {
+      var cond = {};
+      collection.findOne(cond, function(err, item) {
+        assert(!err, 'findOne() should success: ' + err);
+        assert(item, 'found');
+        done();
+      });
+    });
+  });
+
+  describe('sort:', function() {
     it('find().sort() string asc', function(done) {
       var sort = {
         string: 1
@@ -323,39 +393,9 @@ function main_tests(KagoDB) {
         });
       });
     });
+  });
 
-    it('find({})', function(done) {
-      var cond = {};
-      collection.find(cond).toArray(function(err, list) {
-        assert(!err, 'toArray() should success: ' + err);
-        assert.equal(list.length, index.length, 'found');
-
-        collection.count(cond, function(err, count) {
-          assert(!err, 'count() should success: ' + err);
-          assert.equal(count, list.length, 'count() should return the same number');
-          done();
-        });
-      });
-    });
-
-    it('findOne(null)', function(done) {
-      var cond = null;
-      collection.findOne(cond, function(err, item) {
-        assert(!err, 'findOne() should success: ' + err);
-        assert(item, 'found');
-        done();
-      });
-    });
-
-    it('findOne({})', function(done) {
-      var cond = {};
-      collection.findOne(cond, function(err, item) {
-        assert(!err, 'findOne() should success: ' + err);
-        assert(item, 'found');
-        done();
-      });
-    });
-
+  describe('condition:', function() {
     it('find({string: "FOO"})', function(done) {
       var cond = {
         string: "FOO"
@@ -492,40 +532,73 @@ function main_tests(KagoDB) {
         });
       });
     });
+  });
 
-    it('find({}, {string:1})', function(done) {
-      var cond = {};
-      var proj = {
-        string: 1
-      };
-      collection.find(cond, proj).toArray(function(err, list) {
-        assert(!err, 'toArray() should success: ' + err);
-        assert.equal(list.length, index.length, 'found');
-        for (var i = 0; i < list.length; i++) {
-          var item = list[i];
-          assert(item.string, 'string should exist');
-          assert(!item.decimal, 'decimal should not exist');
-          assert(!item.numeric, 'numeric should not exist');
+  describe('options:', function() {
+    it('find(null, null, options)', function(done) {
+      var options = {
+        sort: {
+          string: 1 // BAR-BAZ-FOO-QUX
+        },
+        skip: 2, // FOO
+        limit: 1,
+        fields: {
+          string: 1, // FOO
+          numeric: 1 // 45.67
         }
+      };
+
+      collection.find(null, null, options).toArray(function(err, list) {
+        assert(!err, 'toArray() should success: ' + err);
+        assert.equal(list.length, 1, 'found');
+        var item = list[0];
+        assert.equal(item.string, 'FOO', 'string should correct');
+        assert(!item.decimal, 'decimal should not exist');
+        assert.equal(item.numeric, 45.67, 'numeric should correct');
         done();
       });
     });
 
-    it('find({}, {decimal:1, numeric:1})', function(done) {
-      var cond = {};
-      var proj = {
-        decimal: 1,
-        numeric: 1
-      };
-      collection.find(cond, proj).toArray(function(err, list) {
-        assert(!err, 'toArray() should success: ' + err);
-        assert.equal(list.length, index.length, 'found');
-        for (var i = 0; i < list.length; i++) {
-          var item = list[i];
-          assert(!item.string, 'string should not exist');
-          assert(item.decimal, 'decimal should exist');
-          assert(item.numeric, 'numeric should exist');
+    it('findOne(null, options)', function(done) {
+      var options = {
+        sort: {
+          numeric: -1, // 45.67 -> 11.11
+          decimal: 1, // 111 -> 123
+          string: 1 // BAR-FOO-QUX-BAZ
+        },
+        skip: 1, // FOO
+        fields: {
+          string: 1, // FOO
+          decimal: 1 // 123
         }
+      };
+      collection.findOne(null, options, function(err, item) {
+        assert(!err, 'findOne() should success: ' + err);
+        assert.equal(item.string, 'FOO', 'string should correct');
+        assert.equal(item.decimal, 123, 'decimal should correct');
+        assert(!item.numeric, 'numeric should not exist');
+        done();
+      });
+    });
+
+    it('count(null, {skip:3})', function(done) {
+      var options = {
+        skip: 3
+      };
+      collection.count(null, options, function(err, count) {
+        assert(!err, 'count() should success: ' + err);
+        assert.equal(count, 1, 'count should be 1');
+        done();
+      });
+    });
+
+    it('count(null, {limit:1})', function(done) {
+      var options = {
+        limit: 1
+      };
+      collection.count(null, options, function(err, count) {
+        assert(!err, 'count() should success: ' + err);
+        assert.equal(count, 1, 'count should be 1');
         done();
       });
     });
