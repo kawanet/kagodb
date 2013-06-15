@@ -14,6 +14,7 @@ var dynamic_ajax = require('../lib/mixin/dynamic_ajax');
 var dynamic_storage = require('../lib/mixin/dynamic_storage');
 var encode = require('../lib/mixin/encode');
 var events = require('../lib/mixin/events');
+var init = require('../lib/mixin/init');
 var model = require('../lib/mixin/model');
 var noop = require('../lib/mixin/noop');
 var pkey = require('../lib/mixin/pkey');
@@ -23,6 +24,7 @@ var KagoDB = Base.inherit();
 
 // base
 KagoDB.mixin(noop());
+KagoDB.mixin(init());
 KagoDB.mixin(stub());
 KagoDB.mixin(encode());
 
