@@ -4,6 +4,8 @@ var KagoDB = require('../../index');
 var supertest = require('supertest');
 var express = require('express');
 
+var DEBUG = false;
+
 function SuperTestKagoDB(opts) {
   if (!(this instanceof SuperTestKagoDB)) return new SuperTestKagoDB(opts);
 
@@ -11,8 +13,8 @@ function SuperTestKagoDB(opts) {
   var server_collection = new KagoDB(opts);
   app.all('/api/:id?', server_collection.webapi());
 
-  // server_collection.on('webapi', console.error);
-  // server_collection.on('warn', console.error);
+  if (DEBUG) server_collection.on('webapi', console.error);
+  if (DEBUG) server_collection.on('warn', console.error);
 
   var client_opts = {
     storage: 'http_superagent',
@@ -23,8 +25,7 @@ function SuperTestKagoDB(opts) {
   KagoDB.call(this, client_opts);
 
   this.on('request', function(req) {
-    // console.error(req.method, req.url);
-    // console.error(req.data || req._data || req.form);
+    if (DEBUG) console.error('request', req.method, req.url, req.data || req._data || req.form);
   });
 }
 
