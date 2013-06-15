@@ -2,6 +2,8 @@
 
 module.exports = function(grunt) {
 
+  var bower = require('./bower.json');
+
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsdoc');
@@ -48,6 +50,7 @@ module.exports = function(grunt) {
           'public/js/kagodb.browserify.js': ['bundle/browser.js']
         },
         options: {
+          // debug: true,
           standalone: 'KagoDB'
         }
       },
@@ -58,6 +61,9 @@ module.exports = function(grunt) {
       all: {
         files: {
           'public/js/kagodb.min.js': ['public/js/kagodb.browserify.js']
+        },
+        options: {
+          banner: '/*! ' + bower.name + ' ' + bower.version + ' */\n'
         }
       }
     }
