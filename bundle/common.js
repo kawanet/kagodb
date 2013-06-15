@@ -2,8 +2,10 @@
 
 var Base = require('../lib/core/base');
 
+var count = require('../lib/query/count');
 var find = require('../lib/query/find');
 var find_and_modify = require('../lib/query/find_and_modify');
+var find_one = require('../lib/query/find_one');
 var insert = require('../lib/query/insert');
 var remove = require('../lib/query/remove');
 var update = require('../lib/query/update');
@@ -25,8 +27,10 @@ KagoDB.mixin(stub());
 KagoDB.mixin(encode());
 
 // query
+KagoDB.mixin(count());
 KagoDB.mixin(find());
 KagoDB.mixin(find_and_modify());
+KagoDB.mixin(find_one());
 KagoDB.mixin(insert());
 KagoDB.mixin(remove());
 KagoDB.mixin(update());
