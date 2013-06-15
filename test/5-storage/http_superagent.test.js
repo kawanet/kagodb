@@ -17,7 +17,8 @@ describe('HTTP Storage: (superagent)', function() {
   if (!endpoint) return;
 
   var opts = {
-    storage: 'http_superagent',
+    storage: 'ajax',
+    ajax: 'superagent',
     endpoint: endpoint
   };
 

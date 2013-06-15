@@ -8,6 +8,7 @@ var insert = require('../lib/query/insert');
 var remove = require('../lib/query/remove');
 var update = require('../lib/query/update');
 
+var dynamic_mixin = require('../lib/mixin/dynamic_mixin');
 var encode = require('../lib/mixin/encode');
 var events = require('../lib/mixin/events');
 var model = require('../lib/mixin/model');
@@ -31,7 +32,8 @@ KagoDB.mixin(remove());
 KagoDB.mixin(update());
 
 // storage (this must come after query mixins)
-KagoDB.mixin(storage());
+KagoDB.mixin(dynamic_mixin('ajax'));
+KagoDB.mixin(dynamic_mixin('storage'));
 
 // other mixins
 KagoDB.mixin(events());

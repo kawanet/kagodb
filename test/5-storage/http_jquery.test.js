@@ -17,7 +17,8 @@ describe('HTTP Storage: (jQuery)', function() {
   if (!endpoint) return;
 
   var opts = {
-    storage: 'http_jquery',
+    storage: 'ajax',
+    ajax: 'jquery',
     endpoint: endpoint
   };
 

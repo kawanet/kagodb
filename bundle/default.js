@@ -5,6 +5,7 @@ var Common = require('./common');
 var KagoDB = Common.inherit();
 
 // bundle all mixins per default
+bundle('../lib/ajax');
 bundle('../lib/core');
 bundle('../lib/mixin');
 bundle('../lib/op');

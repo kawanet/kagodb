@@ -9,13 +9,15 @@ $(function() {
   };
   var server_file = {
     name: 'Server File',
-    storage: 'http_jquery',
+    storage: 'ajax',
+    ajax: 'jquery',
     endpoint: '/data/',
     http_param: param
   };
   var server_memory = {
     name: 'Server Memory',
-    storage: 'http_jquery',
+    storage: 'ajax',
+    ajax: 'jquery',
     endpoint: '/memory/',
     http_param: param
   };

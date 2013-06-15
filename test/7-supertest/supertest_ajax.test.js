@@ -16,9 +16,10 @@ describe('Supertest Basic:', function() {
   var endpoint = '/memory/';
   var myagent = supertest(app);
   var opts = {
-    storage: 'http_superagent',
-    endpoint: endpoint,
-    superagent: myagent
+    storage: 'ajax',
+    ajax: 'superagent',
+    superagent: myagent,
+    endpoint: endpoint
   };
 
   describe('CRUD', function() {

@@ -17,7 +17,8 @@ describe('HTTP Storage: (request)', function() {
   if (!endpoint) return;
 
   var opts = {
-    storage: 'http_request',
+    storage: 'ajax',
+    ajax: 'request',
     endpoint: endpoint
   };
 

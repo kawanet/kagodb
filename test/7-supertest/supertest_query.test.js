@@ -17,7 +17,8 @@ function SuperTestKagoDB(opts) {
   if (DEBUG) server_collection.on('warn', console.error);
 
   var client_opts = {
-    storage: 'http_superagent',
+    storage: 'ajax',
+    ajax: 'superagent',
     superagent: supertest(app),
     endpoint: '/api/'
   };
