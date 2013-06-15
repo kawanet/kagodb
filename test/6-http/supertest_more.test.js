@@ -34,8 +34,9 @@ exports.DONT_RUN_TESTS_ON_REQUIRE = true;
 
 describe('Supertest:', function() {
   require('../4-condition/find.test')(SuperTestKagoDB);
+  require('../4-condition/findAndModify.test')(SuperTestKagoDB);
   require('../4-condition/insert.test')(SuperTestKagoDB);
+  require('../4-condition/remove.test')(SuperTestKagoDB);
   require('../4-condition/save.test')(SuperTestKagoDB);
   require('../4-condition/update.test')(SuperTestKagoDB);
-  require('../4-condition/remove.test')(SuperTestKagoDB);
 });
