@@ -74,14 +74,12 @@ function save(item, callback) {
   this.request(opts, response_parser('success', callback));
 }
 
-function remove(condition, justOne, callback) {
+function remove(condition, options, callback) {
   var url = this.http_endpoint();
   var data = this.http_param();
   data.method = 'remove';
   if (condition) data.condition = condition;
-  data.options = {
-    multi: (justOne ? 0 : 1)
-  };
+  if (options) data.options = options;
   var opts = {
     method: 'POST',
     url: url,

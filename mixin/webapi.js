@@ -359,10 +359,8 @@ WebapiMethods.prototype.remove = function(req, res, next) {
 
   parse_condition(req, res, function(condition) {
     parse_options(req, res, function(options) {
-      options = options || {};
-      var justOne = !options.multi || options.multi == '0';
-      collection.emit('webapi', 'remove', condition, justOne, options);
-      collection.remove(condition, justOne, function(err) {
+      collection.emit('webapi', 'remove', condition, options);
+      collection.remove(condition, options, function(err) {
         if (err) collection.emit('warn', 'remove failed:', err);
         res.send(err ? 500 : success);
       });

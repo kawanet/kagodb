@@ -26,7 +26,7 @@ module.exports = function() {
  *
  * @method KagoDB.prototype.remove
  * @param {Object|Function} condition - query selector
- * @param {Bool} [justOne] - true when remove multiple items at once
+ * @param {Object} [options] - single:true - removes the first item found (default:false)
  * @param {Function} [callback] - function(err) {}
  * @example
  * var collection = new KagoDB();
@@ -36,10 +36,11 @@ module.exports = function() {
  * });
  */
 
-function remove(condition, justOne, callback) {
+function remove(condition, options, callback) {
   var remover;
+  options = options || {};
 
-  if (!justOne) {
+  if (!options.single) {
     remover = getRemover(this, null, callback);
     if (remover) this.find(condition).each(remover);
   } else {

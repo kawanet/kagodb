@@ -20,17 +20,29 @@ function main_tests(KagoDB) {
     storage: 'memory',
     primary_key: '_id'
   };
+  var single_true = {
+    single: true
+  };
+  var single_false = {
+    single: false
+  };
 
-  describe('justOne:', function() {
+  describe('single: {single: true}', function() {
     var collection = new KagoDB(opts);
     prepare(collection);
-    remove_tests(collection, true);
+    remove_tests(collection, single_true);
   });
 
-  describe('multiple:', function() {
+  describe('multiple: {single: false}', function() {
     var collection = new KagoDB(opts);
     prepare(collection);
-    remove_tests(collection, false);
+    remove_tests(collection, single_false);
+  });
+
+  describe('multiple: null', function() {
+    var collection = new KagoDB(opts);
+    prepare(collection);
+    remove_tests(collection);
   });
 }
 
@@ -73,12 +85,12 @@ function prepare(collection) {
   });
 }
 
-function remove_tests(collection, justOne) {
-  it('remove() single match', function(done) {
+function remove_tests(collection, ropts) {
+  it('remove() on single match', function(done) {
     var query = {
       string: 'FOO'
     };
-    collection.remove(query, justOne, function(err) {
+    collection.remove(query, ropts, function(err) {
       assert(!err, 'remove should success: ' + err);
       collection.count(query, function(err, count) {
         assert(!err, 'findOne should success: ' + err);
@@ -88,15 +100,17 @@ function remove_tests(collection, justOne) {
     });
   });
 
-  it('remove() multiple matches', function(done) {
+  it('remove() on multiple matches', function(done) {
     var query = {
       numeric: 45.67
     };
-    collection.remove(query, justOne, function(err) {
+    collection.remove(query, ropts, function(err) {
       assert(!err, 'remove should success: ' + err);
       collection.count(query, function(err, count) {
         assert(!err, 'findOne should success: ' + err);
-        assert.equal(count, (justOne ? 1 : 0), 'remove should remove item(s)');
+        ropts = ropts || {};
+        var expect = (ropts && ropts.single) ? 1 : 0;
+        assert.equal(count, expect, 'remove should remove item(s)');
         done();
       });
     });
