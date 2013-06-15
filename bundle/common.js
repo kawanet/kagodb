@@ -32,8 +32,8 @@ KagoDB.mixin(remove());
 KagoDB.mixin(update());
 
 // storage (this must come after query mixins)
-KagoDB.mixin(dynamic_mixin('ajax'));
 KagoDB.mixin(dynamic_mixin('storage'));
+KagoDB.mixin(dynamic_mixin('ajax'));
 
 // other mixins
 KagoDB.mixin(events());
