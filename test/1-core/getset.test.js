@@ -10,6 +10,7 @@ describe('Settings:', function() {
 function getset_test() {
   var Parent = KagoDB.inherit();
   Parent.set('foo', 'FOO');
+  Parent.set({'qux': 'QUX'});
 
   var Child = Parent.inherit();
   Child.set('bar', 'BAR');
@@ -30,6 +31,7 @@ function getset_test() {
       assert(Parent.get('foo'), 'should have foo');
       assert(!Parent.get('bar'), 'should not have bar');
       assert(!Parent.get('baz'), 'should not have baz');
+      assert(Parent.get('qux'), 'should have qux');
       assert(!Parent.get('garply'), 'should not have garply');
       assert(!Parent.get('waldo'), 'should not have waldo');
       assert(!Parent.get('fred'), 'should not have fred');
@@ -40,6 +42,7 @@ function getset_test() {
       assert(Child.get('foo'), 'should have foo');
       assert(Child.get('bar'), 'should have bar');
       assert(!Child.get('baz'), 'should not have baz');
+      assert(Child.get('qux'), 'should have qux');
       assert(!Child.get('garply'), 'should not have garply');
       assert(!Child.get('waldo'), 'should not have waldo');
       assert(!Child.get('fred'), 'should not have fred');
@@ -50,6 +53,7 @@ function getset_test() {
       assert(!Uncle.get('foo'), 'should not have foo');
       assert(!Uncle.get('bar'), 'should not have bar');
       assert(Uncle.get('baz'), 'should have baz');
+      assert(!Uncle.get('qux'), 'should not have qux');
       assert(!Uncle.get('garply'), 'should not have garply');
       assert(!Uncle.get('waldo'), 'should not have waldo');
       assert(!Uncle.get('fred'), 'should not have fred');
@@ -62,6 +66,7 @@ function getset_test() {
       assert(parent.get('foo'), 'should have foo');
       assert(!parent.get('bar'), 'should not have bar');
       assert(!parent.get('baz'), 'should not have baz');
+      assert(parent.get('qux'), 'should have qux');
       assert(parent.get('garply'), 'should have garply');
       assert(!parent.get('waldo'), 'should not have waldo');
       assert(!parent.get('fred'), 'should not have fred');
@@ -72,6 +77,7 @@ function getset_test() {
       assert(child.get('foo'), 'should have foo');
       assert(child.get('bar'), 'should have bar');
       assert(!child.get('baz'), 'should not have baz');
+      assert(child.get('qux'), 'should have qux');
       assert(!child.get('garply'), 'should not have garply');
       assert(child.get('waldo'), 'should have waldo');
       assert(!child.get('fred'), 'should not have fred');
@@ -82,6 +88,7 @@ function getset_test() {
       assert(!uncle.get('foo'), 'should not have foo');
       assert(!uncle.get('bar'), 'should not have bar');
       assert(uncle.get('baz'), 'should have baz');
+      assert(!uncle.get('qux'), 'should not have qux');
       assert(!uncle.get('garply'), 'should not have garply');
       assert(!uncle.get('waldo'), 'should not have waldo');
       assert(uncle.get('fred'), 'should have fred');

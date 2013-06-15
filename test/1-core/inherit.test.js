@@ -14,12 +14,12 @@ describe('Inherit:', function() {
 function inherit_test(name, KagoDB) {
   describe(name, function() {
 
-    var Parent = KagoDB.inherit();
+    var Parent = KagoDB.inherit({foo: 'FOO'});
 
     // add a method before inheriting again
     Parent.prototype.test1 = function() {};
 
-    var Child = Parent.inherit();
+    var Child = Parent.inherit('bar', 'BAR');
     Child.prototype.test2 = function() {};
 
     // add another method after inheriting
@@ -36,7 +36,8 @@ function inherit_test(name, KagoDB) {
       assert(!kago.test1, 'should not have test1 method');
       assert(!kago.test2, 'should not have test2 method');
       assert(!kago.test3, 'should not have test3 method');
-      assert(!kago.test3, 'should not have test3 method');
+      assert(!kago.get('foo'), 'should not have foo option');
+      assert(!kago.get('bar'), 'should not have bar option');
       done();
     });
 
@@ -44,6 +45,8 @@ function inherit_test(name, KagoDB) {
       assert(parent.test1, 'should have test1 method');
       assert(!parent.test2, 'should not have test2 method');
       assert(parent.test3, 'should have test3 method');
+      assert(parent.get('foo'), 'should have foo option');
+      assert(!parent.get('bar'), 'should not have bar option');
       done();
     });
 
@@ -51,6 +54,8 @@ function inherit_test(name, KagoDB) {
       assert(child.test1, 'should have test1 method');
       assert(child.test2, 'should have test2 method');
       assert(child.test3, 'should have test3 method');
+      assert(child.get('foo'), 'should have foo option');
+      assert(child.get('bar'), 'should have bar option');
       done();
     });
 
@@ -58,6 +63,8 @@ function inherit_test(name, KagoDB) {
       assert(!uncle.test1, 'should not have test1 method');
       assert(!uncle.test2, 'should not have test2 method');
       assert(!uncle.test3, 'should not have test3 method');
+      assert(!uncle.get('foo'), 'should have foo option');
+      assert(!uncle.get('bar'), 'should have bar option');
       done();
     });
   });
