@@ -16,6 +16,7 @@ module.exports = function(grunt) {
   var jshint_src = [
       './*.js',
       './*.json',
+      'bundle/**/*.js',
       'lib/**/*.js',
       'lib/**/*.json',
       'tasks/**/*.js',

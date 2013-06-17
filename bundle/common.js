@@ -17,6 +17,7 @@ var events = require('../lib/mixin/events');
 var init = require('../lib/mixin/init');
 var model = require('../lib/mixin/model');
 var noop = require('../lib/mixin/noop');
+var obop = require('../lib/mixin/obop');
 var pkey = require('../lib/mixin/pkey');
 var stub = require('../lib/mixin/stub');
 
@@ -44,6 +45,7 @@ KagoDB.mixin(dynamic_ajax());
 // other mixins
 KagoDB.mixin(events());
 KagoDB.mixin(pkey());
+KagoDB.mixin(obop());
 KagoDB.mixin(model());
 
 module.exports = KagoDB;

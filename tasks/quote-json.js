@@ -1,7 +1,6 @@
 /*! quote-json.js */
 
-var update_op = require('../lib/op/update_op');
-var projection_op = require('../lib/op/projection_op');
+var obop = require('../lib/modules/obop');
 
 module.exports = function(grunt) {
   grunt.registerMultiTask('quoteJson', 'Quoting JSON parameters', function() {
@@ -47,14 +46,14 @@ function quoteJson(grunt, srcfile, dstfile, options) {
   if (!list.length) grunt.fatal('Invalid update fields: ' + JSON.stringify(fields));
 
   // read fields from source
-  var projector = projection_op.parser(fields);
+  var projector = obop.view(fields);
   var $set = projector(srcdata);
 
   // update fields to target
   var update = {
     $set: $set
   };
-  var updater = update_op.parser(update);
+  var updater = obop.update(update);
   var outdata = updater(dstdata);
 
   // write target JSON

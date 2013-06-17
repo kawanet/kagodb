@@ -8,7 +8,6 @@ var KagoDB = Common.inherit();
 bundle('../lib/ajax');
 bundle('../lib/core');
 bundle('../lib/mixin');
-bundle('../lib/op');
 bundle('../lib/query');
 bundle('../lib/storage');
 bundle('../lib/webapi');
