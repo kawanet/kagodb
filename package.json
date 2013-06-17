@@ -32,6 +32,7 @@
     "grunt-jsdoc": "*",
     "grunt-browserify": "*",
     "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
     "async": "*",
     "jquery": "*",
     "supertest": "*",

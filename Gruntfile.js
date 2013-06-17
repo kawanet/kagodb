@@ -9,6 +9,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
+  var jshint_src = [
+      './*.js',
+      './*.json',
+      'lib/**/*.js',
+      'test/**/*.js',
+      '!test/9-supplement/mongodb/*.js'
+  ];
 
   // Project configuration.
   grunt.initConfig({
@@ -16,7 +25,7 @@ module.exports = function(grunt) {
     // https://github.com/gruntjs/grunt-contrib-jshint
     jshint: {
       all: {
-        src: ['./*.js', './*.json', 'lib/*/*.js', 'test/**/*.test.js', 'test/testlib/*.js']
+        src: jshint_src
       },
       options: {
         '-W103': true // The '__proto__' property is deprecated.
@@ -36,7 +45,7 @@ module.exports = function(grunt) {
     // https://github.com/krampstudio/grunt-jsdoc-plugin
     jsdoc: {
       all: {
-        src: ['core/*.js', 'storage/*.js', 'mixin/*.js']
+        src: ['lib/**/*.js']
       },
       options: {
         destination: 'gh-pages/docs'
@@ -52,7 +61,7 @@ module.exports = function(grunt) {
         options: {
           standalone: 'KagoDB'
         }
-      },
+      }
     },
 
     // https://github.com/gruntjs/grunt-contrib-uglify
@@ -63,6 +72,17 @@ module.exports = function(grunt) {
         },
         options: {
           banner: '/*! ' + bower.name + ' ' + bower.version + ' */\n'
+        }
+      }
+    },
+
+    // https://github.com/gruntjs/grunt-contrib-watch
+    watch: {
+      all: {
+        files: jshint_src,
+        tasks: ['default'],
+        options: {
+          interrupt: true,
         }
       }
     }
