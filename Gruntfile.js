@@ -17,6 +17,7 @@ module.exports = function(grunt) {
       './*.js',
       './*.json',
       'lib/**/*.js',
+      'lib/**/*.json',
       'tasks/**/*.js',
       'test/**/*.js',
       '!test/9-supplement/mongodb/*.js'
@@ -102,6 +103,16 @@ module.exports = function(grunt) {
             homepage: 1,
             description: 1,
             repository: 1
+          }
+        }
+      },
+      system: {
+        src: 'package.json',
+        dest: 'lib/core/system.json',
+        options: {
+          fields: {
+            name: 1,
+            version: 1
           }
         }
       }
