@@ -2,7 +2,7 @@
 
 module.exports = function(grunt) {
 
-  var bower = require('./bower.json');
+  var pkg = require('./package.json');
 
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -11,10 +11,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
+  grunt.loadTasks('./tasks');
+
   var jshint_src = [
       './*.js',
       './*.json',
       'lib/**/*.js',
+      'tasks/**/*.js',
       'test/**/*.js',
       '!test/9-supplement/mongodb/*.js'
   ];
@@ -71,7 +74,7 @@ module.exports = function(grunt) {
           'public/js/kagodb.min.js': ['public/js/kagodb.browserify.js']
         },
         options: {
-          banner: '/*! ' + bower.name + ' ' + bower.version + ' */\n'
+          banner: '/*! ' + pkg.name + ' ' + pkg.version + ' */\n'
         }
       }
     },
@@ -85,10 +88,27 @@ module.exports = function(grunt) {
           interrupt: true,
         }
       }
+    },
+
+    // tasks/quote-json.js
+    quoteJson: {
+      bower: {
+        src: 'package.json',
+        dest: 'bower.json',
+        options: {
+          fields: {
+            name: 1,
+            version: 1,
+            homepage: 1,
+            description: 1,
+            repository: 1
+          }
+        }
+      }
     }
   });
 
   grunt.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.registerTask('bundle', ['browserify', 'uglify']);
-  grunt.registerTask('all', ['default', 'jsdoc', 'browserify']);
+  grunt.registerTask('bundle', ['quoteJson', 'browserify', 'uglify']);
+  grunt.registerTask('all', ['default', 'jsdoc', 'bundle']);
 };
