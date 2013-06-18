@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.21",
+  "version": "0.2.24",
   "homepage": "https://github.com/kawanet/kagodb",
   "description": "Kago Database Engine",
   "repository": {
@@ -9,18 +9,18 @@
   },
   "main": "public/js/kagodb.min.js",
   "ignore": [
-      "**/.*",
-      "Gruntfile.js",
-      "bundle",
-      "core",
-      "data",
-      "gh-pages",
-      "index.js",
-      "mixin",
-      "node_modules",
-      "package.json",
-      "server.js",
-      "storage",
-      "test"
+    "**/.*",
+    "Gruntfile.js",
+    "bundle",
+    "core",
+    "data",
+    "gh-pages",
+    "index.js",
+    "mixin",
+    "node_modules",
+    "package.json",
+    "server.js",
+    "storage",
+    "test"
   ]
 }
