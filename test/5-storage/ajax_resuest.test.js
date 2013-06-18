@@ -1,10 +1,10 @@
-/*! http_superagent.test.js */
+/*! ajax_request.test.js */
 
 var KagoDB = require('../../index');
 var crud_tests = require('../testlib/crud_tests');
 var http_tests = require('../testlib/http_tests');
 
-describe('HTTP Storage: (superagent)', function() {
+describe('Ajax Storage via request:', function() {
   var endpoint = process.env.TEST_ENDPOINT;
 
   describe('$TEST_ENDPOINT', function() {
@@ -18,7 +18,7 @@ describe('HTTP Storage: (superagent)', function() {
 
   var opts = {
     storage: 'ajax',
-    ajax: 'superagent',
+    ajax: 'request',
     endpoint: endpoint
   };
 
