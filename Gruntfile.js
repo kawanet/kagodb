@@ -10,6 +10,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.loadTasks('./tasks');
 
@@ -92,6 +93,13 @@ module.exports = function(grunt) {
       }
     },
 
+    // https://github.com/gruntjs/grunt-contrib-clean
+    clean: {
+      docs: {
+        src: ['gh-pages/docs/']
+      }
+    },
+
     // tasks/quote-json.js
     quoteJson: {
       bower: {
@@ -121,14 +129,14 @@ module.exports = function(grunt) {
 
     // tasks/modify-docs.js
     modifyDocs: {
-      all: {
+      docs: {
         src: ['gh-pages/docs/**/*.html']
       }
     }
   });
 
   grunt.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.registerTask('docs', ['jsdoc', 'modifyDocs']);
+  grunt.registerTask('docs', ['clean:docs', 'jsdoc', 'modifyDocs']);
   grunt.registerTask('bundle', ['quoteJson', 'browserify', 'uglify']);
   grunt.registerTask('all', ['default', 'docs', 'bundle']);
 };
