@@ -117,10 +117,18 @@ module.exports = function(grunt) {
           }
         }
       }
+    },
+
+    // tasks/modify-docs.js
+    modifyDocs: {
+      all: {
+        src: ['gh-pages/docs/**/*.html']
+      }
     }
   });
 
   grunt.registerTask('default', ['jshint', 'mochaTest']);
+  grunt.registerTask('docs', ['jsdoc', 'modifyDocs']);
   grunt.registerTask('bundle', ['quoteJson', 'browserify', 'uglify']);
-  grunt.registerTask('all', ['default', 'jsdoc', 'bundle']);
+  grunt.registerTask('all', ['default', 'docs', 'bundle']);
 };
