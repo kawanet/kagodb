@@ -28,8 +28,6 @@
             <pre class="prettyprint source"><code>/*! cursor.js */
 
 var utils = require('./utils');
-var ConditionParser = require('../core/condition_op');
-var ProjectionParser = require('../core/projection_op');
 
 module.exports = Cursor;
 
@@ -72,7 +70,6 @@ Proto.prototype.nextObject = function(callback) {
 Proto.prototype.rewind = function() {
   if (!this.source) throw new Error('no source');
   if (this.source.rewind) this.source.rewind();
-  delete this.nextObject;
   return this;
 };
 
@@ -87,18 +84,19 @@ Proto.prototype.rewind = function() {
 
 function Cursor(collection, condition, projection) {
   this.collection = collection;
-  this.source = new Source(this.collection);
+  this.source = new Source(this);
   this._source = this.source;
+  this.obop = collection.obop();
   if (condition) {
-    condition = ConditionParser.parser(condition);
+    condition = this.obop.where(condition);
     if (condition) {
-      this.source = new Condition(this.source, condition);
+      this.source = new Condition(this, condition);
     }
   }
   if (projection) {
-    projection = ProjectionParser.parser(projection);
+    projection = this.obop.view(projection);
     if (projection) {
-      this.source = new Projection(this.source, projection);
+      this.source = new Projection(this, projection);
     }
   }
 }
@@ -239,7 +237,7 @@ Cursor.prototype.count = function(callback) {
  */
 
 Cursor.prototype.sort = function(order) {
-  this.source = new Sort(this.source, order);
+  this.source = new Sort(this, order);
   return this;
 };
 
@@ -253,7 +251,7 @@ Cursor.prototype.sort = function(order) {
  */
 
 Cursor.prototype.offset = function(offset) {
-  this.source = new Offset(this.source, offset);
+  this.source = new Offset(this, offset);
   return this;
 };
 
@@ -267,12 +265,12 @@ Cursor.prototype.offset = function(offset) {
  */
 
 Cursor.prototype.limit = function(limit) {
-  this.source = new Limit(this.source, limit);
+  this.source = new Limit(this, limit);
   return this;
 };
 
-function Source(collection) {
-  this.collection = collection;
+function Source(cursor) {
+  this.collection = cursor.collection;
 }
 
 utils.inherits(Source, Proto);
@@ -281,29 +279,33 @@ Source.prototype.nextObject = function(callback) {
   var self = this;
   callback = callback || NOP;
 
+  if (this.list) {
+    if (!this.list.length) {
+      callback(); // EOF
+      return;
+    } else {
+      var id = this.list.shift();
+      this.collection.read(id, callback);
+      return;
+    }
+  }
+
   // read all keys at first
   this.collection.index(function(err, list) {
     if (err) return callback(err);
     self.list = list || [];
-    self.nextObject = self._nextObject;
     self.nextObject(callback);
   });
 
   return this;
 };
 
-Source.prototype._nextObject = function(callback) {
-  if (!this.list.length) return callback(); // EOF
-  var id = this.list.shift();
-  this.collection.read(id, callback);
-};
-
 Source.prototype.rewind = function(callback) {
-  delete this.nextObject;
+  delete this.list;
 };
 
-function Condition(source, condition) {
-  this.source = source;
+function Condition(cursor, condition) {
+  this.source = cursor.source;
   this.condition = condition;
 }
 
@@ -325,7 +327,6 @@ Condition.prototype.nextObject = function(callback) {
     if (err) {
       callback(err);
     } else if (!item) {
-      self.nextObject = through;
       callback(); // EOF
     } else if (condition(item)) {
       callback(null, item); // OK
@@ -335,25 +336,10 @@ Condition.prototype.nextObject = function(callback) {
   }
 };
 
-function Sort(source, order) {
+function Sort(cursor, order) {
   var sorter;
-  if ('object' == typeof order) {
-    var index = Object.keys(order);
-    var keylen = index.length;
-    this.sorter = function(a, b) {
-      for (var i = 0; i &lt; keylen; i++) {
-        var key = index[i];
-        if (a[key] &lt; b[key]) {
-          return -order[key];
-        } else if (a[key] > b[key]) {
-          return order[key];
-        }
-      }
-    };
-  } else {
-    this.sorter = order;
-  }
-  this.source = source;
+  this.source = cursor.source;
+  this.sorter = cursor.obop.order(order);
 }
 
 utils.inherits(Sort, Proto);
@@ -362,23 +348,27 @@ Sort.prototype.nextObject = function(callback) {
   var self = this;
   callback = callback || NOP;
 
+  if (this.list) {
+    var item = this.list.shift();
+    callback(null, item);
+    return;
+  }
+
   toArray(this.source, function(err, list) {
     if (err) return callback(err);
     list = list || [];
     self.list = list.sort(self.sorter);
-    self.nextObject = self._nextObject; // replace
     self.nextObject(callback);
   });
 };
 
-Sort.prototype._nextObject = function(callback) {
-  callback = callback || NOP;
-  var item = this.list.shift();
-  callback(null, item);
+Sort.prototype.rewind = function() {
+  delete this.list;
+  if (this.source.rewind) this.source.rewind();
 };
 
-function Offset(source, offset) {
-  this.source = source;
+function Offset(cursor, offset) {
+  this.source = cursor.source;
   this.offset = offset;
 }
 
@@ -390,35 +380,35 @@ Offset.prototype.nextObject = function(callback) {
   var source = this.source;
   callback = callback || NOP;
 
-  if (rest > 0) {
-    source.nextObject(iterator);
+  if (this.ready || rest &lt;= 0) {
+    source.nextObject(callback);
   } else {
-    ready();
+    source.nextObject(iterator);
   }
 
   function iterator(err, item) {
     if (err) {
       callback(err); // error on read
     } else if (!item) {
-      self.nextObject = through; // EOF
-      callback();
+      callback(); // EOF
     } else if (--rest > 0) {
-      source.nextObject(iterator); // skip
+      source.nextObject(iterator); // next
     } else {
-      ready();
+      self.ready = true;
+      source.nextObject(callback);
     }
-  }
-
-  function ready() {
-    self.nextObject = Proto.prototype.nextObject; // replace
-    self.nextObject(callback);
   }
 };
 
-function Limit(source, limit) {
-  this.source = source;
+Offset.prototype.rewind = function() {
+  delete this.ready;
+  Proto.prototype.rewind.call(this);
+};
+
+function Limit(cursor, limit) {
+  this.source = cursor.source;
   this.limit = limit;
-  this.rest = this.limit;
+  this.rest = limit;
 }
 
 utils.inherits(Limit, Proto);
@@ -430,7 +420,6 @@ Limit.prototype.nextObject = function(callback) {
   if (this.rest-- > 0) {
     source.nextObject(callback);
   } else {
-    this.nextObject = through;
     callback();
   }
 };
@@ -440,8 +429,8 @@ Limit.prototype.rewind = function() {
   Proto.prototype.rewind.call(this);
 };
 
-function Projection(source, projection) {
-  this.source = source;
+function Projection(cursor, projection) {
+  this.source = cursor.source;
   this.projection = projection;
 }
 
@@ -461,7 +450,6 @@ Projection.prototype.nextObject = function(callback) {
     if (err) {
       callback(err);
     } else if (!item) {
-      self.nextObject = through; // EOF
       callback();
     } else {
       item = projection(item);
@@ -494,11 +482,8 @@ function toArray(source, callback) {
   }
 }
 
-function through(callback) {
-  if (callback) callback();
-}
-
-function NOP() {}</code></pre>
+function NOP() {}
+</code></pre>
         </article>
     </section>
 
@@ -508,13 +493,13 @@ function NOP() {}</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-system.html">system</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li><li><a href="WebMethods.html">WebMethods</a></li></ul><h3>Mixins</h3><ul><li><a href="ajax.html">ajax</a></li><li><a href="count.html">count</a></li><li><a href="deny.html">deny</a></li><li><a href="dynamic_ajax.html">dynamic_ajax</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="dynamic_storage.html">dynamic_storage</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="find_one.html">find_one</a></li><li><a href="findAndModify.html">findAndModify</a></li><li><a href="init.html">init</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="jquery.html">jquery</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="obop.html">obop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="stub.html">stub</a></li><li><a href="superagent.html">superagent</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Jun 19 2013 23:06:51 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>

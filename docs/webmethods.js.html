@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: webapi/webmethods.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: webapi/webmethods.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*! webmethods.js */
+
+/**
+ * This mixin provides method handler functions for an express application.
+ * Those handlers are invoked from
+ * [webapi()]{@linkcode KagoDB#webapi} method.
+ * You could add a new method and/or replace an existing methods via
+ * [webmethods()]{@linkcode KagoDB#webmethods}
+ *  interface.
+ *
+ * @class WebMethods
+ * @example
+ *
+ * var _wm = MyKago.prototype.webmethods;
+ * MyKago.prototype.webmethods = function() {
+ *     var wm = _wm.apply(this, arguments);
+ *
+ *     // add a new method
+ *     wm.mymethod = function(req, res, next) {
+ *         var collection = req.kagodb;
+ *         var webapi = req.webapi;
+ *         // do some thing
+ *     };
+ *
+ *     // override an existing method
+ *     var _read = wm.read;
+ *     wm.read = function(req, res, next) {
+ *         var collection = req.kagodb;
+ *         var webapi = req.webapi;
+ *         // do some thing before read
+ *         _read.call(this, req, res, function() {
+ *             // do some thing after read
+ *             next();
+ *         });
+ *     };
+ *
+ *     return wm;
+ * };
+ */
+
+module.exports = WebMethods;
+
+var success = {
+  success: true
+};
+
+function WebMethods() {}
+
+/**
+ * This is a bridge function to
+ * [read()]{@linkcode KagoDB#read}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.read = function(req, res, next) {
+  var collection = req.kagodb;
+  var id = req.param('id');
+  if (!id) return next(); // id must be specified
+
+  collection.emit('webapi', 'read', id);
+  collection.exist(id, function(err, exist) {
+    if (err) collection.emit('warn', 'exist failed:', err);
+    if (err) return res.send(500); // Internal Server Error
+    if (!exist) return res.send(404); // Not Found
+    collection.read(id, function(err, item) {
+      if (err) collection.emit('warn', 'read failed:', err);
+      res.send(err ? 500 : item);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [write()]{@linkcode KagoDB#write}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.write = function(req, res, next) {
+  if (!req.param('content') && req.method.toLowerCase() == 'put') {
+    // content refers body when PUT
+    req.params.content = req.body;
+  }
+
+  parse_params('content')(req, res, function() {
+    var collection = req.kagodb;
+    var id = req.param('id');
+    var content = req.param('content');
+    if (!id) return next(); // id must be specified
+
+    // validate parameter
+    if (!content || 'object' !== typeof content) {
+      collection.emit('warn', 'parse_content failed: invalid content', content);
+      return res.send(400); // Bad Request
+    }
+    if (!Object.keys(content).length) {
+      collection.emit('warn', 'parse_content failed: empty content', content);
+      return res.send(400); // Bad Request
+    }
+
+    collection.emit('webapi', 'write', id, content);
+    collection.write(id, content, function(err) {
+      if (err) collection.emit('warn', 'write failed:', err);
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [erase()]{@linkcode KagoDB#erase}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.erase = function(req, res, next) {
+  var collection = req.kagodb;
+  var id = req.param('id');
+  if (!id) return next(); // id must be specified
+
+  collection.emit('webapi', 'erase', id);
+  collection.erase(id, function(err) {
+    if (err) collection.emit('warn', 'erase failed:', err);
+    res.send(err ? 500 : success);
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [exist()]{@linkcode KagoDB#exist}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.exist = function(req, res, next) {
+  var collection = req.kagodb;
+  var id = req.param('id');
+  if (!id) return next(); // id must be specified
+
+  collection.emit('webapi', 'exist', id);
+  collection.exist(id, function(err, exist) {
+    if (err) collection.emit('warn', 'exist failed:', err);
+    var success = {
+      exist: !! exist
+    };
+    res.send(err ? 500 : success);
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [index()]{@linkcode KagoDB#index}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.index = function(req, res, next) {
+  var collection = req.kagodb;
+
+  collection.emit('webapi', 'index:');
+  collection.index(function(err, list) {
+    if (err) collection.emit('warn', 'index failed:', err);
+    var success = {
+      index: list
+    };
+    res.send(err ? 500 : success);
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [find()]{@linkcode KagoDB#find}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.find = function(req, res, next) {
+  parse_params('condition', 'projection', 'options', 'sort')(req, res, function() {
+    var collection = req.kagodb;
+    var condition = req.param('condition');
+    var projection = req.param('projection');
+    var options = req.param('options');
+    var sort = req.param('sort');
+    var offset = req.param('offset') - 0 || req.param('skip') - 0;
+    var limit = req.param('limit') - 0;
+    var cursor;
+
+    collection.emit('webapi', 'find', condition, projection, options);
+    cursor = collection.find(condition, projection, options);
+    if (sort) cursor.sort(sort);
+    if (offset) cursor.offset(offset);
+    if (limit) cursor.limit(limit);
+    cursor.toArray(function(err, list) {
+      if (err) collection.emit('warn', 'find failed:', err);
+      var success = {
+        data: list
+      };
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [findOne()]{@linkcode KagoDB#findOne}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.findOne = function(req, res, next) {
+  parse_params('condition', 'options')(req, res, function() {
+    var collection = req.kagodb;
+    var condition = req.param('condition');
+    var options = req.param('options');
+
+    collection.emit('webapi', 'findOne', condition, options);
+    collection.findOne(condition, options, function(err, item) {
+      if (err) collection.emit('warn', 'findOne failed:', err);
+      res.send(err ? 500 : item);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [count()]{@linkcode KagoDB#count}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.count = function(req, res, next) {
+  parse_params('condition', 'options')(req, res, function() {
+    var collection = req.kagodb;
+    var condition = req.param('condition');
+    var options = req.param('options');
+
+    collection.emit('webapi', 'count', condition, options);
+    collection.count(condition, options, function(err, count) {
+      if (err) collection.emit('warn', 'count failed:', err);
+      var success = {
+        count: count
+      };
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [insert()]{@linkcode KagoDB#insert}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.insert = function(req, res, next) {
+  parse_params('content')(req, res, function() {
+    var collection = req.kagodb;
+    var content = req.param('content');
+
+    collection.emit('webapi', 'insert', content);
+    collection.insert(content, function(err) {
+      if (err) collection.emit('warn', 'insert failed:', err);
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [save()]{@linkcode KagoDB#save}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.save = function(req, res, next) {
+  parse_params('content')(req, res, function() {
+    var collection = req.kagodb;
+    var content = req.param('content');
+
+    collection.emit('webapi', 'save', content);
+    collection.save(content, function(err) {
+      if (err) collection.emit('warn', 'save failed:', err);
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [update()]{@linkcode KagoDB#update}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.update = function(req, res, next) {
+  parse_params('condition', 'update', 'options')(req, res, function() {
+    var collection = req.kagodb;
+    var condition = req.param('condition');
+    var update = req.param('update');
+    var options = req.param('options');
+
+    collection.emit('webapi', 'update', condition, update, options);
+    collection.update(condition, update, options, function(err) {
+      if (err) collection.emit('warn', 'update failed:', err);
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [findAndModify()]{@linkcode KagoDB#findAndModify}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.findAndModify = function(req, res, next) {
+  parse_params('condition', 'sort', 'update', 'options')(req, res, function() {
+    var collection = req.kagodb;
+    var condition = req.param('condition');
+    var sort = req.param('sort');
+    var update = req.param('update');
+    var options = req.param('options');
+
+    collection.emit('webapi', 'findAndModify', condition, sort, update, options);
+    collection.findAndModify(condition, sort, update, options, function(err) {
+      if (err) collection.emit('warn', 'findAndModify failed:', err);
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * This is a bridge function to
+ * [remove()]{@linkcode KagoDB#remove}
+ * method from express webapi app.
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - next function
+ */
+
+WebMethods.prototype.remove = function(req, res, next) {
+  parse_params('condition', 'options')(req, res, function() {
+    var collection = req.kagodb;
+    var condition = req.param('condition');
+    var options = req.param('options');
+
+    collection.emit('webapi', 'remove', condition, options);
+    collection.remove(condition, options, function(err) {
+      if (err) collection.emit('warn', 'remove failed:', err);
+      res.send(err ? 500 : success);
+    });
+  });
+};
+
+/**
+ * @ignore
+ */
+
+function parse_params() {
+  var keys = [].concat(arguments);
+  return function(req, res, next) {
+    var kagoapi = req.kagoapi;
+    for (var i = 0; i &lt; keys.length; i++) {
+      var key = keys[i];
+      var value = req.param(key);
+      var parsed = kagoapi.parse(value);
+      if (value instanceof Error) {
+        collection.emit('warn', 'invalid parameter: ' + key + '=' + value);
+        return res.send(400); // Bad Request
+      }
+      req.params = req.params || {};
+      req.params[key] = parsed;
+    }
+    next();
+  };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-system.html">system</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li><li><a href="WebMethods.html">WebMethods</a></li></ul><h3>Mixins</h3><ul><li><a href="ajax.html">ajax</a></li><li><a href="count.html">count</a></li><li><a href="deny.html">deny</a></li><li><a href="dynamic_ajax.html">dynamic_ajax</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="dynamic_storage.html">dynamic_storage</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="find_one.html">find_one</a></li><li><a href="findAndModify.html">findAndModify</a></li><li><a href="init.html">init</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="jquery.html">jquery</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="obop.html">obop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="stub.html">stub</a></li><li><a href="superagent.html">superagent</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Jun 19 2013 23:06:51 GMT+0900 (JST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: mixin/webapi.js</title>
+    <title>JSDoc: Source: webapi/webapi.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: mixin/webapi.js</h1>
+    <h1 class="page-title">Source: webapi/webapi.js</h1>
     
     
 
@@ -28,38 +28,65 @@
             <pre class="prettyprint source"><code>/*! webapi.js */
 
 var express; // = require('express'); // lazy load
+var WebMethods = require('./webmethods');
 
 /**
- * This mixin provides [webapi()]{@linkcode KagoDB#webapi} method which gives a RESTful Web API feature for {@link http://expressjs.com Express.js}.
+ * This mixin provides
+ * [webapi()]{@linkcode KagoDB#webapi} and
+ * [webmethods()]{@linkcode KagoDB#webmethods} and
+ * method to implement a RESTful Web API feature for
+ * {@link http://expressjs.com Express.js}.
  *
  * @class webapi
  * @mixin
  * @example
+ *
+ * // This emulates how webapi() works with express to provide RESTful Web APIs.
+ *
  * var express = require('express');
  * var KagoDB = require('KagoDB');
  *
- * var opts = {
- *   storage: 'json',
- *   path: './data/'
- * };
+ * var collection = new KagoDB({ storage: 'memory' });
+ * var webapi = collection.webapi();
+ * var webmethods = collection.webmethods(); // == webapi.methods
  *
  * var app = express();
- * app.use(express.static(__dirname + '/public'));
- * app.all('/data/:id?', KagoDB(opts).webapi());
+ * app.use(webapi.bodyParser());
+ * app.use(webapi.prepare());
+ * app.use(webapi.ready());
+ * app.put('/data/:id?', webmethods.write);
+ * app.del('/data/:id?', webmethods.erase);
+ * app.all('/data/:id?', webapi.dispatch(webmethods));
+ * app.head('/data/:id?', webmethods.read);
+ * app.get('/data/:id?', webmethods.read);
+ * app.use(webapi.cleanup());
+ * app.use(webapi.error(400));
  * app.listen(3000);
  */
 
 module.exports = function() {
   var mixin = {};
   mixin.webapi = webapi;
+  mixin.webmethods = webmethods;
   return mixin;
 };
+
+/**
+ * This returns a set of bridge methods from express app to KagoDB.
+ *
+ * @method KagoDB.prototype.webmethods
+ * @returns {WebMethods}
+ */
+
+function webmethods() {
+  return new WebMethods();
+}
 
 /**
  * This generates a RESTful Web API function for {@link http://expressjs.com Express.js}.
  *
  * @method KagoDB.prototype.webapi
- * @returns {Function} a Web API function
+ * @returns {Function} a Web API function for express
  * @example
  * var express = require('express');
  * var KagoDB = require('KagoDB');
@@ -81,21 +108,24 @@ function webapi() {
   var version = System.version();
 
   var api = function(req, res, next) {
-    var app = new MiniApp();
+    var app = mw_pipe();
     app.use(api.bodyParser());
     app.use(api.prepare());
     app.use(api.ready());
-    app.verb('put', api.methods.write);
-    app.verb('delete', api.methods.erase);
+    app.use(verb('put', api.methods.write));
+    app.use(verb('delete', api.methods.erase));
     app.use(api.dispatch(api.methods));
-    app.verb('head', api.methods.read);
-    app.verb('get', api.methods.read);
+    app.use(verb('head', api.methods.read));
+    app.use(verb('get', api.methods.read));
     app.use(api.cleanup());
     app.use(api.error(400));
     app.run(req, res, next);
   };
 
   express = express || require('express'); // lazy load
+
+  api.express = express; // export express
+
   api.bodyParser = express.bodyParser;
 
   api.prepare = function() {
@@ -110,7 +140,7 @@ function webapi() {
     return NOOP;
   };
 
-  api.methods = new WebapiMethods();
+  api.methods = collection.webmethods();
 
   api.dispatch = function(methods) {
     methods = methods || api.methods;
@@ -155,262 +185,38 @@ function webapi() {
   return api;
 }
 
+function mw_pipe() {
+  function mw() {}
+  mw.run = NOOP;
+  mw.use = function(job) {
+    mw.run = mw_join(mw.run, job);
+  };
+  return mw;
+}
+
+function mw_join(first, second) {
+  return function(req, res, next) {
+    var that = this;
+    first.call(that, req, res, function() {
+      second.call(that, req, res, next);
+    });
+  };
+}
+
+function verb(method, job) {
+  return function(req, res, next) {
+    if (req.method.toLowerCase() == method) {
+      job(req, res, next);
+    } else {
+      next();
+    }
+  };
+}
+
 function NOOP(req, res, next) {
   next();
 }
-
-function MiniApp() {}
-
-MiniApp.prototype.use = function(job) {
-  this.queue = this.queue || [];
-  this.queue.push(job);
-  return this;
-};
-
-MiniApp.prototype.verb = function(verb, job) {
-  var func = function(req, res, next) {
-    if (req.method.toLowerCase() == verb) {
-      return job(req, res, next);
-    } else {
-      return next();
-    }
-  };
-  return this.use(func);
-};
-
-MiniApp.prototype.run = function(req, res, next) {
-  var queue = this.queue || [];
-  each();
-  return this;
-
-  function each(err) {
-    if (err) {
-      return next.apply(null, arguments);
-    }
-    var job = queue.shift();
-    if (!job) {
-      return next();
-    }
-    job(req, res, each);
-  }
-};
-
-function WebapiMethods() {}
-
-WebapiMethods.prototype.read = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var id = req.param('id');
-
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // run
-  collection.emit('webapi', 'read', id);
-  collection.exist(id, function(err, exist) {
-    if (err) {
-      collection.emit('warn', 'read: exist failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    if (!exist) {
-      collection.emit('warn', 'read: item does not exist -', id);
-      return res.send(404); // Not Found
-    }
-    collection.read(id, function(err, item) {
-      if (err) {
-        collection.emit('warn', 'read: read failed -', err);
-        return res.send(500); // Internal Server Error
-      }
-      return res.send(item);
-    });
-  });
-};
-
-WebapiMethods.prototype.write = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var id = req.param('id');
-  var content = req.param('content');
-
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // content refers body when PUT
-  if (!content && req.method.toLowerCase() == 'put') {
-    content = req.body;
-  }
-
-  // parse content body
-  content = kagoapi.parse(content);
-
-  // validate parameter
-  if (!content || 'object' !== typeof content) {
-    collection.emit('warn', 'write: invalid content -', content);
-    return res.send(400); // Bad Request
-  }
-  if (content instanceof Error) {
-    collection.emit('warn', 'write: content parse failed -', content);
-    return res.send(400); // Bad Request
-  }
-  if (!Object.keys(content).length) {
-    collection.emit('warn', 'write: empty content -', content);
-    return res.send(400); // Bad Request
-  }
-
-  // run
-  collection.emit('webapi', 'write', id, content);
-  collection.write(id, content, function(err) {
-    if (err) {
-      collection.emit('warn', 'write: write failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      success: true
-    });
-  });
-};
-
-WebapiMethods.prototype.erase = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var id = req.param('id');
-
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // run
-  collection.emit('webapi', 'erase', id);
-  collection.erase(id, function(err) {
-    if (err) {
-      collection.emit('warn', 'erase: erase failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      success: true
-    });
-  });
-};
-
-WebapiMethods.prototype.exist = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var id = req.param('id');
-
-  // id must be specified
-  if (!id) {
-    return next();
-  }
-
-  // run
-  collection.emit('webapi', 'exist', id);
-  collection.exist(id, function(err, exist) {
-    if (err) {
-      collection.emit('warn', 'exist: exist failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      exist: !! exist
-    });
-  });
-};
-
-WebapiMethods.prototype.index = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-
-  // run
-  collection.emit('webapi', 'index:');
-  collection.index(function(err, list) {
-    if (err) {
-      collection.emit('warn', 'index: index failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      index: list
-    });
-  });
-};
-
-WebapiMethods.prototype.find = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var condition = req.param('condition');
-  var projection = req.param('projection');
-  var sort = req.param('sort');
-  var offset = req.param('offset');
-  var limit = req.param('limit');
-  var cursor;
-
-  // translate query parameters
-  condition = kagoapi.parse(condition);
-  projection = kagoapi.parse(projection);
-  sort = kagoapi.parse(sort);
-  offset = offset - 0;
-  limit = limit - 0;
-
-  // validate parameters
-  if (condition instanceof Error) {
-    collection.emit('warn', 'find: condition parse failed -', condition);
-    return res.send(400); // Bad Request
-  }
-  if (projection instanceof Error) {
-    collection.emit('warn', 'find: projection parse failed -', projection);
-    return res.send(400); // Bad Request
-  }
-  if (sort instanceof Error) {
-    collection.emit('warn', 'find: sort parse failed -', sort);
-    return res.send(400); // Bad Request
-  }
-
-  // run
-  collection.emit('webapi', 'find', condition, projection, sort, offset, limit);
-  cursor = collection.find(condition, projection);
-  if (sort) cursor.sort(sort);
-  if (limit) cursor.limit(limit);
-  if (offset) cursor.offset(offset);
-  cursor.toArray(function(err, list) {
-    if (err) {
-      collection.emit('warn', 'find: toArray ailed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      data: list
-    });
-  });
-};
-
-WebapiMethods.prototype.count = function(req, res, next) {
-  var collection = req.kagodb;
-  var kagoapi = req.kagoapi;
-  var condition = req.param('condition');
-
-  // translate query parameter
-  condition = kagoapi.parse(condition);
-
-  // validate parameter
-  if (condition instanceof Error) {
-    collection.emit('warn', 'count: condition parse failed -', content);
-    return res.send(400); // Bad Request
-  }
-
-  // run
-  collection.emit('webapi', 'count', condition);
-  collection.count(condition, function(err, count) {
-    if (err) {
-      collection.emit('warn', 'count: count failed -', err);
-      return res.send(500); // Internal Server Error
-    }
-    return res.send({
-      count: count
-    });
-  });
-};</code></pre>
+</code></pre>
         </article>
     </section>
 
@@ -420,13 +226,13 @@ WebapiMethods.prototype.count = function(req, res, next) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-condition_op.html">condition_op</a></li><li><a href="module-projection_op.html">projection_op</a></li><li><a href="module-system.html">system</a></li><li><a href="module-update_op.html">update_op</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li></ul><h3>Mixins</h3><ul><li><a href="deny.html">deny</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="http_jquery.html">http_jquery</a></li><li><a href="http_request.html">http_request</a></li><li><a href="http_superagent.html">http_superagent</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="request_jquery.html">request_jquery</a></li><li><a href="request_superagent.html">request_superagent</a></li><li><a href="storage.html">storage</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-system.html">system</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="Cursor.html">Cursor</a></li><li><a href="KagoDB.html">KagoDB</a></li><li><a href="ObjectID.html">ObjectID</a></li><li><a href="WebMethods.html">WebMethods</a></li></ul><h3>Mixins</h3><ul><li><a href="ajax.html">ajax</a></li><li><a href="count.html">count</a></li><li><a href="deny.html">deny</a></li><li><a href="dynamic_ajax.html">dynamic_ajax</a></li><li><a href="dynamic_mixin.html">dynamic_mixin</a></li><li><a href="dynamic_storage.html">dynamic_storage</a></li><li><a href="events.html">events</a></li><li><a href="find.html">find</a></li><li><a href="find_one.html">find_one</a></li><li><a href="findAndModify.html">findAndModify</a></li><li><a href="init.html">init</a></li><li><a href="insert.html">insert</a></li><li><a href="intercept_mixin.html">intercept_mixin</a></li><li><a href="jquery.html">jquery</a></li><li><a href="json.html">json</a></li><li><a href="local_storage.html">local_storage</a></li><li><a href="memory.html">memory</a></li><li><a href="model.html">model</a></li><li><a href="noop.html">noop</a></li><li><a href="obop.html">obop</a></li><li><a href="pkey.html">pkey</a></li><li><a href="remove.html">remove</a></li><li><a href="request.html">request</a></li><li><a href="stub.html">stub</a></li><li><a href="superagent.html">superagent</a></li><li><a href="update.html">update</a></li><li><a href="webapi.html">webapi</a></li><li><a href="yaml.html">yaml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 13 2013 22:04:40 GMT+0900 (JST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Jun 19 2013 23:06:51 GMT+0900 (JST)
 </footer>
 
 <script> prettyPrint(); </script>
