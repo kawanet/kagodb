@@ -14,8 +14,7 @@ describe('Primary Key Mixin:', function() {
   var collection;
   var opts = {
     storage: 'memory',
-    namespace: 'shared',
-    memory_serialize: true
+    namespace: 'shared'
   };
 
   var kago0 = new Kago0(opts);

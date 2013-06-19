@@ -25,8 +25,7 @@ describe('Memory Storage:', function() {
 
   describe('Serializer', function() {
     var opts = {
-      storage: 'memory',
-      memory_serialize: true
+      storage: 'memory'
     };
     var MyKago = KagoDB.inherit(opts);
     crud_tests(MyKago);
