@@ -1,6 +1,6 @@
 /*! quote-json.js */
 
-var obop = require('../lib/modules/obop');
+var obop = require('obop');
 
 module.exports = function(grunt) {
   grunt.registerMultiTask('quoteJson', 'Quoting JSON parameters', function() {

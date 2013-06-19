@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "homepage": "https://github.com/kawanet/kagodb",
   "description": "Kago Database Engine",
   "repository": {
@@ -22,7 +22,8 @@
     "js-yaml": "*",
     "request": "*",
     "wrequire": "*",
-    "superagent": "*"
+    "superagent": "*",
+    "obop": "git://github.com/kawanet/obop.git"
   },
   "devDependencies": {
     "chai": "*",
@@ -35,8 +36,6 @@
     "grunt-contrib-watch": "*",
     "async": "*",
     "jquery": "*",
-    "supertest": "*",
-    "browserify": "*",
-    "browserify-shim": "*"
+    "supertest": "*"
   }
 }
