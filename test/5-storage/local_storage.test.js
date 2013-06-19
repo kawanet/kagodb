@@ -37,13 +37,13 @@ describe('Local Storage: (emulation)', function() {
     var path2B = opts2.namespace + ':' + encodeURIComponent(idB);
 
     var collection1 = new KagoDB(opts1);
-    collection1.find();
+    collection1.init();
     localStorage = collection1.memory_store();
     write_to_erase(collection1, idA, path1A);
     write_to_erase(collection1, idB, path1B);
 
     var collection2 = new KagoDB(opts2);
-    collection2.find();
+    collection2.init();
     localStorage = collection2.memory_store();
     write_to_erase(collection2, idA, path2A);
     write_to_erase(collection2, idB, path2B);
