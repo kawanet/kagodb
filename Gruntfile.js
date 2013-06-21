@@ -34,7 +34,13 @@ module.exports = function(grunt) {
         src: jshint_src
       },
       options: {
-        '-W103': true // The '__proto__' property is deprecated.
+        'proto': true, // W103: The '__proto__' property is deprecated.,
+        'undef': true, // W117: 'xxx' is not defined.
+        'node': true,
+        'globals': {
+          describe: true, // mocha
+          it: true
+        }
       }
     },
 
