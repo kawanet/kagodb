@@ -37,6 +37,9 @@ function utils_test(name, utils) {
       assert(child.foo, 'child should have foo method');
       assert(child.bar, 'child should have bar method');
 
+      assert.equal(Child.super_, Parent, "Child's super class should be Parent");
+      assert.equal(child.constructor, Child, "child's constructor should be Child");
+
       done();
     });
 
