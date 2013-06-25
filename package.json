@@ -8,6 +8,9 @@
     "url": "https://github.com/kawanet/kagodb.git"
   },
   "main": "index.js",
+  "scripts": {
+    "test": "grunt"
+  },
   "keywords": [
       "api",
       "database",
