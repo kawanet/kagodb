@@ -143,6 +143,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['jshint', 'mochaTest']);
   grunt.registerTask('docs', ['clean:docs', 'jsdoc', 'modifyDocs']);
-  grunt.registerTask('bundle', ['quoteJson', 'browserify', 'uglify']);
-  grunt.registerTask('all', ['default', 'docs', 'bundle']);
+  grunt.registerTask('build', ['quoteJson', 'browserify', 'uglify']);
+  grunt.registerTask('all', ['default', 'docs', 'build']);
 };
