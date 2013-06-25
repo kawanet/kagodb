@@ -18,7 +18,6 @@
       "yaml"
   ],
   "dependencies": {
-    "express": "*",
     "js-yaml": "*",
     "obop": "~0.0.5",
     "request": "*",
@@ -28,6 +27,7 @@
   "devDependencies": {
     "async": "*",
     "chai": "*",
+    "express": "*",
     "grunt": "*",
     "grunt-browserify": "*",
     "grunt-contrib-clean": "*",
