@@ -21,7 +21,6 @@
     "js-yaml": "*",
     "obop": "~0.0.5",
     "request": "*",
-    "superagent": "*",
     "wrequire": "~0.0.3"
   },
   "devDependencies": {
@@ -37,6 +36,7 @@
     "grunt-jsdoc": "*",
     "grunt-mocha-test": "*",
     "jquery": "*",
+    "superagent": "*",
     "supertest": "*"
   }
 }
