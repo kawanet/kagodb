@@ -10,14 +10,14 @@ $(function() {
   var server_file = {
     name: 'Server File',
     storage: 'ajax',
-    ajax: 'jquery',
+    // ajax: 'jquery',
     endpoint: '/data/',
     http_param: param
   };
   var server_memory = {
     name: 'Server Memory',
     storage: 'ajax',
-    ajax: 'jquery',
+    // ajax: 'jquery',
     endpoint: '/memory/',
     http_param: param
   };

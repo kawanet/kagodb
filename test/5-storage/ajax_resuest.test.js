@@ -16,19 +16,30 @@ describe('Ajax Storage via request:', function() {
 
   if (!endpoint) return;
 
-  var opts = {
+  var opts1 = {
+    storage: 'ajax',
+    // ajax: 'request', // auto-ajax
+    endpoint: endpoint
+  };
+
+  var opts2 = {
     storage: 'ajax',
     ajax: 'request',
     endpoint: endpoint
   };
 
-  describe('CRUD', function() {
-    var MyKago = KagoDB.inherit(opts);
+  describe('CRUD (auto)', function() {
+    var MyKago = KagoDB.inherit(opts1);
+    crud_tests(MyKago);
+  });
+
+  describe('CRUD (request)', function() {
+    var MyKago = KagoDB.inherit(opts2);
     crud_tests(MyKago);
   });
 
   describe('Request', function() {
-    var MyKago = KagoDB.inherit(opts);
+    var MyKago = KagoDB.inherit(opts1);
     http_tests(MyKago);
   });
 });
