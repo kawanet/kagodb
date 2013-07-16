@@ -34,14 +34,40 @@
  * @mixin
  */
 
+var stub = require('../mixin/stub');
 var dynamic_mixin = require('../mixin/dynamic_mixin');
 
-module.exports = function() {
-  return mixin;
+var methods = {
+  // common methods
+  read: 1,
+  write: 1,
+  erase: 1,
+  exist: 1,
+  index: 1,
 
-  function mixin() {
-    return dynamic_mixin.call(this, 'storage');
-  }
+  // query methods
+  find: 1,
+  findOne: 1,
+  count: 1,
+  insert: 1,
+  save: 1,
+  update: 1,
+  findAndModify: 1,
+  remove: 1,
+
+  // optional methods
+  memory_store: 1,
+  file_folder: 1,
+  file_suffix: 1,
+  http_endpoint: 1,
+  http_param: 1,
+};
+
+module.exports = function() {
+  return function() {
+    stub(methods).call(this);
+    return dynamic_mixin('storage');
+  };
 };
 
 /**

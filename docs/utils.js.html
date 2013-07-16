@@ -64,7 +64,8 @@ exports.inherits = function(child, parent) {
   var wrap = function() {};
   wrap.prototype = parent.prototype;
   child.prototype = new wrap();
-  child.prototype.__super__ = parent;
+  child.prototype.constructor = child;
+  child.super_ = parent;
 
   return child;
 };
@@ -199,7 +200,8 @@ exports.bless = function(item, model) {
  * @ignore
  */
 
-function NOP() {}</code></pre>
+function NOP() {}
+</code></pre>
         </article>
     </section>
 

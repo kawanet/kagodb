@@ -65,14 +65,14 @@ var wrequire = require('wrequire');
  *   // item =>  http://localhost:3000/data/foo
  * }); */
 
-module.exports = function() {
+var exports = module.exports = function() {
   var mixin = {
-    ajax: ajax
+    ajax: exports.ajax
   };
   return mixin;
 };
 
-function ajax(opts, callback) {
+exports.ajax = function(opts, callback) {
   var self = this;
   var jopts = {};
   var jQuery = this.get('jquery');
@@ -108,7 +108,8 @@ function ajax(opts, callback) {
     if (self.emit) self.emit('response', jqXHR);
     callback(null, data);
   });
-}</code></pre>
+};
+</code></pre>
         </article>
     </section>
 

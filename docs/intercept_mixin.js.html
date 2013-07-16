@@ -58,13 +58,12 @@ module.exports = function(wrapper) {
   return mixin;
 
   function mixin() {
-    var self = this;
     var backup = {};
     var key;
     var func;
 
     // search and backup current methods
-    for (key in self) {
+    for (key in this) {
       // ignore _private properties including __super__
       if (key.substr(0, 1) == '_') continue;
 
@@ -73,7 +72,7 @@ module.exports = function(wrapper) {
       if (key == 'set') continue;
 
       // ignore non-method properties
-      func = self[key];
+      func = this[key];
       if ('function' !== typeof func) continue;
 
       // backup current function
@@ -82,10 +81,14 @@ module.exports = function(wrapper) {
 
     // replace it with a wrap method
     for (key in backup) {
-      self[key] = wrapper(key, backup[key]);
+      this[key] = wrapper(key, backup[key]);
     }
+
+    // function-style mixin does not return an object
+    return null;
   }
-};</code></pre>
+};
+</code></pre>
         </article>
     </section>
 
