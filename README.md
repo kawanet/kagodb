@@ -5,8 +5,6 @@ Kago Database Engine
 ## Features
 
 - NoSQL
-- Minimal and extendable
-- Node.js server and client as well as browser build
 - Standalone and embeddable
 - Basic CRUD operations: write/read/erase etc.
 - MongoDB-like operations: insert/find/update/remove etc.
@@ -14,6 +12,7 @@ Kago Database Engine
 - Memory based volatile storage engine
 - RESTful API Web server application ready for Express.js
 - RESTful API Web client library for jQuery and superagent
+- Node.js server and client as well as browser build
 - More features!
 
 ## Examples
@@ -52,13 +51,13 @@ app.listen(3000);
 ## Installation
 
 ```sh
-npm install git://github.com/kawanet/kagodb.git
+npm install kagodb
 ```
 
 ## Links
 
 - Sources on GitHub - https://github.com/kawanet/kagodb
-- JavaScript API Documentation - http://kawanet.github.io/kagodb/docs/KagoDB.html
+- JavaScript API Reference - http://kawanet.github.io/kagodb/docs/KagoDB.html
 - Browser Build - https://raw.github.com/kawanet/kagodb/master/public/js/kagodb.min.js
 
 ## Authors
