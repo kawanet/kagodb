@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.28",
+  "version": "0.2.29",
   "homepage": "https://github.com/kawanet/kagodb",
   "description": "Kago Database Engine",
   "repository": {
@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "js-yaml": "*",
-    "obop": "~0.0.5",
+    "obop": "~0.0.9",
     "request": "*",
     "wrequire": "~0.0.3"
   },
@@ -38,6 +38,7 @@
     "grunt-contrib-watch": "*",
     "grunt-jsdoc": "*",
     "grunt-mocha-test": "*",
+    "grunt-quote-json": "*",
     "jquery": "*",
     "superagent": "*",
     "supertest": "*"
