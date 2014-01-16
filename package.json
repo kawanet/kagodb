@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.31",
+  "version": "0.2.32",
   "homepage": "https://github.com/kawanet/kagodb",
   "description": "Kago Database Engine",
   "repository": {
@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "js-yaml": "*",
-    "obop": "~0.0.9",
+    "obop": "~0.0.10",
     "request": "*",
     "wrequire": "~0.0.5"
   },
