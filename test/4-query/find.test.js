@@ -466,6 +466,30 @@ function main_tests(KagoDB) {
       });
     });
 
+    it('find({decimal: {$in: [111, 999]}})', function(done) {
+      var cond = {
+        decimal: {$in: [111, 999]}
+      };
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'toArray() should success: ' + err);
+        assert.equal(list.length, 2, '111,999 count');
+        assert.equal(list[0].decimal, 111, '111 decimal 0');
+        assert.equal(list[1].decimal, 999, '999 decimal 1');
+
+        collection.count(cond, function(err, count) {
+          assert(!err, 'count() should success: ' + err);
+          assert.equal(count, list.length, 'count() should return the same number');
+
+          collection.findOne(cond, function(err, item) {
+            assert(!err, 'findOne() should success: ' + err);
+            assert(item, 'found');
+            assert.equal(item.decimal, 111, '111 decimal findOne');
+            done();
+          });
+        });
+      });
+    });
+
     it('find({numeric: 45.67})', function(done) {
       var cond = {
         numeric: 45.67
