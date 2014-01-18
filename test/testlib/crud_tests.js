@@ -4,8 +4,17 @@ var assert = require('chai').assert;
 
 module.exports = crud_tests;
 
+function Model() {
+  // dummy model class
+}
+
 function crud_tests(KagoDB) {
-  var collection = new KagoDB();
+  var pkey = "_oid";
+  var opts = {
+    model: Model,
+    primary_key: pkey
+  };
+  var collection = new KagoDB(opts);
 
   var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
   var id1 = 'foo-' + date;
@@ -13,7 +22,7 @@ function crud_tests(KagoDB) {
   var item = {
     string: "FOO",
     decimal: 123,
-    numeric: 45.67
+    numeric: 45.67,
   };
 
   it('write', function(done) {
@@ -64,6 +73,21 @@ function crud_tests(KagoDB) {
         res = res || [];
         assert(res.length, 'find should return some');
         assert.equal(list.length, res.length, 'index & find should return same number of items');
+        done();
+      });
+    });
+  });
+
+  // read() should work with model property
+  it('model', function(done) {
+    collection.read(id1, function(err, item) {
+      assert(!err, 'read success: ' + err);
+      assert(item instanceof Model, 'read should return a Model instance');
+      var cond = {};
+      cond[pkey] = id1;
+      collection.findOne(cond, function(err, item) {
+        assert(!err, 'findOne success: ' + err);
+        assert(item instanceof Model, 'findOne should return a Model instance');
         done();
       });
     });
