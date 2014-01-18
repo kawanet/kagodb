@@ -14,7 +14,30 @@ function crud_tests(KagoDB) {
     model: Model,
     primary_key: pkey
   };
-  var collection = new KagoDB(opts);
+  KagoDB = KagoDB.inherit(opts);
+
+  // a wrap filter which defines a property for testing
+  var seq = 0;
+  var super_wrap = KagoDB.prototype.wrap;
+  KagoDB.prototype.wrap = function(item) {
+    if (super_wrap) {
+      item = super_wrap.apply(this, arguments);
+    }
+    item.wrap = ++seq;
+    return item;
+  };
+
+  // an unwrap which copies a property for testing
+  var super_unwrap = KagoDB.prototype.unwrap;
+  KagoDB.prototype.unwrap = function(item) {
+    if (super_unwrap) {
+      item = super_unwrap.apply(this, arguments);
+    }
+    item.unwrap = item.wrap || ++seq;
+    return item;
+  };
+
+  var collection = new KagoDB();
 
   var date = (new Date()).toJSON().replace(/\.\d+|\D/g, '');
   var id1 = 'foo-' + date;
@@ -22,7 +45,10 @@ function crud_tests(KagoDB) {
   var item = {
     string: "FOO",
     decimal: 123,
-    numeric: 45.67,
+    numeric: 45.67
+  };
+  var cond = {
+    _id: id1
   };
 
   it('write', function(done) {
@@ -95,6 +121,28 @@ function crud_tests(KagoDB) {
           assert(item instanceof Model, 'findOne should return a Model instance');
           done();
         });
+      });
+    });
+  });
+
+  it('wrap & unwrap', function(done) {
+    collection.read(id1, function(err, item) {
+      assert(!err, 'read should success');
+      assert(item, 'read should return an item');
+      assert(item.wrap, 'wrap should be applied (read)');
+      assert(item.unwrap, 'unwrap should be applied (read)');
+      assert.equal(item.wrap, item.unwrap, 'unwrap should be copied since wrap (read)');
+
+      collection.find(cond).toArray(function(err, list) {
+        assert(!err, 'find should success');
+        assert(list instanceof Array, 'find should return an array');
+        assert(list.length, 'find should return item(s)');
+        var item = list[0];
+        assert(item, 'find should return an item');
+        assert(item.wrap, 'wrap should be applied (find)');
+        assert(item.unwrap, 'unwrap should be applied (find)');
+        assert.equal(item.wrap, item.unwrap, 'unwrap should be copied since wrap (find)');
+        done();
       });
     });
   });
