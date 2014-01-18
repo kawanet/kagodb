@@ -9,7 +9,7 @@ function Model() {
 }
 
 function crud_tests(KagoDB) {
-  var pkey = "_oid";
+  var pkey = "_id";
   var opts = {
     model: Model,
     primary_key: pkey

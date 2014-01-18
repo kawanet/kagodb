@@ -21,7 +21,7 @@ describe('Model Mixin:', function() {
   var opts = {
     storage: 'memory',
     namespace: 'shared',
-    primary_key: '_oid'
+    primary_key: '_id'
   };
 
   var kago0 = new Kago0(opts);
@@ -170,7 +170,7 @@ describe('Model Mixin:', function() {
 
   // findOne() method should return an object blessed as well
   describe('find and findOne:', function() {
-    var cond = {_oid: 'garply'};
+    var cond = {_id: 'garply'};
 
     it('kago1.find()', function(done) {
       kago1.find(cond).toArray(function(err, list) {
