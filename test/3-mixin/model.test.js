@@ -85,7 +85,7 @@ describe('Model Mixin:', function() {
             assert(!item.foo, 'kago2 should not have foo property: ' + str);
             assert(item.bar, 'kago2 should have bar property: ' + str);
             assert(item.baz, 'kago2 should have baz property: ' + str);
-            assert((item instanceof Item2), 'kago1 should return an instance of Item1');
+            assert((item instanceof Item2), 'kago2 should return an instance of Item2');
             kago0.read(id, function(err, item) {
               var str = JSON.stringify(item);
               assert(!err, 'kago0.read() should success');
@@ -112,7 +112,7 @@ describe('Model Mixin:', function() {
           assert(!item.foo, 'kago2 should not have foo property: ' + str);
           assert(item.bar, 'kago2 should have bar property: ' + str);
           assert(item.baz, 'kago2 should have baz property: ' + str);
-          assert((item instanceof Item2), 'kago1 should return an instance of Item1');
+          assert((item instanceof Item2), 'kago2 should return an instance of Item2');
           kago0.read(id, function(err, item) {
             var str = JSON.stringify(item);
             assert(!err, 'kago0.read() should success');
@@ -159,7 +159,7 @@ describe('Model Mixin:', function() {
               assert(!item.foo, 'kago2 should not have foo property: ' + str);
               assert(item.bar, 'kago2 should have bar property: ' + str);
               assert(item.baz, 'kago2 should have baz property: ' + str);
-              assert((item instanceof Item2), 'kago1 should return an instance of Item1');
+              assert((item instanceof Item2), 'kago2 should return an instance of Item2');
               done();
             });
           });
@@ -169,18 +169,24 @@ describe('Model Mixin:', function() {
   });
 
   // findOne() method should return an object blessed as well
-  describe('findOne:', function() {
-    it('kago0.findOne()', function(done) {
-      var id = 'garply';
-      var pkey = kago0.pkey();
-      var cond = {};
-      cond[pkey] = id;
-      kago0.findOne(cond, function(err, item) {
-        assert(!err, 'kago0.findOne() should success');
-        var str = JSON.stringify(item);
-        assert(!item.foo, 'kago0 should not have foo property: ' + str);
-        assert(!item.bar, 'kago0 should not have bar property: ' + str);
-        assert(item.baz, 'kago0 should have baz property: ' + str);
+  describe('find and findOne:', function() {
+    var cond = {_oid: 'garply'};
+
+    it('kago1.find()', function(done) {
+      kago1.find(cond).toArray(function(err, list) {
+        assert(!err, 'kago1.find() should success');
+        assert(list instanceof Array, 'kago1 should return an array');
+        assert.equal(list.length, 1, 'kago1 should return one item');
+        var item = list[0];
+        assert((item instanceof Item1), 'kago1 should return an instance of Item1');
+        done();
+      });
+    });
+
+    it('kago2.findOne()', function(done) {
+      kago2.findOne(cond, function(err, item) {
+        assert(!err, 'kago2.findOne() should success');
+        assert((item instanceof Item2), 'kago2 should return an instance of Item2');
         done();
       });
     });

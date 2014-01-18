@@ -85,10 +85,16 @@ function crud_tests(KagoDB) {
       assert(item instanceof Model, 'read should return a Model instance');
       var cond = {};
       cond[pkey] = id1;
-      collection.findOne(cond, function(err, item) {
+      collection.find(cond).toArray(function(err, list) {
         assert(!err, 'findOne success: ' + err);
-        assert(item instanceof Model, 'findOne should return a Model instance');
-        done();
+        assert(list instanceof Array, 'find should return an array');
+        assert.equal(list.length, 1, 'find should return one item');
+        assert(list[0] instanceof Model, 'find should return a Model instance');
+        collection.findOne(cond, function(err, item) {
+          assert(!err, 'findOne success: ' + err);
+          assert(item instanceof Model, 'findOne should return a Model instance');
+          done();
+        });
       });
     });
   });
