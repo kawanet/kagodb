@@ -20,7 +20,8 @@ describe('Model Mixin:', function() {
   var collection;
   var opts = {
     storage: 'memory',
-    namespace: 'shared'
+    namespace: 'shared',
+    primary_key: '_oid'
   };
 
   var kago0 = new Kago0(opts);
@@ -163,6 +164,24 @@ describe('Model Mixin:', function() {
             });
           });
         });
+      });
+    });
+  });
+
+  // findOne() method should return an object blessed as well
+  describe('findOne:', function() {
+    it('kago0.findOne()', function(done) {
+      var id = 'garply';
+      var pkey = kago0.pkey();
+      var cond = {};
+      cond[pkey] = id;
+      kago0.findOne(cond, function(err, item) {
+        assert(!err, 'kago0.findOne() should success');
+        var str = JSON.stringify(item);
+        assert(!item.foo, 'kago0 should not have foo property: ' + str);
+        assert(!item.bar, 'kago0 should not have bar property: ' + str);
+        assert(item.baz, 'kago0 should have baz property: ' + str);
+        done();
       });
     });
   });
