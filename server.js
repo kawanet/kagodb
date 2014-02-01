@@ -1,4 +1,4 @@
-/*! server.js */
+#!/usr/bin/env node
 
 var express = require('express');
 var KagoDB = require('./index');
