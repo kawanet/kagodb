@@ -67,7 +67,7 @@ npm install kagodb
 
 ## MIT Licence
 
-Copyright 2013 @kawanet
+Copyright 2013-2014 @kawanet
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
