@@ -88,13 +88,23 @@ function Cursor(collection, condition, projection) {
   this._source = this.source;
   this.obop = collection.obop();
   if (condition) {
-    condition = this.obop.where(condition);
+    try {
+      condition = this.obop.where(condition);
+    } catch (e) {
+      condition = null;
+      this._error = e;
+    }
     if (condition) {
       this.source = new Condition(this, condition);
     }
   }
   if (projection) {
-    projection = this.obop.view(projection);
+    try {
+      projection = this.obop.view(projection);
+    } catch (e) {
+      projection = null;
+      this._error = e;
+    }
     if (projection) {
       this.source = new Projection(this, projection);
     }
@@ -114,6 +124,11 @@ utils.inherits(Cursor, Proto);
 Cursor.prototype.index = function(callback) {
   var self = this;
   callback = callback || NOP;
+  if (this._error) {
+    callback(this._error);
+    return this;
+  }
+
   if (self._index) {
     var list = [].concat(self._index); // clone
     callback(null, list);
@@ -151,6 +166,10 @@ Cursor.prototype.index = function(callback) {
 Cursor.prototype.toArray = function(callback) {
   var self = this;
   callback = callback || NOP;
+  if (this._error) {
+    callback(this._error);
+    return this;
+  }
 
   if (self._toArray) {
     var list = [].concat(self._toArray); // clone
@@ -189,6 +208,10 @@ Cursor.prototype.toArray = function(callback) {
 Cursor.prototype.each = function(callback) {
   var self = this;
   callback = callback || NOP;
+  if (this._error) {
+    callback(this._error);
+    return this;
+  }
 
   this.nextObject(iterator);
 
@@ -211,6 +234,11 @@ Cursor.prototype.each = function(callback) {
 
 Cursor.prototype.count = function(callback) {
   callback = callback || NOP;
+  if (this._error) {
+    callback(this._error);
+    return this;
+  }
+
   var getlist = (this.source === this._source) ? this.index : this.toArray;
   getlist.call(this, function(err, list) {
     if (err) {
@@ -339,7 +367,11 @@ Condition.prototype.nextObject = function(callback) {
 function Sort(cursor, order) {
   var sorter;
   this.source = cursor.source;
-  this.sorter = cursor.obop.order(order);
+  try {
+    this.sorter = cursor.obop.order(order);
+  } catch (e) {
+    this._error = e;
+  }
 }
 
 utils.inherits(Sort, Proto);
@@ -347,6 +379,10 @@ utils.inherits(Sort, Proto);
 Sort.prototype.nextObject = function(callback) {
   var self = this;
   callback = callback || NOP;
+  if (this._error) {
+    callback(this._error);
+    return;
+  }
 
   if (this.list) {
     var item = this.list.shift();

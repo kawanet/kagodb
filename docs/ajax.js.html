@@ -82,6 +82,8 @@ module.exports = function() {
 };
 
 function read(id, callback) {
+  callback = callback || NOP;
+  var self = this;
   var url = this.http_endpoint() + id;
   var data = this.http_param();
   var opts = {
@@ -91,11 +93,21 @@ function read(id, callback) {
   if (Object.keys(data)) {
     opts.form = data;
   }
-  this.ajax(opts, response_parser(null, callback));
+  this.ajax(opts, after_ajax);
+
+  function after_ajax(err, item) {
+    if (!err && self.unwrap) {
+      item = self.unwrap(item);
+    }
+    callback(err, item);
+  }
 }
 
 function write(id, item, callback) {
   var url = this.http_endpoint() + id;
+  if (this.wrap) {
+    item = this.wrap(item);
+  }
   var data = this.http_param();
   data.method = 'write';
   data.content = item;
@@ -211,7 +223,8 @@ function http_endpoint() {
   return url.replace(/\/*$/, '/');
 }
 
-function NOP() {}</code></pre>
+function NOP() {}
+</code></pre>
         </article>
     </section>
 

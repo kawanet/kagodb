@@ -62,6 +62,9 @@ function decode(source, callback) {
     callback(err);
     return;
   }
+  if (this.unwrap) {
+    item = this.unwrap(item);
+  }
   callback(null, item);
 }
 
@@ -89,6 +92,9 @@ function encode(item, callback) {
   var encoded;
   var replacer = this.get('json_replacer');
   var spaces = this.get('json_spaces');
+  if (this.wrap) {
+    item = this.wrap(item);
+  }
   try {
     encoded = JSON.stringify(item, replacer, spaces);
   } catch (err) {

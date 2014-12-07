@@ -74,6 +74,9 @@ exports.ajax = function(opts, callback) {
   // perform a HTTP request
   request(opts, function(err, response, body) {
     if (self.emit) self.emit('response', response);
+    if (response.statusCode >= 400) {
+      return callback(response.statusCode);
+    }
     if (!err && 'string' == typeof body && body.length) {
       try {
         body = JSON.parse(body);

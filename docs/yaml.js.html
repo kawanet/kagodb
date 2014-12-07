@@ -72,11 +72,17 @@ function decode(source, callback) {
     callback(err);
     return;
   }
+  if (this.unwrap) {
+    item = this.unwrap(item);
+  }
   callback(null, item);
 }
 
 function encode(item, callback) {
   var encoded;
+  if (this.wrap) {
+    item = this.wrap(item);
+  }
   try {
     jsyaml = jsyaml || require('js-yaml'); // lazy load
     encoded = jsyaml.dump(item);
@@ -84,7 +90,8 @@ function encode(item, callback) {
     callback(err);
   }
   callback(null, encoded);
-}</code></pre>
+}
+</code></pre>
         </article>
     </section>
 
