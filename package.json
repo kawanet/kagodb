@@ -1,6 +1,6 @@
 {
   "name": "kagodb",
-  "version": "0.2.36",
+  "version": "0.2.37",
   "homepage": "https://github.com/kawanet/kagodb",
   "description": "Kago Database Engine",
   "repository": {
@@ -21,28 +21,29 @@
     "yaml"
   ],
   "dependencies": {
-    "body-parser": "~1.10.0",
-    "js-yaml": "~3.2.3",
-    "obop": "~0.0.10",
-    "request": "~2.49.0",
-    "wrequire": "~0.0.5"
+    "body-parser": "^1.13.2",
+    "js-yaml": "^3.3.1",
+    "obop": "^0.0.10",
+    "request": "^2.58.0",
+    "wrequire": "^0.0.5"
   },
   "devDependencies": {
-    "async": "~0.9.0",
-    "chai": "~1.10.0",
-    "express": "~4.10.4",
-    "grunt": "~0.4.5",
-    "grunt-browserify": "~3.2.1",
-    "grunt-contrib-clean": "~0.6.0",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-uglify": "~0.6.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-jsdoc": "~0.5.7",
-    "grunt-mocha-test": "~0.12.4",
-    "grunt-quote-json": "~0.1.1",
-    "jquery": "~1.8.3",
-    "mocha": "~2.0.1",
-    "superagent": "~0.21.0",
-    "supertest": "~0.15.0"
+    "async": "^1.3.0",
+    "chai": "^3.0.0",
+    "express": "^4.13.1",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.8.0",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jsdoc": "^0.6.7",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-quote-json": "^0.1.1",
+    "jquery": "^2.1.4",
+    "mocha": "^2.2.5",
+    "superagent": "^1.2.0",
+    "supertest": "^1.0.1"
   }
 }
