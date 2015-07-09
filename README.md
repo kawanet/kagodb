@@ -1,4 +1,4 @@
-# KagoDB
+# KagoDB [![Build Status](https://travis-ci.org/kawanet/kagodb.svg?branch=master)](https://travis-ci.org/kawanet/kagodb)
 
 Kago Database Engine
 
@@ -67,7 +67,7 @@ npm install kagodb
 
 ## MIT Licence
 
-Copyright 2013-2014 @kawanet
+Copyright 2013-2015 @kawanet
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
